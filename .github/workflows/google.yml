@@ -61,7 +61,7 @@ jobs:
 
     - uses: 'docker/login-action@v1'
       with: 
-        resgistry:  'gcr.io'
+        registry:  'gcr.io'
         username: 'oauth2accesstoken'
         password: '${{steps.auth.outputs.access_token}}'
     # Get the GKE credentials so we can deploy to the cluster
