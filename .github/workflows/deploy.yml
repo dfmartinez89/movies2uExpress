@@ -52,8 +52,9 @@ on:
 env:
   PROJECT_ID: cnsa2022-dfm354 # TODO: update Google Cloud project id
   GAR_LOCATION: us-central1 # TODO: update Artifact Registry location
-  SERVICE: movies2uexpress # TODO: update Cloud Run service name THINK THIS IS NOT SERVICE BUT REPO
+  SERVICE: movies2uexpress # TODO: update Cloud Run service name THINK THIS IS NOT SERVICE BUT REPO us-central1-docker.pkg.dev/cnsa2022-dfm354/movies2uexpress
   REGION: us-central1 # TODO: update Cloud Run service region
+  IMAGE:  movies2uback
 
 jobs:
   deploy:
@@ -97,7 +98,7 @@ jobs:
     - name: Build and Push Container
       run: |-
         docker build -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}" ./
-        docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{ github.sha }}"
+        docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.IMAGE }}:${{ github.sha }}"
 
     # END - Docker auth and build
 
