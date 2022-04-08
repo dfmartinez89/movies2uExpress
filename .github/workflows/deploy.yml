@@ -52,7 +52,7 @@ on:
 env:
   PROJECT_ID: cnsa2022-dfm354 # TODO: update Google Cloud project id
   GAR_LOCATION: us-central1 # TODO: update Artifact Registry location
-  SERVICE: terra-cnsa2022 # TODO: update Cloud Run service name
+  SERVICE: movies2uexpress # TODO: update Cloud Run service name THINK THIS IS NOT SERVICE BUT REPO
   REGION: us-central1 # TODO: update Cloud Run service region
 
 jobs:
