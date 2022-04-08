@@ -45,9 +45,8 @@
 name: Build and Deploy to Cloud Run
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    branches: [ master ]
 
 env:
   PROJECT_ID: cnsa2022-dfm354 # Google Cloud project id
