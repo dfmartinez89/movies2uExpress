@@ -1,7 +1,18 @@
 const mongoose = require('mongoose');
 
-const dbURI = 'mongodb://34.70.184.181/movies';
+const dbURI = 'mongodb+srv://movies2u:movies2u@cluster0.ki5t0.mongodb.net/movies';
 mongoose.connect(dbURI, { useUnifiedTopology: true,  useNewUrlParser: true });
+
+// ATLAS
+// const { MongoClient, ServerApiVersion } = require('mongodb');
+// const uri = "mongodb+srv://movies2u:movies2u@cluster0.ki5t0.mongodb.net/?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+// client.connect(err => {
+//   const collection = client.db("movies").collection("movies");
+//   // perform actions on the collection object
+//   client.close();
+// });
+
 
 
 // CONNECTION EVENTS

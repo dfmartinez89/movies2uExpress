@@ -4,7 +4,10 @@
   "private": true,
   "jest": {
     "verbose": true,
-    "coveragePathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/models/"]
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/models/"
+    ]
   },
   "scripts": {
     "start": "node ./bin/www",
@@ -14,9 +17,11 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "mongodb": "^4.6.0",
     "morgan": "~1.9.1"
   },
   "devDependencies": {
+    "express-rate-limit": "^6.4.0",
     "jest": "^28.1.0",
     "moongose": "^1.0.0",
     "nodemon": "^2.0.16",
