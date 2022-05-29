@@ -11,11 +11,12 @@ describe("Movies API", () => {
         expect(response.body).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
+              _id: expect.any(String),
               title: expect.any(String),
               year: expect.any(Number),
               genre: expect.any(String),
               poster: expect.any(String),
-              score: expect.any(Number),
+              rating: expect.any(Number),
             }),
           ])
         );

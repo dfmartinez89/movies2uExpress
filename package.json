@@ -1,7 +1,11 @@
 {
   "name": "movies2uexpress",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
+  "jest": {
+    "verbose": true,
+    "coveragePathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/models/"]
+  },
   "scripts": {
     "start": "node ./bin/www",
     "test": "jest --coverage"

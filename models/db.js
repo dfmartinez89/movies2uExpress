@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
-const dbURI = 'mongodb://localhost/test';
+const dbURI = 'mongodb://localhost/movies';
 mongoose.connect(dbURI, { useUnifiedTopology: true,  useNewUrlParser: true });
+
 
 // CONNECTION EVENTS
 mongoose.connection.on('connected', () => {
@@ -37,4 +38,4 @@ process.on('SIGINT', () => {
 });
 
 // BRING IN YOUR SCHEMAS & MODELS
-require('./moviesdb');
+require('./movies');

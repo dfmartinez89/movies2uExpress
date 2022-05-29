@@ -10,10 +10,12 @@ const commentSchema = new mongoose.Schema({
 const movieSchema = new mongoose.Schema({
   title: { type: String, required: true },
   year: Number,
-  rating: { type: Number, default: 0, min: 0, max: 5 },
   genre: String,
   poster: String,
+  rating: { type: Number, default: 0, min: 0, max: 5 },
   reviews: commentSchema,
 });
 
-mongoose.model("Movie", movieSchema);
+const Movie = mongoose.model("Movie", movieSchema);
+
+
