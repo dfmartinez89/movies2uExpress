@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const dbURI = 'mongodb://localhost/movies';
+const dbURI = 'mongodb://34.70.184.181/movies';
 mongoose.connect(dbURI, { useUnifiedTopology: true,  useNewUrlParser: true });
 
 
