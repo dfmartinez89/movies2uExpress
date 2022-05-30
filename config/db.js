@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-dotenv.config({ path: "./.env" });
+dotenv.config();
 let dbURI = "mongodb://localhost/movies";
 
 if (process.env.NODE_ENV === "production") {
