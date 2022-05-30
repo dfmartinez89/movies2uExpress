@@ -55,6 +55,8 @@ env:
   SERVICE: movies2uexpress # Artifact Registry repository
   REGION: us-central1 # Cloud Run service region
   IMAGE:  movies2uback # Docker image name
+  ATLAS_URI: ${{ secrets.ATLAS_URI }}
+
 
 jobs:
   deploy:
@@ -108,6 +110,7 @@ jobs:
       with:
         service: ${{ env.SERVICE }}
         region: ${{ env.REGION }}
+        env_vars: ${{ env.DATA }}
         # NOTE: If using a pre-built image, update the image name here
         image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.IMAGE }}:${{ github.sha }}
 
