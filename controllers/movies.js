@@ -32,7 +32,7 @@ const moviesCreate = (req, res) => {
     sendJSONresponse(res, 422, error);
   }
 
-  if (isNaN(req.query.year)) {
+  if (isNaN(parseYear)) {
     sendJSONresponse(res, 422, "request validation error");
   }
   Movies.create(
