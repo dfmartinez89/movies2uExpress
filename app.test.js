@@ -1,7 +1,9 @@
 const request = require("supertest");
 const app = require("./app");
+const { connectDB, disconnectDB } = require("./models/db");
 
 describe("Movies API", () => {
+
   it("GET /movies --> list all movies", () => {
     return request(app)
       .get("/movies")
@@ -145,7 +147,7 @@ describe("Movies API", () => {
         expect(response.body).toEqual(
           expect.arrayContainnig([
             expect.objectContaining({
-              title: 'Corba',
+              title: "Corba",
               year: expect.any(Number),
               genre: expect.any(String),
               poster: expect.any(String),
@@ -158,42 +160,42 @@ describe("Movies API", () => {
 
   xit("GET /movies/search?year --> search movie by year", () => {
     request(app)
-    .get("movies/search?year=2019")
-    .expect("Content-Type", /json/)
-    .expect(200)
-    .then((response) => {
-      expect(response.body).toEqual(
-        expect.arrayContainnig([
-          expect.objectContaining({
-            title: expect.any(String),
-            year: 2018,
-            genre: expect.any(String),
-            poster: expect.any(String),
-            score: expect.any(Number),
-          }),
-        ])
-      );
-    });
+      .get("movies/search?year=2019")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.arrayContainnig([
+            expect.objectContaining({
+              title: expect.any(String),
+              year: 2018,
+              genre: expect.any(String),
+              poster: expect.any(String),
+              score: expect.any(Number),
+            }),
+          ])
+        );
+      });
   });
 
   xit("GET /movies/search?genre --> search movie by genre", () => {
     request(app)
-    .get("movies/search?genre=comedy")
-    .expect("Content-Type", /json/)
-    .expect(200)
-    .then((response) => {
-      expect(response.body).toEqual(
-        expect.arrayContainnig([
-          expect.objectContaining({
-            title: expect.any(String),
-            year: expect.any(Number),
-            genre: 'comedy',
-            poster: expect.any(String),
-            score: expect.any(Number),
-          }),
-        ])
-      );
-    });
+      .get("movies/search?genre=comedy")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.arrayContainnig([
+            expect.objectContaining({
+              title: expect.any(String),
+              year: expect.any(Number),
+              genre: "comedy",
+              poster: expect.any(String),
+              score: expect.any(Number),
+            }),
+          ])
+        );
+      });
   });
 
   it("GET /movies/{movieid}/comments --> list all comments related to a movie", () => {});

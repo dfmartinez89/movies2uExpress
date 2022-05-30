@@ -10,7 +10,7 @@
     ]
   },
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node -r ./bin/www",
     "test": "jest --coverage --detectOpenHandles"
   },
   "dependencies": {
@@ -18,11 +18,13 @@
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "mongodb": "^4.6.0",
+    "moongose": "^1.0.0",
     "morgan": "~1.9.1"
   },
   "devDependencies": {
-    "express-rate-limit": "^6.4.0",
+    "dotenv": "^16.0.1",
     "jest": "^28.1.0",
+    "mongodb-memory-server": "^8.6.0",
     "moongose": "^1.0.0",
     "nodemon": "^2.0.16",
     "supertest": "^6.2.3"
