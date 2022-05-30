@@ -13,7 +13,7 @@ const movieSchema = new mongoose.Schema({
   genre: String,
   poster: String,
   rating: { type: Number, default: 0, min: 0, max: 5 },
-  reviews: commentSchema,
+  reviews: {commentSchema, required: false}
 });
 
 const Movie = mongoose.model("Movie", movieSchema);

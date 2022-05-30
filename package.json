@@ -4,21 +4,31 @@
   "private": true,
   "jest": {
     "verbose": true,
-    "coveragePathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/models/"]
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/models/"
+    ]
   },
   "scripts": {
-    "start": "node ./bin/www",
-    "test": "jest --coverage --detectOpenHandles"
+    "start": "cross-env NODE_ENV=production node ./bin/www",
+    "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
+    "test": "jest --coverage --detectOpenHandles",
+    "testwatch": "jest --watchAll"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
+    "cross-env": "^7.0.3",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "mongodb": "^4.6.0",
+    "mongoose": "^6.3.4",
     "morgan": "~1.9.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.1",
     "jest": "^28.1.0",
-    "moongose": "^1.0.0",
+    "mongodb-memory-server": "^8.6.0",
     "nodemon": "^2.0.16",
     "supertest": "^6.2.3"
   }

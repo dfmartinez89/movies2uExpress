@@ -6,7 +6,7 @@ const sendJSONresponse = (res, status, content) => {
   res.json(content);
 };
 
-/* GET api/movies */
+/* GET /movies */
 const moviesFindAll = (req, res) => {
   Movies.find({}).exec((err, movies) => {
     if (!movies) {
@@ -19,6 +19,92 @@ const moviesFindAll = (req, res) => {
   });
 };
 
+/* POST /movies */
+const moviesCreate = (req, res) => {
+  Movies.create(
+    {
+      title: req.body.title,
+      year: req.body.year,
+      genre: req.body.genre,
+      poster: req.body.poster,
+      rating: req.body.rating,
+    },
+    (err, movie) => {
+      if (err) {
+        sendJSONresponse(res, 422, err);
+      } else {
+        sendJSONresponse(res, 201, movie);
+      }
+    }
+  );
+};
+
+/* GET /movies/:movieid */
+const moviesReadOne = (req, res) => {
+  Movies.findById(req.params.movieid).exec((err, movie) => {
+    if (!movie) {
+      return res.status(404).json({
+        message: "movie not found",
+      });
+    } else if (err) {
+      return res.status(404).json(err);
+    }
+    res.status(200).json(movie);
+  });
+};
+
+/* PUT /movies/:moviesid */
+const moviesUpdateOne = (req, res) => {
+  if (!req.params.movieid) {
+    sendJSONresponse(res, 404, { message: "Not found, movieid is required" });
+  }
+  Movies.findOneAndUpdate({ id: req.params.movieid }, { new: true }).exec(
+    (err, movie) => {
+      if (!movie) {
+        sendJSONresponse(res, 404, { message: "movieid not found" });
+      } else if (err) {
+        sendJSONresponse(res, 400, err);
+      }
+      movie.title = req.body.title;
+      movie.year = req.body.year;
+      movie.genre = req.body.genre;
+      movie.poster = req.body.poster;
+      movie.poster = req.body.poster;
+      //not updating reviews via this endpoint1
+      movie.save((err, movie) => {
+        if (err) {
+          sendJSONresponse(res, 404, err);
+        } else {
+          sendJSONresponse(res, 200, movie);
+        }
+      });
+    }
+  );
+};
+
+/* DELETE movies/:movieid */
+const moviesDeleteOne = (req, res) => {
+  const movieid = req.params.movieid;
+  if (movieid) {
+    Movies
+      .findByIdAndRemove(movieid)
+      .exec((err, movieid) => {
+          if (err) {
+            sendJSONresponse(res, 404, err);
+          }
+          console.log("movie id " + movieid + " deleted");
+          sendJSONresponse(res, 204, null);
+        }
+    );
+  } else {
+    sendJSONresponse(res, 404, {"message": "No movieid"});
+  }
+};
+
 module.exports = {
   moviesFindAll,
+  moviesCreate,
+  moviesReadOne,
+  moviesUpdateOne,
+  moviesDeleteOne
 };

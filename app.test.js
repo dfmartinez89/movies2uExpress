@@ -1,7 +1,17 @@
 const request = require("supertest");
 const app = require("./app");
+const mongoose = require("mongoose");
 
 describe("Movies API", () => {
+  afterAll(() => mongoose.disconnect());
+
+  it("should hit homepage", () => {
+    return request(app)
+      .get("/")
+      .expect("Content-Type", /text\/html; charset=UTF-8/)
+      .expect(200)
+  });
+
   it("GET /movies --> list all movies", () => {
     return request(app)
       .get("/movies")
@@ -32,7 +42,7 @@ describe("Movies API", () => {
         genre: "Sci-FI",
         poster:
           "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-        score: 5,
+        rating: 5,
       })
       .expect("Content-Type", /json/)
       .expect(201)
@@ -44,80 +54,61 @@ describe("Movies API", () => {
             genre: "Sci-FI",
             poster:
               "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-            score: 5,
+            rating: 5,
           })
         );
       });
   });
 
-  xit("GET /movies/{movieid} --> get movie by id", () => {
+  it("GET /movies/:movieid --> get movie by id", () => {
     return request(app)
-      .get("/movies/1")
+      .get("/movies/6294ccc9041430aad291c047")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
-        expec(response.body).toEqual(
+        expect(response.body).toEqual(
           expect.objectContaining({
             title: expect.any(String),
             year: expect.any(Number),
             genre: expect.any(String),
             poster: expect.any(String),
-            score: expect.any(Number),
+            rating: expect.any(Number),
           })
         );
       });
   });
 
-  xit("POST /movies --> 422 invalid request body", () => {
+  it("POST /movies --> 422 invalid request body", () => {
     return request(app)
       .post("/movies")
       .send({
-        title: "Coconuts",
         year: "2022",
         genre: "Sci-FI",
         poster:
           "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-        score: 5,
+        rating: 5,
       })
       .expect("Content-Type", /json/)
       .expect(422);
   });
 
-  xit("GET /movies/{movieid} --> get movie by id", () => {
-    return request(app)
-      .get("/movies/1")
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .then((response) => {
-        expec(response.body).toEqual(
-          expect.objectContaining({
-            title: expect.any(String),
-            year: expect.any(Number),
-            genre: expect.any(String),
-            poster: expect.any(String),
-            score: expect.any(Number),
-          })
-        );
-      });
-  });
-
-  xit("GET /movies/{movieid} --> 404 if not found", () => {
+  it("GET /movies/:movieid --> 404 if not found", () => {
     return request(app).get("/movies/9999").expect(404);
   });
 
-  xit("PUT /movies/{movieid} --> update a movie", () => {
+  xit("PUT /movies/:movieid --> update a movie", () => {
     return request(app)
-      .put("/movies/1")
+      .put("/movies/62948f06f317c4738b8e6617")
       .send({
         title: "Coconuts",
         year: 2022,
         genre: "Sci-FI",
         poster:
           "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-        score: 5,
+        rating: 5,
       })
       .expect("Content-Type", /json/)
-      .expect(201)
+      .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
           expect.objectContaining({
@@ -126,83 +117,83 @@ describe("Movies API", () => {
             genre: "Sci-FI",
             poster:
               "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-            score: 5,
+            rating: 5,
           })
         );
       });
   });
 
-  xit("DEL /movies/{movieid} --> delete a movie", () => {
-    return request(app).del("/movies/1").expect(204);
+  xit("DEL /movies/:movieid --> delete a movie", () => {
+    return request(app).del("/movies/6294c5172d4019708e4b1201").expect(204);
   });
 
-  xit("GET /movies/search?title --> search movie by title", () => {
-    request(app)
-      .get("movies/search?title=Corba")
+  it("GET /movies/search?title --> search movie by title", () => {
+    return request(app)
+      .get("/search?title=Terminator%20Genisys")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
-          expect.arrayContainnig([
+          expect.arrayContaining([
             expect.objectContaining({
-              title: 'Corba',
+              title: "Terminator Genisys",
               year: expect.any(Number),
               genre: expect.any(String),
               poster: expect.any(String),
-              score: expect.any(Number),
+              rating: expect.any(Number),
             }),
           ])
         );
       });
   });
 
-  xit("GET /movies/search?year --> search movie by year", () => {
-    request(app)
-    .get("movies/search?year=2019")
-    .expect("Content-Type", /json/)
-    .expect(200)
-    .then((response) => {
-      expect(response.body).toEqual(
-        expect.arrayContainnig([
-          expect.objectContaining({
-            title: expect.any(String),
-            year: 2018,
-            genre: expect.any(String),
-            poster: expect.any(String),
-            score: expect.any(Number),
-          }),
-        ])
-      );
-    });
+  it("GET /search?year --> search movie by year", () => {
+   return request(app)
+      .get("/search?year=2015")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              title: expect.any(String),
+              year: 2015,
+              genre: expect.any(String),
+              poster: expect.any(String),
+              rating: expect.any(Number),
+            }),
+          ])
+        );
+      });
   });
 
-  xit("GET /movies/search?genre --> search movie by genre", () => {
-    request(app)
-    .get("movies/search?genre=comedy")
-    .expect("Content-Type", /json/)
-    .expect(200)
-    .then((response) => {
-      expect(response.body).toEqual(
-        expect.arrayContainnig([
-          expect.objectContaining({
-            title: expect.any(String),
-            year: expect.any(Number),
-            genre: 'comedy',
-            poster: expect.any(String),
-            score: expect.any(Number),
-          }),
-        ])
-      );
-    });
+  it("GET /search?genre --> search movie by genre", () => {
+  return  request(app)
+      .get("/search?genre=Action,%20Adventure,%20Sci-Fi")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              title: expect.any(String),
+              year: expect.any(Number),
+              genre: "Action, Adventure, Sci-Fi",
+              poster: expect.any(String),
+              rating: expect.any(Number),
+            }),
+          ])
+        );
+      });
   });
 
-  it("GET /movies/{movieid}/comments --> list all comments related to a movie", () => {});
+  xit("GET /movies/:movieid/comments --> list all comments related to a movie", () => {});
 
-  it("POST /movies/{movieid}/comments --> create new comment", () => {});
+  xit("POST /movies/:movieid/comments --> create new comment", () => {});
 
-  it("GET /movies/{movieid}/comments/{commentid} --> get comment by id", () => {});
+  xit("GET /movies/:movieid/comments/{commentid} --> get comment by id", () => {});
 
-  it("PUT /movies/{movieid}/comments/{commentid} --> update comment", () => {});
+  xit("PUT /movies/:movieid/comments/{commentid} --> update comment", () => {});
 
-  it("DEL /movies/{movieid}/comments/{commentid} --> delete comment", () => {});
+  xit("DEL /movies/:movieid/comments/{commentid} --> delete comment", () => {});
 });

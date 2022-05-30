@@ -4,11 +4,10 @@ const ctrlMovies = require('../controllers/movies');
 
 // Movies 
 router.get('/', ctrlMovies.moviesFindAll);
-// router.post('/movies', ctrlMovies.MoviesCreate);
-
-// router.get('/movies/:movieid', ctrlMovies.MoviesReadOne);
-// router.put('/movies/:movieid', ctrlMovies.MoviesUpdateOne);
-// router.delete('/movies/:movieid', ctrlMovies.MoviesDeleteOne);
+router.post('/', ctrlMovies.moviesCreate);
+router.get('/:movieid', ctrlMovies.moviesReadOne);
+router.put('/:movieid', ctrlMovies.moviesUpdateOne);
+router.delete('/:movieid', ctrlMovies.moviesDeleteOne);
 
 
 module.exports = router;
