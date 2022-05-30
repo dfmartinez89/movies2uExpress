@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const commentSchema = new mongoose.Schema({
+const reviewSchema = new mongoose.Schema({
   author: String,
   rating: { type: Number, required: true, min: 0, max: 5 },
   description: String,
@@ -13,7 +13,7 @@ const movieSchema = new mongoose.Schema({
   genre: String,
   poster: String,
   rating: { type: Number, default: 0, min: 0, max: 5 },
-  reviews: {commentSchema, required: false}
+  reviews: [reviewSchema]
 });
 
 const Movie = mongoose.model("Movie", movieSchema);

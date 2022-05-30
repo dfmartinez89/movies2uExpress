@@ -26,13 +26,13 @@ const moviesCreate = (req, res) => {
     parseYear = req.body.year;
     parseGenre = req.body.genre.toString();
     parsePoster = req.body.poster.toString();
-    parseRating = req.body.rating.toNumber();
+    parseRating = req.body.rating;
 
   } catch (error) {
     sendJSONresponse(res, 422, error);
   }
 
-  if (isNaN(parseYear)) {
+  if (isNaN(parseYear) || isNaN(parseRating)) {
     sendJSONresponse(res, 422, "request validation error");
   }
   Movies.create(

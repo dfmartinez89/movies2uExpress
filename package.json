@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=production node -r ./bin/www",
-    "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
+    "dev": "cross-env NODE_ENV=development node ./bin/www",
     "test": "jest --coverage --detectOpenHandles",
     "testwatch": "jest --watchAll"
   },

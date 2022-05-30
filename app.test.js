@@ -9,7 +9,7 @@ describe("Movies API", () => {
     return request(app)
       .get("/")
       .expect("Content-Type", /text\/html; charset=UTF-8/)
-      .expect(200)
+      .expect(200);
   });
 
   it("GET /movies --> list all movies", () => {
@@ -62,7 +62,7 @@ describe("Movies API", () => {
 
   it("GET /movies/:movieid --> get movie by id", () => {
     return request(app)
-      .get("/movies/6294ccc9041430aad291c047")
+      .get("/movies/629525b0b3da7e584584237c")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -98,7 +98,7 @@ describe("Movies API", () => {
 
   xit("PUT /movies/:movieid --> update a movie", () => {
     return request(app)
-      .put("/movies/62948f06f317c4738b8e6617")
+      .put("/movies/629525b0b3da7e584584237c")
       .send({
         title: "Coconuts",
         year: 2022,
@@ -147,8 +147,22 @@ describe("Movies API", () => {
       });
   });
 
+  it("GET /movies/search?title --> 404 if not found", () => {
+    return request(app)
+      .get("/search?title=Corba")
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.objectContaining({
+            message: "there are no movies with title Corba",
+          })
+        );
+      });
+  });
+
   it("GET /search?year --> search movie by year", () => {
-   return request(app)
+    return request(app)
       .get("/search?year=2015")
       .expect("Content-Type", /json/)
       .expect(200)
@@ -167,8 +181,22 @@ describe("Movies API", () => {
       });
   });
 
+  it("GET /search?year --> 404 if not found", () => {
+    return request(app)
+      .get("/search?year=2023")
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.objectContaining({
+            message: "there are no movies on year 2023",
+          })
+        );
+      });
+  });
+
   it("GET /search?genre --> search movie by genre", () => {
-  return  request(app)
+    return request(app)
       .get("/search?genre=Action,%20Adventure,%20Sci-Fi")
       .expect("Content-Type", /json/)
       .expect(200)
@@ -187,13 +215,70 @@ describe("Movies API", () => {
       });
   });
 
-  xit("GET /movies/:movieid/comments --> list all comments related to a movie", () => {});
+  it("GET /search?genre --> 404 if not found", () => {
+    return request(app)
+      .get("/search?genre=Adult")
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.objectContaining({
+            message: "there are no movies with genre Adult",
+          })
+        );
+      });
+  });
 
-  xit("POST /movies/:movieid/comments --> create new comment", () => {});
+  it("GET /movies/:movieid/reviews --> list all reviews related to a movie", () => {
+    return request(app)
+      .get("/movies/629525b0b3da7e584584237c/reviews")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+          movie: {
+            id: "629525b0b3da7e584584237c",
+            title: "Terminator Genisys",
+          },
+          reviews: [
+            {
+              _id: "6295459c84a2fe1c55733e7b",
+              author: "Taquito",
+              createdOn: "2022-05-30T22:30:52.790Z",
+              description:
+                "Not the greatest Terminator movie, but still a treat indeed",
+              rating: 4.3,
+            },
+          ],
+        });
+      });
+  });
 
-  xit("GET /movies/:movieid/comments/{commentid} --> get comment by id", () => {});
+  xit("POST /movies/:movieid/reviews --> create new comment", () => {});
 
-  xit("PUT /movies/:movieid/comments/{commentid} --> update comment", () => {});
+  it("GET /movies/:movieid/reviews/:reviewid --> get comment by id", () => {
+    return request(app)
+      .get("/movies/629525b0b3da7e584584237c/reviews/6295459c84a2fe1c55733e7b")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+          movie: {
+            title: "Terminator Genisys",
+          },
+          review: {
+            author: "Taquito",
+            rating: 4.3,
+            description:
+              "Not the greatest Terminator movie, but still a treat indeed",
+            _id: "6295459c84a2fe1c55733e7b",
+            createdOn: "2022-05-30T22:30:52.790Z",
+          },
+        });
+      });
+  });
 
-  xit("DEL /movies/:movieid/comments/{commentid} --> delete comment", () => {});
+  xit("PUT /movies/:movieid/reviews/:reviewid --> update comment", () => {});
+
+  xit("DEL /movies/:movieid/reviews/:reviewid --> delete comment", () => {});
 });

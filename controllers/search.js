@@ -14,13 +14,13 @@ const searchUtils = (req, res) => {
       parseTitle = req.query.title.toString();
     } catch (error) {
       return res.status(422).json({
-        message: "request validation error " + error.message + "",
+        message: "request validation error " + error.message,
       });
     }
     Movies.find({ title: parseTitle }).exec((err, movie) => {
       if (movie.length === 0) {
         return res.status(404).json({
-          message: "there are no movies with title " + req.query.title + "",
+          message: "there are no movies with title " + req.query.title,
         });
       } else if (err) {
         return res.status(404).json(err);
@@ -30,7 +30,7 @@ const searchUtils = (req, res) => {
   } else if (queryParams.hasOwnProperty("year")) {
     if (isNaN(req.query.year)) {
       return res.status(422).json({
-        message: "request validation error " + error.message + "",
+        message: "request validation error " + error.message,
       });
     } else {
       parseYear = req.query.year;
@@ -39,7 +39,7 @@ const searchUtils = (req, res) => {
     Movies.find({ year: parseYear }).exec((err, movie) => {
       if (movie.length === 0) {
         return res.status(404).json({
-          message: "there are no movies on year " + req.query.year + "",
+          message: "there are no movies on year " + req.query.year,
         });
       } else if (err) {
         return res.status(404).json(err);
@@ -51,13 +51,13 @@ const searchUtils = (req, res) => {
       parseGenre = req.query.genre.toString();
     } catch (error) {
       return res.status(422).json({
-        message: "request validation error " + error.message + " ",
+        message: "request validation error " + error.message,
       });
     }
     Movies.find({ genre: parseGenre }).exec((err, movie) => {
       if (movie.length === 0) {
         return res.status(404).json({
-          message: "there are no movies with genre " + req.query.genre + "",
+          message: "there are no movies with genre " + req.query.genre,
         });
       } else if (err) {
         return res.status(404).json(err);
