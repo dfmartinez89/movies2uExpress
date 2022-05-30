@@ -1,10 +1,9 @@
 const request = require("supertest");
 const app = require("./app");
-const { connectDB, disconnectDB } = require("./models/db");
 
 describe("Movies API", () => {
 
-  it("GET /movies --> list all movies", () => {
+  xit("GET /movies --> list all movies", () => {
     return request(app)
       .get("/movies")
       .expect("Content-Type", /json/)
@@ -198,13 +197,13 @@ describe("Movies API", () => {
       });
   });
 
-  it("GET /movies/{movieid}/comments --> list all comments related to a movie", () => {});
+  xit("GET /movies/{movieid}/comments --> list all comments related to a movie", () => {});
 
-  it("POST /movies/{movieid}/comments --> create new comment", () => {});
+  xit("POST /movies/{movieid}/comments --> create new comment", () => {});
 
-  it("GET /movies/{movieid}/comments/{commentid} --> get comment by id", () => {});
+  xit("GET /movies/{movieid}/comments/{commentid} --> get comment by id", () => {});
 
-  it("PUT /movies/{movieid}/comments/{commentid} --> update comment", () => {});
+  xit("PUT /movies/{movieid}/comments/{commentid} --> update comment", () => {});
 
-  it("DEL /movies/{movieid}/comments/{commentid} --> delete comment", () => {});
+  xit("DEL /movies/{movieid}/comments/{commentid} --> delete comment", () => {});
 });
