@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
-require("dotenv").config();
-const dbURI = "mongodb://localhost/movies";
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
+let dbURI = "mongodb://localhost/movies";
 
 if (process.env.NODE_ENV === "production") {
-  const dbURI = process.env.ATLAS_URI;
+  dbURI = process.env.ATLAS_URI;
 }
 
 mongoose.connect(dbURI, { useUnifiedTopology: true, useNewUrlParser: true });

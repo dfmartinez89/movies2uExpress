@@ -10,8 +10,10 @@
     ]
   },
   "scripts": {
-    "start": "node -r ./bin/www",
-    "test": "jest --coverage --detectOpenHandles"
+    "start": "cross-env NODE_ENV=production node ./bin/www",
+    "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
+    "test": "jest --coverage --detectOpenHandles",
+    "testwatch": "jest --watchAll"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -22,6 +24,7 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.1",
     "jest": "^28.1.0",
     "mongodb-memory-server": "^8.6.0",
