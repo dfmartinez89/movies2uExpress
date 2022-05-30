@@ -82,9 +82,29 @@ const moviesUpdateOne = (req, res) => {
   );
 };
 
+/* DELETE movies/:movieid */
+const moviesDeleteOne = (req, res) => {
+  const movieid = req.params.movieid;
+  if (movieid) {
+    Movies
+      .findByIdAndRemove(movieid)
+      .exec((err, movieid) => {
+          if (err) {
+            sendJSONresponse(res, 404, err);
+          }
+          console.log("movie id " + movieid + " deleted");
+          sendJSONresponse(res, 204, null);
+        }
+    );
+  } else {
+    sendJSONresponse(res, 404, {"message": "No movieid"});
+  }
+};
+
 module.exports = {
   moviesFindAll,
   moviesCreate,
   moviesReadOne,
   moviesUpdateOne,
+  moviesDeleteOne
 };

@@ -7,7 +7,7 @@ router.get('/', ctrlMovies.moviesFindAll);
 router.post('/', ctrlMovies.moviesCreate);
 router.get('/:movieid', ctrlMovies.moviesReadOne);
 router.put('/:movieid', ctrlMovies.moviesUpdateOne);
-// router.delete('/movies/:movieid', ctrlMovies.MoviesDeleteOne);
+router.delete('/:movieid', ctrlMovies.moviesDeleteOne);
 
 
 module.exports = router;

@@ -62,7 +62,7 @@ describe("Movies API", () => {
 
   it("GET /movies/:movieid --> get movie by id", () => {
     return request(app)
-      .get("/movies/6294c5172d4019708e4b1201")
+      .get("/movies/6294ccc9041430aad291c047")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -124,7 +124,7 @@ describe("Movies API", () => {
   });
 
   xit("DEL /movies/:movieid --> delete a movie", () => {
-    return request(app).del("/movies/1").expect(204);
+    return request(app).del("/movies/6294c5172d4019708e4b1201").expect(204);
   });
 
   it("GET /movies/search?title --> search movie by title", () => {
