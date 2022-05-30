@@ -1,7 +1,9 @@
 const request = require("supertest");
 const app = require("./app");
+const mongoose = require("mongoose");
 
 describe("Movies API", () => {
+  afterAll(() => mongoose.disconnect());
 
   it("GET /movies --> list all movies", () => {
     return request(app)
