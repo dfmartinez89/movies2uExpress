@@ -3,7 +3,7 @@ const app = require("./app");
 
 describe("Movies API", () => {
 
-  xit("GET /movies --> list all movies", () => {
+  it("GET /movies --> list all movies", () => {
     return request(app)
       .get("/movies")
       .expect("Content-Type", /json/)

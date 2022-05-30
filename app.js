@@ -2,16 +2,21 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-require("./models/db");
-const dotenv = require('dotenv');
-dotenv.config({path: './config.env'});
+const connectDB = require("./config/db");
+
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config/.env" });
 
 const indexRouter = require("./routes/index");
 const moviesRouter = require("./routes/movies");
 
+connectDB();
 const app = express();
 
-app.use(logger("dev"));
+if (process.env.NODE_ENV === "development") {
+  app.use(logger("dev"));
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

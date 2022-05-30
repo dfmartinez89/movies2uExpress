@@ -1,24 +1,24 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-dotenv.config({ path: "./config.env" });
+dotenv.config({ path: "./.env" });
 let dbURI = "mongodb://localhost/movies";
 
 if (process.env.NODE_ENV === "production") {
   dbURI = process.env.ATLAS_URI;
 }
 
-mongoose.connect(dbURI, { useUnifiedTopology: true, useNewUrlParser: true });
-
-// CONNECTION EVENTS
-mongoose.connection.on("connected", () => {
-  console.log("Mongoose connected to " + dbURI);
-});
-mongoose.connection.on("error", (err) => {
-  console.log("Mongoose connection error: " + err);
-});
-mongoose.connection.on("disconnected", () => {
-  console.log("Mongoose disconnected");
-});
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(dbURI, {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    });
+    console.log(`MongoDB connected to ${conn.connection.host}`);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
 
 // CAPTURE APP TERMINATION / RESTART EVENTS
 // To be called when process is restarted or terminated
@@ -43,4 +43,6 @@ process.on("SIGINT", () => {
 });
 
 // BRING IN YOUR SCHEMAS & MODELS
-require("./movies");
+require("../models/movies");
+
+module.exports = connectDB;
