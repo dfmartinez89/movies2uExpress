@@ -5,6 +5,13 @@ const mongoose = require("mongoose");
 describe("Movies API", () => {
   afterAll(() => mongoose.disconnect());
 
+  it("should hit homepage", () => {
+    return request(app)
+      .get("/")
+      .expect("Content-Type", /text\/html; charset=UTF-8/)
+      .expect(200)
+  });
+
   it("GET /movies --> list all movies", () => {
     return request(app)
       .get("/movies")
