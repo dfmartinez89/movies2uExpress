@@ -6,7 +6,7 @@ const ctrlMovies = require('../controllers/movies');
 router.get('/', ctrlMovies.moviesFindAll);
 router.post('/', ctrlMovies.moviesCreate);
 router.get('/:movieid', ctrlMovies.moviesReadOne);
-// router.put('/movies/:movieid', ctrlMovies.MoviesUpdateOne);
+router.put('/:movieid', ctrlMovies.moviesUpdateOne);
 // router.delete('/movies/:movieid', ctrlMovies.MoviesDeleteOne);
 
 

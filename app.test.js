@@ -33,7 +33,7 @@ describe("Movies API", () => {
       });
   });
 
-  it("POST /movies --> create new movie", () => {
+  xit("POST /movies --> create new movie", () => {
     return request(app)
       .post("/movies")
       .send({
@@ -62,7 +62,7 @@ describe("Movies API", () => {
 
   it("GET /movies/:movieid --> get movie by id", () => {
     return request(app)
-      .get("/movies/6293a27be718abaec68d9fa6")
+      .get("/movies/6294c5172d4019708e4b1201")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -78,11 +78,10 @@ describe("Movies API", () => {
       });
   });
 
-  xit("POST /movies --> 422 invalid request body", () => {
+  it("POST /movies --> 422 invalid request body", () => {
     return request(app)
       .post("/movies")
       .send({
-        title: "Coconuts",
         year: "2022",
         genre: "Sci-FI",
         poster:
@@ -93,31 +92,13 @@ describe("Movies API", () => {
       .expect(422);
   });
 
-  xit("GET /movies/{movieid} --> get movie by id", () => {
-    return request(app)
-      .get("/movies/1")
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .then((response) => {
-        expec(response.body).toEqual(
-          expect.objectContaining({
-            title: expect.any(String),
-            year: expect.any(Number),
-            genre: expect.any(String),
-            poster: expect.any(String),
-            rating: expect.any(Number),
-          })
-        );
-      });
-  });
-
-  it("GET /movies/{movieid} --> 404 if not found", () => {
+  it("GET /movies/:movieid --> 404 if not found", () => {
     return request(app).get("/movies/9999").expect(404);
   });
 
-  xit("PUT /movies/{movieid} --> update a movie", () => {
+  xit("PUT /movies/:movieid --> update a movie", () => {
     return request(app)
-      .put("/movies/1")
+      .put("/movies/62948f06f317c4738b8e6617")
       .send({
         title: "Coconuts",
         year: 2022,
@@ -127,7 +108,7 @@ describe("Movies API", () => {
         rating: 5,
       })
       .expect("Content-Type", /json/)
-      .expect(201)
+      .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
           expect.objectContaining({
@@ -142,11 +123,11 @@ describe("Movies API", () => {
       });
   });
 
-  xit("DEL /movies/{movieid} --> delete a movie", () => {
+  xit("DEL /movies/:movieid --> delete a movie", () => {
     return request(app).del("/movies/1").expect(204);
   });
 
-  xit("GET /movies/search?title --> search movie by title", () => {
+  it("GET /movies/search?title --> search movie by title", () => {
     request(app)
       .get("movies/search?title=Corba")
       .expect("Content-Type", /json/)
@@ -206,13 +187,13 @@ describe("Movies API", () => {
       });
   });
 
-  xit("GET /movies/{movieid}/comments --> list all comments related to a movie", () => {});
+  xit("GET /movies/:movieid/comments --> list all comments related to a movie", () => {});
 
-  xit("POST /movies/{movieid}/comments --> create new comment", () => {});
+  xit("POST /movies/:movieid/comments --> create new comment", () => {});
 
-  xit("GET /movies/{movieid}/comments/{commentid} --> get comment by id", () => {});
+  xit("GET /movies/:movieid/comments/{commentid} --> get comment by id", () => {});
 
-  xit("PUT /movies/{movieid}/comments/{commentid} --> update comment", () => {});
+  xit("PUT /movies/:movieid/comments/{commentid} --> update comment", () => {});
 
-  xit("DEL /movies/{movieid}/comments/{commentid} --> delete comment", () => {});
+  xit("DEL /movies/:movieid/comments/{commentid} --> delete comment", () => {});
 });
