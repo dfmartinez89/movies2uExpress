@@ -21,13 +21,27 @@ const moviesFindAll = (req, res) => {
 
 /* POST /movies */
 const moviesCreate = (req, res) => {
+  try {
+    parseTitle = req.body.title.toString();
+    parseYear = req.body.year;
+    parseGenre = req.body.genre.toString();
+    parsePoster = req.body.poster.toString();
+    parseRating = req.body.rating.toNumber();
+
+  } catch (error) {
+    sendJSONresponse(res, 422, error);
+  }
+
+  if (isNaN(req.query.year)) {
+    sendJSONresponse(res, 422, "request validation error");
+  }
   Movies.create(
     {
-      title: req.body.title,
-      year: req.body.year,
-      genre: req.body.genre,
-      poster: req.body.poster,
-      rating: req.body.rating,
+      title: parseTitle,
+      year: parseYear,
+      genre: parseGenre,
+      poster: parsePoster,
+      rating: parseRating,
     },
     (err, movie) => {
       if (err) {
