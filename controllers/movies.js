@@ -19,6 +19,27 @@ const moviesFindAll = (req, res) => {
   });
 };
 
+/* POST api/movies */
+const moviesCreate = (req, res) => {
+  Movies.create(
+    {
+      title: req.body.title,
+      year: req.body.year,
+      genre: req.body.genre,
+      poster: req.body.poster,
+      rating: req.body.rating,
+    },
+    (err, movie) => {
+      if (err) {
+        sendJSONresponse(res, 404, err);
+      } else {
+        sendJSONresponse(res, 201, movie);
+      }
+    }
+  );
+};
+
 module.exports = {
   moviesFindAll,
+  moviesCreate,
 };

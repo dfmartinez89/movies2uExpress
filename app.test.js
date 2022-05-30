@@ -26,7 +26,7 @@ describe("Movies API", () => {
       });
   });
 
-  xit("POST /movies --> create new movie", () => {
+  it("POST /movies --> create new movie", () => {
     return request(app)
       .post("/movies")
       .send({
@@ -35,7 +35,7 @@ describe("Movies API", () => {
         genre: "Sci-FI",
         poster:
           "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-        score: 5,
+        rating: 5,
       })
       .expect("Content-Type", /json/)
       .expect(201)
@@ -47,7 +47,7 @@ describe("Movies API", () => {
             genre: "Sci-FI",
             poster:
               "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-            score: 5,
+            rating: 5,
           })
         );
       });
@@ -65,7 +65,7 @@ describe("Movies API", () => {
             year: expect.any(Number),
             genre: expect.any(String),
             poster: expect.any(String),
-            score: expect.any(Number),
+            rating: expect.any(Number),
           })
         );
       });
@@ -80,7 +80,7 @@ describe("Movies API", () => {
         genre: "Sci-FI",
         poster:
           "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-        score: 5,
+        rating: 5,
       })
       .expect("Content-Type", /json/)
       .expect(422);
@@ -98,7 +98,7 @@ describe("Movies API", () => {
             year: expect.any(Number),
             genre: expect.any(String),
             poster: expect.any(String),
-            score: expect.any(Number),
+            rating: expect.any(Number),
           })
         );
       });
@@ -117,7 +117,7 @@ describe("Movies API", () => {
         genre: "Sci-FI",
         poster:
           "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-        score: 5,
+        rating: 5,
       })
       .expect("Content-Type", /json/)
       .expect(201)
@@ -129,7 +129,7 @@ describe("Movies API", () => {
             genre: "Sci-FI",
             poster:
               "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-            score: 5,
+            rating: 5,
           })
         );
       });
@@ -152,7 +152,7 @@ describe("Movies API", () => {
               year: expect.any(Number),
               genre: expect.any(String),
               poster: expect.any(String),
-              score: expect.any(Number),
+              rating: expect.any(Number),
             }),
           ])
         );
@@ -172,7 +172,7 @@ describe("Movies API", () => {
               year: 2018,
               genre: expect.any(String),
               poster: expect.any(String),
-              score: expect.any(Number),
+              rating: expect.any(Number),
             }),
           ])
         );
@@ -192,7 +192,7 @@ describe("Movies API", () => {
               year: expect.any(Number),
               genre: "comedy",
               poster: expect.any(String),
-              score: expect.any(Number),
+              rating: expect.any(Number),
             }),
           ])
         );

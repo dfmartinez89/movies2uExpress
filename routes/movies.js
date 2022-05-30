@@ -4,7 +4,7 @@ const ctrlMovies = require('../controllers/movies');
 
 // Movies 
 router.get('/', ctrlMovies.moviesFindAll);
-// router.post('/movies', ctrlMovies.MoviesCreate);
+router.post('/', ctrlMovies.moviesCreate);
 
 // router.get('/movies/:movieid', ctrlMovies.MoviesReadOne);
 // router.put('/movies/:movieid', ctrlMovies.MoviesUpdateOne);
