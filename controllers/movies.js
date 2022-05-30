@@ -6,7 +6,7 @@ const sendJSONresponse = (res, status, content) => {
   res.json(content);
 };
 
-/* GET api/movies */
+/* GET /movies */
 const moviesFindAll = (req, res) => {
   Movies.find({}).exec((err, movies) => {
     if (!movies) {
@@ -19,7 +19,7 @@ const moviesFindAll = (req, res) => {
   });
 };
 
-/* POST api/movies */
+/* POST /movies */
 const moviesCreate = (req, res) => {
   Movies.create(
     {
@@ -39,7 +39,29 @@ const moviesCreate = (req, res) => {
   );
 };
 
+/* GET /movies/:movieid */
+const moviesReadOne = (req, res) => {
+  Movies
+    .findById(req.params.movieid)
+    .exec((err, movie) => {
+      if (!movie) {
+        return res
+          .status(404)
+          .json({
+            "message": "movie not found" });
+          } else if (err) {
+            return res
+                .status(404)
+                .json(err);
+          }
+      res
+        .status(200)
+        .json(movie);
+    });
+  };
+
 module.exports = {
   moviesFindAll,
   moviesCreate,
+  moviesReadOne
 };

@@ -60,13 +60,13 @@ describe("Movies API", () => {
       });
   });
 
-  xit("GET /movies/{movieid} --> get movie by id", () => {
+  it("GET /movies/:movieid --> get movie by id", () => {
     return request(app)
-      .get("/movies/1")
+      .get("/movies/6293a27be718abaec68d9fa6")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
-        expec(response.body).toEqual(
+        expect(response.body).toEqual(
           expect.objectContaining({
             title: expect.any(String),
             year: expect.any(Number),
@@ -111,7 +111,7 @@ describe("Movies API", () => {
       });
   });
 
-  xit("GET /movies/{movieid} --> 404 if not found", () => {
+  it("GET /movies/{movieid} --> 404 if not found", () => {
     return request(app).get("/movies/9999").expect(404);
   });
 
