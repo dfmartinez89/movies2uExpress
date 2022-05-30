@@ -128,15 +128,15 @@ describe("Movies API", () => {
   });
 
   it("GET /movies/search?title --> search movie by title", () => {
-    request(app)
-      .get("movies/search?title=Corba")
+    return request(app)
+      .get("/search?title=Terminator%20Genisys")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
-          expect.arrayContainnig([
+          expect.arrayContaining([
             expect.objectContaining({
-              title: "Corba",
+              title: "Terminator Genisys",
               year: expect.any(Number),
               genre: expect.any(String),
               poster: expect.any(String),
@@ -147,17 +147,17 @@ describe("Movies API", () => {
       });
   });
 
-  xit("GET /movies/search?year --> search movie by year", () => {
-    request(app)
-      .get("movies/search?year=2019")
+  it("GET /search?year --> search movie by year", () => {
+   return request(app)
+      .get("/search?year=2015")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
-          expect.arrayContainnig([
+          expect.arrayContaining([
             expect.objectContaining({
               title: expect.any(String),
-              year: 2018,
+              year: 2015,
               genre: expect.any(String),
               poster: expect.any(String),
               rating: expect.any(Number),
@@ -167,18 +167,18 @@ describe("Movies API", () => {
       });
   });
 
-  xit("GET /movies/search?genre --> search movie by genre", () => {
-    request(app)
-      .get("movies/search?genre=comedy")
+  it("GET /search?genre --> search movie by genre", () => {
+  return  request(app)
+      .get("/search?genre=Action,%20Adventure,%20Sci-Fi")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
-          expect.arrayContainnig([
+          expect.arrayContaining([
             expect.objectContaining({
               title: expect.any(String),
               year: expect.any(Number),
-              genre: "comedy",
+              genre: "Action, Adventure, Sci-Fi",
               poster: expect.any(String),
               rating: expect.any(Number),
             }),
