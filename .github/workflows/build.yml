@@ -38,7 +38,9 @@ jobs:
   # Sonar Cloud
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 0 
+        fetch-depth: 0
+    - name: Install Jest globally
+      run:  sudo npm install -g jest     
     - name: Test and coverage
       run: npm run test
 
