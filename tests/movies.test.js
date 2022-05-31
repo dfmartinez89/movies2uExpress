@@ -1,16 +1,11 @@
 const request = require("supertest");
-const app = require("./app");
+const app = require("../app");
 const mongoose = require("mongoose");
 
-describe("Movies API", () => {
-  afterAll(() => mongoose.disconnect());
+/* TODO: MOCK DATABASE */
 
-  it("should hit homepage", () => {
-    return request(app)
-      .get("/")
-      .expect("Content-Type", /text\/html; charset=UTF-8/)
-      .expect(200)
-  });
+describe("Movies Controller tests", () => {
+  afterAll(async () => await mongoose.disconnect());
 
   it("GET /movies --> list all movies", () => {
     return request(app)
@@ -62,7 +57,7 @@ describe("Movies API", () => {
 
   it("GET /movies/:movieid --> get movie by id", () => {
     return request(app)
-      .get("/movies/6294ccc9041430aad291c047")
+      .get("/movies/629525b0b3da7e584584237c")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -89,7 +84,12 @@ describe("Movies API", () => {
         rating: 5,
       })
       .expect("Content-Type", /json/)
-      .expect(422);
+      .expect(422)
+      .then((response) => {
+        expect(response.body).toEqual({
+          message: "invalid movie data",
+        });
+      });
   });
 
   it("GET /movies/:movieid --> 404 if not found", () => {
@@ -98,7 +98,7 @@ describe("Movies API", () => {
 
   xit("PUT /movies/:movieid --> update a movie", () => {
     return request(app)
-      .put("/movies/62948f06f317c4738b8e6617")
+      .put("/movies/629525b0b3da7e584584237c")
       .send({
         title: "Coconuts",
         year: 2022,
@@ -126,74 +126,4 @@ describe("Movies API", () => {
   xit("DEL /movies/:movieid --> delete a movie", () => {
     return request(app).del("/movies/6294c5172d4019708e4b1201").expect(204);
   });
-
-  it("GET /movies/search?title --> search movie by title", () => {
-    return request(app)
-      .get("/search?title=Terminator%20Genisys")
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              title: "Terminator Genisys",
-              year: expect.any(Number),
-              genre: expect.any(String),
-              poster: expect.any(String),
-              rating: expect.any(Number),
-            }),
-          ])
-        );
-      });
-  });
-
-  it("GET /search?year --> search movie by year", () => {
-   return request(app)
-      .get("/search?year=2015")
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              title: expect.any(String),
-              year: 2015,
-              genre: expect.any(String),
-              poster: expect.any(String),
-              rating: expect.any(Number),
-            }),
-          ])
-        );
-      });
-  });
-
-  it("GET /search?genre --> search movie by genre", () => {
-  return  request(app)
-      .get("/search?genre=Action,%20Adventure,%20Sci-Fi")
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              title: expect.any(String),
-              year: expect.any(Number),
-              genre: "Action, Adventure, Sci-Fi",
-              poster: expect.any(String),
-              rating: expect.any(Number),
-            }),
-          ])
-        );
-      });
-  });
-
-  xit("GET /movies/:movieid/comments --> list all comments related to a movie", () => {});
-
-  xit("POST /movies/:movieid/comments --> create new comment", () => {});
-
-  xit("GET /movies/:movieid/comments/{commentid} --> get comment by id", () => {});
-
-  xit("PUT /movies/:movieid/comments/{commentid} --> update comment", () => {});
-
-  xit("DEL /movies/:movieid/comments/{commentid} --> delete comment", () => {});
 });

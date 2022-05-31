@@ -2,20 +2,14 @@
   "name": "movies2uexpress",
   "version": "0.1.0",
   "private": true,
-  "jest": {
-    "verbose": true,
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/node_modules/",
-      "<rootDir>/models/"
-    ]
-  },
   "scripts": {
     "start": "cross-env NODE_ENV=production node -r ./bin/www",
     "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
-    "test": "jest --coverage --detectOpenHandles",
-    "testwatch": "jest --watchAll"
+    "test": "cross-env jest --coverage",
+    "testwatch": "jest --watchAll --detectOpenHandles"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "cookie-parser": "~1.4.4",
     "cross-env": "^7.0.3",
     "debug": "~2.6.9",
@@ -28,8 +22,22 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.1",
     "jest": "^28.1.0",
+    "jest-sonar-reporter": "^2.0.0",
     "mongodb-memory-server": "^8.6.0",
     "nodemon": "^2.0.16",
     "supertest": "^6.2.3"
+  },
+  "jest": {
+    "verbose": true,
+    "setupFiles": ["dotenv/config"],
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "testResultsProcessor": "jest-sonar-reporter",
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/models/",
+      "<rootDir>/config/",
+      "<rootDir>/routes/"
+    ]
   }
 }
