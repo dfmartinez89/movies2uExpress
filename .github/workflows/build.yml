@@ -30,7 +30,8 @@ jobs:
     - name: Install dependencies
       run: npm i
     - name: Test and coverage
-        env: ATLAS_URI=${{ secrets.ATLAS_URI }} 
+      env: 
+        ATLAS_URI: ${{ secrets.ATLAS_URI }} 
       run: npm run test
 
     - uses: actions/checkout@v2
