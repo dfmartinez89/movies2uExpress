@@ -29,9 +29,8 @@ jobs:
         fetch-depth: 0 
     - name: Install dependencies
       run: npm i
-    - name: Set env
-      run: ATLAS_URI=${{ secrets.ATLAS_URI }} 
     - name: Test and coverage
+        env: ATLAS_URI=${{ secrets.ATLAS_URI }} 
       run: npm run test
 
     - uses: actions/checkout@v2
