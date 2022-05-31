@@ -1,7 +1,5 @@
 const request = require("supertest");
 const app = require("../app");
-const dotenv = require("dotenv");
-dotenv.config();
 
 describe("Movies API", () => {
 

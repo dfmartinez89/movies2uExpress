@@ -1,13 +1,9 @@
 const request = require("supertest");
 const app = require("../app");
-const dotenv = require("dotenv");
-dotenv.config();
-const mongoose = require("mongoose");
 
 /* TODO: MOCK DATABASE */
 
 describe("Movies Controller tests", () => {
-  afterAll(async () => await mongoose.disconnect());
 
   it("GET /movies --> list all movies", () => {
     return request(app)

@@ -13,9 +13,11 @@ const movieSchema = new mongoose.Schema({
   genre: String,
   poster: String,
   rating: { type: Number, default: 0, min: 0, max: 5 },
-  reviews: [reviewSchema]
+  coords: {
+    type: { type: String },
+    coordinates: [Number],
+  },
+  reviews: [reviewSchema],
 });
 
 const Movie = mongoose.model("Movie", movieSchema);
-
-

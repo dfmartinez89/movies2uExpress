@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
-let dbURI = process.env.ATLAS_URI;
+const dbURI = process.env.ATLAS_URI;
 
 const connectDB = async () => {
   try {
@@ -41,4 +41,4 @@ process.on("SIGINT", () => {
 // BRING IN YOUR SCHEMAS & MODELS
 require("../models/movies");
 
-module.exports = connectDB;
+module.exports = connectDB
