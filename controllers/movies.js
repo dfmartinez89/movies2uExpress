@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Movies = mongoose.model("Movie");
 require("dotenv/config");
 
-
 const sendJSONresponse = (res, status, content) => {
   res.status(status).json(content);
 };
@@ -32,6 +31,8 @@ const moviesCreate = (req, res) => {
     const parseGenre = String(req.body.genre);
     const parsePoster = String(req.body.poster);
     const parseRating = req.body.rating;
+    const parseLat = parseFloat(req.body.lat);
+    const parseLng = parseFloat(req.body.lng);
 
     Movies.create(
       {
@@ -40,7 +41,7 @@ const moviesCreate = (req, res) => {
         genre: parseGenre,
         poster: parsePoster,
         rating: parseRating,
-        coords: [parseFloat(req.body.lng), parseFloat(req.body.lat)],
+        coords: [parseLng, parseLat],
       },
       (err, movie) => {
         if (err) {
@@ -82,6 +83,8 @@ const moviesUpdateOne = (req, res) => {
     const parseGenre = String(req.body.genre);
     const parsePoster = String(req.body.poster);
     const parseRating = req.body.rating;
+    const parseLat = parseFloat(req.body.lat);
+    const parseLng = parseFloat(req.body.lng);
     Movies.findOneAndUpdate({ id: req.params.movieid }, { new: true }).exec(
       (err, movie) => {
         if (!movie) {
@@ -89,19 +92,20 @@ const moviesUpdateOne = (req, res) => {
         } else if (err) {
           sendJSONresponse(res, 406, err._message);
         }
-        movie.title = req.body.title;
-        movie.year = req.body.year;
-        movie.genre = req.body.genre;
-        movie.poster = req.body.poster;
-        movie.rating = req.body.rating;
-        //not updating reviews via this endpoint1
-        movie.save((err, movie) => {
-          if (err) {
-            sendJSONresponse(res, 406, err._message);
-          } else {
-            sendJSONresponse(res, 200, movie);
-          }
-        });
+        movie.title = parseTitle;
+        movie.year = parseYear;
+        movie.genre = parseGenre;
+        movie.poster = parsePoster;
+        movie.rating = parseRating;
+        (movie.coords = [parseLat, parseLng]),
+          //not updating reviews via this endpoint1
+          movie.save((err, movie) => {
+            if (err) {
+              sendJSONresponse(res, 406, err._message);
+            } else {
+              sendJSONresponse(res, 200, movie);
+            }
+          });
       }
     );
   }
