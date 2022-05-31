@@ -19,5 +19,5 @@ const movieSchema = new mongoose.Schema({
   },
   reviews: [reviewSchema],
 });
-
-const Movie = mongoose.model("Movie", movieSchema);
+movieSchema.index({coords: '2dsphere'});
+mongoose.model("Movie", movieSchema);
