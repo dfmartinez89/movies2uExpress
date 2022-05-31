@@ -5,7 +5,7 @@ const logger = require("morgan");
 const connectDB = require("./config/db");
 
 const dotenv = require("dotenv");
-dotenv.config({ path: "./config/.env" });
+dotenv.config();
 
 const indexRouter = require("./routes/index");
 const moviesRouter = require("./routes/movies");
