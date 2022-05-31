@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 const Movies = mongoose.model("Movie");
 
 const sendJSONresponse = (res, status, content) => {
-  res.status(status);
-  res.json(content);
+  res.status(status).json(content);
 };
 
 /* GET /movies/:movieid/reviews*/

@@ -12,12 +12,9 @@ router.delete('/:movieid', ctrlMovies.moviesDeleteOne);
 
 // Reviews
 router.get('/:movieid/reviews', ctrlReviews.reviewsReadAll);
-
 router.post('/:movieid/reviews', ctrlReviews.reviewsCreate);
-
 router.get('/:movieid/reviews/:reviewid', ctrlReviews.reviewsReadOne);
 router.put('/:movieid/reviews/:reviewid', ctrlReviews.reviewsUpdateOne);
 router.delete('/:movieid/reviews/:reviewid', ctrlReviews.reviewsDeleteOne);
-
 
 module.exports = router;

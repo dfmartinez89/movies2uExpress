@@ -1,9 +1,33 @@
 const mongoose = require("mongoose");
 const Movies = mongoose.model("Movie");
+const dotenv = require("dotenv");
+dotenv.config();
+const axios = require("axios");
+const imdb = require("../config/imdb");
 
-const sendJSONresponse = (res, status, content) => {
-  res.status(status);
-  res.json(content);
+const axiosOptions = {
+  apikey: process.env.IMDB_KEY,
+};
+
+const getImdbResponse = async (criteria) => {
+  const res = await axios
+    .get(imdb.imdbUrl(axiosOptions.apikey, criteria))
+    .catch(function (error) {
+      console.log(error.toJSON());
+    });
+  return res.data;
+};
+
+/* Search IMDb movies */
+const findImdbMoviesBy = async (req, res) => {
+  if (!req.query.criteria) {
+    return res.status(403).json({
+      message: "missing search criteria",
+    });
+  }
+  const criteria = req.query.criteria;
+  const data = await getImdbResponse(criteria);
+  return res.status(200).json(data);
 };
 
 /* Search movies */
@@ -66,9 +90,9 @@ const searchUtils = (req, res) => {
     });
   } else {
     return res.status(404).json({
-      message: "search criteria is not allowed, use title, year or genre",
+      message: "missing search criteria, use title, year or genre",
     });
   }
 };
 
-module.exports = { searchUtils };
+module.exports = { searchUtils, findImdbMoviesBy };

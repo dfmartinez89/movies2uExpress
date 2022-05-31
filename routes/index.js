@@ -1,6 +1,6 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-const ctrlSearch = require('../controllers/search');
+const ctrlSearch = require("../controllers/search");
 
 /* GET home page */
 router.get("/", function (req, res, next) {
@@ -8,6 +8,7 @@ router.get("/", function (req, res, next) {
 });
 
 /* Search movies */
-router.get('/search', ctrlSearch.searchUtils);
+router.get("/search", ctrlSearch.searchUtils);
+router.get("/imdb", ctrlSearch.findImdbMoviesBy);
 
 module.exports = router;

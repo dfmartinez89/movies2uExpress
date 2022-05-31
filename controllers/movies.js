@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 const Movies = mongoose.model("Movie");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const sendJSONresponse = (res, status, content) => {
-  res.status(status);
-  res.json(content);
+  res.status(status).json(content);
 };
 
 /* GET /movies */
@@ -52,6 +53,9 @@ const moviesCreate = (req, res) => {
 
 /* GET /movies/:movieid */
 const moviesReadOne = (req, res) => {
+  if (!req.params.movieid) {
+    sendJSONresponse(res, 403, { message: "Not found, movieid is required" });
+  }
   Movies.findById(req.params.movieid).exec((err, movie) => {
     if (!movie) {
       return res.status(404).json({
@@ -67,12 +71,12 @@ const moviesReadOne = (req, res) => {
 /* PUT /movies/:moviesid */
 const moviesUpdateOne = (req, res) => {
   if (!req.params.movieid) {
-    sendJSONresponse(res, 404, { message: "Not found, movieid is required" });
+    sendJSONresponse(res, 403, { message: "Not found, movieid is required" });
   }
   Movies.findOneAndUpdate({ id: req.params.movieid }, { new: true }).exec(
     (err, movie) => {
       if (!movie) {
-        sendJSONresponse(res, 404, { message: "movieid not found" });
+        sendJSONresponse(res, 404, { message: "movie not found" });
       } else if (err) {
         sendJSONresponse(res, 400, err);
       }
@@ -108,7 +112,7 @@ const moviesDeleteOne = (req, res) => {
         }
     );
   } else {
-    sendJSONresponse(res, 404, {"message": "No movieid"});
+    sendJSONresponse(res, 404, {"message": "Missing movie to delete"});
   }
 };
 
@@ -117,5 +121,5 @@ module.exports = {
   moviesCreate,
   moviesReadOne,
   moviesUpdateOne,
-  moviesDeleteOne
+  moviesDeleteOne,
 };
