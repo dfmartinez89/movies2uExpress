@@ -40,7 +40,9 @@ jobs:
       with:
         fetch-depth: 0
     - name: Install Jest globally
-      run:  sudo npm install -g jest     
+      run:  sudo npm install -g jest 
+    - name: Install Jest Sonar Reporter
+      run:  sudo npm install jest-sonar-reporter     
     - name: Test and coverage
       run: npm run test
 
