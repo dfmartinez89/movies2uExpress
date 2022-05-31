@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node -r ./bin/www",
     "dev": "cross-env NODE_ENV=development nodemon -r ./bin/www",
-    "test": "jest --coverage",
+    "test": "jest --coverage --ci --testResultsProcessor=jest-sonar-reporter",
     "testwatch": "jest --watchAll --detectOpenHandles"
   },
   "dependencies": {
@@ -16,11 +16,10 @@
     "debug": "~2.6.9",
     "dotenv": "^16.0.1",
     "express": "~4.16.1",
+    "jest": "^28.1.0",
     "mongodb": "^4.6.0",
     "mongoose": "^6.3.4",
-    "morgan": "~1.9.1",
-    "jest": "^28.1.0",
-    "jest-sonar-reporter": "^2.0.0"
+    "morgan": "~1.9.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
