@@ -229,7 +229,7 @@ describe("Movies API", () => {
       });
   });
 
-  it("GET /movies/:movieid/reviews --> list all reviews related to a movie", () => {
+  xit("GET /movies/:movieid/reviews --> list all reviews related to a movie", () => {
     return request(app)
       .get("/movies/629525b0b3da7e584584237c/reviews")
       .expect("Content-Type", /json/)
@@ -254,7 +254,9 @@ describe("Movies API", () => {
       });
   });
 
-  xit("POST /movies/:movieid/reviews --> create new comment", () => {});
+  xit("POST /movies/:movieid/reviews --> create new comment", () => {
+    
+  });
 
   it("GET /movies/:movieid/reviews/:reviewid --> get comment by id", () => {
     return request(app)

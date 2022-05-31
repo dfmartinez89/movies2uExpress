@@ -7,13 +7,14 @@ const sendJSONresponse = (res, status, content) => {
 };
 
 /* GET /movies/:movieid/reviews*/
+//https://bobbyhadz.com/blog/javascript-error-cannot-set-headers-after-they-are-sent-to-client#:~:text=The%20%22Cannot%20set%20headers%20after,single%20response%20for%20each%20request.
 const reviewsReadAll = (req, res) => {
-  parseId = req.params.movieid.toString();
+  const parseId = req.params.movieid.toString();
   Movies.findById(parseId)
     .select("title reviews")
     .exec((err, movie) => {
       if (!movie) {
-        sendJSONresponse(res, 404, { message: "movieid not found" });
+        sendJSONresponse(res, 404, { message: "movie not found" });
       } else if (err) {
         sendJSONresponse(res, 400, err);
       }
@@ -34,25 +35,25 @@ const reviewsReadAll = (req, res) => {
 
 /* GET /movies/:movieid/reviews/:reviewid */
 const reviewsReadOne = (req, res) => {
-  parsemovieId = req.params.movieid.toString();
-  parsereviewId = req.params.reviewid.toString();
+  const parsemovieId = req.params.movieid.toString();
+  const parsereviewId = req.params.reviewid.toString();
   Movies.findById(parsemovieId)
     .select("title reviews")
     .exec((err, movie) => {
       if (!movie) {
-        sendJSONresponse(res, 404, { message: "movieid not found" });
+        sendJSONresponse(res, 404, { message: "movie not found" });
       } else if (err) {
         sendJSONresponse(res, 400, err);
       }
       if (movie.reviews && movie.reviews.length > 0) {
         const review = movie.reviews.id(parsereviewId);
         if (!review) {
-          sendJSONresponse(res, 404, { message: "reviewid not found" });
+          sendJSONresponse(res, 404, { message: "review not found" });
         } else {
           response = {
             movie: {
               title: movie.title,
-              id: req.params.parseId,
+              id: req.params.parsemovieId,
             },
             review,
           };
@@ -65,15 +66,9 @@ const reviewsReadOne = (req, res) => {
 };
 
 /* POST /movies/:movieid/reviews */
-//https://bobbyhadz.com/blog/javascript-error-cannot-set-headers-after-they-are-sent-to-client#:~:text=The%20%22Cannot%20set%20headers%20after,single%20response%20for%20each%20request.
 const reviewsCreate = (req, res) => {
-  parseMovieId = req.params.movieid.toString();
-  parseAuthor = req.body.author.toString();
-  parseRating = req.body.rating;
-  parseDescription = req.body.description.toString();
-  if (isNaN(parseRating)) {
-    sendJSONresponse(res, 422, "request validation error" + error.message);
-  }
+  const parseMovieId = req.params.movieid.toString();
+
   if (parseMovieId) {
     Movies.findById(parseMovieId)
       .select("reviews")
@@ -85,13 +80,16 @@ const reviewsCreate = (req, res) => {
         }
       });
   } else {
-    sendJSONresponse(res, 404, { message: "movieid not found" });
+    sendJSONresponse(res, 404, { message: "movie not found" });
   }
 };
 
 const doAddReview = (req, res, movie) => {
+  const parseAuthor = req.body.author.toString();
+  const parseRating = req.body.rating;
+  const parseDescription = req.body.description.toString();
   if (!movie) {
-    sendJSONresponse(res, 404, { message: "movieid not found" });
+    sendJSONresponse(res, 404, { message: "movie not found" });
   } else {
     movie.reviews.push({
       author: parseAuthor,
@@ -140,8 +138,90 @@ const doSetAverageRating = (movie) => {
   }
 };
 
+/* PUT /movies/:movieid/reviews/:reviewid */
+const reviewsUpdateOne = (req, res) => {
+  if (!req.params.movieid || !req.params.reviewid) {
+    sendJSONresponse(res, 422, "request validation error");
+  }
+  const parseMovieId = req.params.movieid.toString();
+  const parseReviewId = req.params.reviewid.toString();
+  const parseAuthor = req.body.author.toString();
+  const parseRating = req.body.rating;
+  const parseDescription = req.body.description.toString();
+
+  Movies.findById(parseMovieId)
+    .select("reviews")
+    .exec((err, movie) => {
+      if (!movie) {
+        sendJSONresponse(res, 404, { message: "movie not found" });
+      } else if (err) {
+        sendJSONresponse(res, 400, err);
+      }
+      if (movie.reviews && movie.reviews.length > 0) {
+        thisReview = movie.reviews.id(parseReviewId);
+        if (!thisReview) {
+          sendJSONresponse(res, 404, { message: "review not found" });
+        } else {
+          thisReview.author = parseAuthor;
+          thisReview.rating = parseRating;
+          thisReview.description = parseDescription;
+          movie.save((err, movie) => {
+            if (err) {
+              sendJSONresponse(res, 404, err);
+            } else {
+              updateAverageRating(movie._id);
+              sendJSONresponse(res, 200, thisReview);
+            }
+          });
+        }
+      } else {
+        sendJSONresponse(res, 404, { message: "No review to update" });
+      }
+    });
+};
+
+/* DELETE movies/:movieid/reviews/:reviewid */
+const reviewsDeleteOne = (req, res) => {
+  const parseMovieId = req.params.movieid.toString();
+  const parseReviewId = req.params.reviewid.toString();
+
+  if (!parseMovieId || !parseReviewId) {
+    sendJSONresponse(res, 404, {
+      message: "Not found, movieid and reviewid are both required",
+    });
+  }
+  Movies.findById(parseMovieId)
+    .select("reviews")
+    .exec((err, movie) => {
+      if (!movie) {
+        sendJSONresponse(res, 404, { message: "movie not found" });
+      } else if (err) {
+        sendJSONresponse(res, 400, err);
+      }
+      if (movie.reviews && movie.reviews.length > 0) {
+        if (!movie.reviews.id(parseReviewId)) {
+          sendJSONresponse(res, 404, { message: "review not found" });
+        } else {
+          movie.reviews.id(parseReviewId).remove();
+          movie.save((err) => {
+            if (err) {
+              sendJSONresponse(res, 404, err);
+            } else {
+              updateAverageRating(movie._id);
+              sendJSONresponse(res, 204, null);
+            }
+          });
+        }
+      } else {
+        sendJSONresponse(res, 404, { message: "No review to delete" });
+      }
+    });
+};
+
 module.exports = {
   reviewsReadAll,
   reviewsReadOne,
   reviewsCreate,
+  reviewsUpdateOne,
+  reviewsDeleteOne,
 };

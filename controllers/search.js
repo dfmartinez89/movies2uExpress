@@ -8,7 +8,7 @@ const sendJSONresponse = (res, status, content) => {
 
 /* Search movies */
 const searchUtils = (req, res) => {
-  queryParams = req.query;
+  const queryParams = req.query;
   if (queryParams.hasOwnProperty("title")) {
     try {
       parseTitle = req.query.title.toString();
