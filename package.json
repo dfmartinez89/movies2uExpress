@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node -r ./bin/www",
     "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
-    "test": "cross-env NODE_ENV=production jest --coverage",
+    "test": "cross-env jest --coverage",
     "testwatch": "jest --watchAll --detectOpenHandles"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
   },
   "jest": {
     "verbose": true,
+    "setupFiles": ["dotenv/config"],
     "testEnvironment": "node",
     "collectCoverage": true,
     "testResultsProcessor": "jest-sonar-reporter",
