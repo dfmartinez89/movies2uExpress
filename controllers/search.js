@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Movies = mongoose.model("Movie");
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv/config");
 const axios = require("axios");
 const imdb = require("../imdb");
 

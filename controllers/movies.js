@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Movies = mongoose.model("Movie");
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv/config");
+
 
 const sendJSONresponse = (res, status, content) => {
   res.status(status).json(content);

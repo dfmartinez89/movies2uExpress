@@ -20,4 +20,4 @@ const movieSchema = new mongoose.Schema({
   reviews: [reviewSchema],
 });
 movieSchema.index({coords: '2dsphere'});
-mongoose.model("Movie", movieSchema);
+module.exports = mongoose.model("Movie", movieSchema);
