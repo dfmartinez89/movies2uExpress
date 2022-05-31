@@ -1,11 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
-let dbURI = "mongodb://localhost/movies";
-
-if (process.env.NODE_ENV === "production") {
-  dbURI = process.env.ATLAS_URI;
-}
+let dbURI = process.env.ATLAS_URI;
 
 const connectDB = async () => {
   try {
