@@ -3,7 +3,7 @@ const Movies = mongoose.model("Movie");
 const dotenv = require("dotenv");
 dotenv.config();
 const axios = require("axios");
-const imdb = require("../config/imdb");
+const imdb = require("../imdb");
 
 const axiosOptions = {
   apikey: process.env.IMDB_KEY,
