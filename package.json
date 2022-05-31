@@ -29,7 +29,6 @@
   },
   "jest": {
     "verbose": true,
-    "setupFiles": ["../dotenv/config"],
     "testEnvironment": "node",
     "collectCoverage": true,
     "testResultsProcessor": "jest-sonar-reporter",
