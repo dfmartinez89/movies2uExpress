@@ -1,5 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
+const dotenv = require("dotenv");
+dotenv.config();
 const mongoose = require("mongoose");
 
 /* TODO: MOCK DATABASE */
