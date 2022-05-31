@@ -47,7 +47,7 @@ const searchUtils = (req, res) => {
           message: "there are no movies with title " + req.query.title,
         });
       } else if (err) {
-        return res.status(404).json(err);
+        return res.status(404).json(err._message);
       }
       res.status(200).json(movie);
     });
@@ -66,7 +66,7 @@ const searchUtils = (req, res) => {
           message: "there are no movies on year " + req.query.year,
         });
       } else if (err) {
-        return res.status(404).json(err);
+        return res.status(404).json(err._message);
       }
       res.status(200).json(movie);
     });
@@ -84,7 +84,7 @@ const searchUtils = (req, res) => {
           message: "there are no movies with genre " + req.query.genre,
         });
       } else if (err) {
-        return res.status(404).json(err);
+        return res.status(404).json(err._message);
       }
       res.status(200).json(movie);
     });

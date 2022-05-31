@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 /* TODO: MOCK DATABASE */
 
 describe("Movies Controller tests", () => {
-  afterAll(() => mongoose.disconnect());
+  afterAll(async () => await mongoose.disconnect());
 
   it("GET /movies --> list all movies", () => {
     return request(app)
@@ -84,7 +84,12 @@ describe("Movies Controller tests", () => {
         rating: 5,
       })
       .expect("Content-Type", /json/)
-      .expect(422);
+      .expect(422)
+      .then((response) => {
+        expect(response.body).toEqual({
+          message: "invalid movie data",
+        });
+      });
   });
 
   it("GET /movies/:movieid --> 404 if not found", () => {

@@ -8,7 +8,7 @@ const sendJSONresponse = (res, status, content) => {
 /* GET /movies/:movieid/reviews*/
 //https://bobbyhadz.com/blog/javascript-error-cannot-set-headers-after-they-are-sent-to-client#:~:text=The%20%22Cannot%20set%20headers%20after,single%20response%20for%20each%20request.
 const reviewsReadAll = (req, res) => {
-  const parseId = req.params.movieid.toString();
+  const parseId = String(req.params.movieid);
   Movies.findById(parseId)
     .select("title reviews")
     .exec((err, movie) => {
@@ -34,8 +34,9 @@ const reviewsReadAll = (req, res) => {
 
 /* GET /movies/:movieid/reviews/:reviewid */
 const reviewsReadOne = (req, res) => {
-  const parsemovieId = req.params.movieid.toString();
-  const parsereviewId = req.params.reviewid.toString();
+  const parsemovieId = String(req.params.movieid);
+  const parsereviewId = String(req.params.reviewid);
+
   Movies.findById(parsemovieId)
     .select("title reviews")
     .exec((err, movie) => {
@@ -66,7 +67,7 @@ const reviewsReadOne = (req, res) => {
 
 /* POST /movies/:movieid/reviews */
 const reviewsCreate = (req, res) => {
-  const parseMovieId = req.params.movieid.toString();
+  const parseMovieId = String(req.params.movieid);
 
   if (parseMovieId) {
     Movies.findById(parseMovieId)
@@ -84,9 +85,9 @@ const reviewsCreate = (req, res) => {
 };
 
 const doAddReview = (req, res, movie) => {
-  const parseAuthor = req.body.author.toString();
+  const parseAuthor = String(req.body.author);
   const parseRating = req.body.rating;
-  const parseDescription = req.body.description.toString();
+  const parseDescription = String(req.body.description);
   if (!movie) {
     sendJSONresponse(res, 404, { message: "movie not found" });
   } else {
@@ -142,11 +143,11 @@ const reviewsUpdateOne = (req, res) => {
   if (!req.params.movieid || !req.params.reviewid) {
     sendJSONresponse(res, 422, "request validation error");
   }
-  const parseMovieId = req.params.movieid.toString();
-  const parseReviewId = req.params.reviewid.toString();
-  const parseAuthor = req.body.author.toString();
+  const parseMovieId = String(req.params.movieid);
+  const parseReviewId = String(req.params.reviewid);
+  const parseAuthor = String(req.body.author);
   const parseRating = req.body.rating;
-  const parseDescription = req.body.description.toString();
+  const parseDescription = String(req.body.description);
 
   Movies.findById(parseMovieId)
     .select("reviews")
@@ -181,8 +182,8 @@ const reviewsUpdateOne = (req, res) => {
 
 /* DELETE movies/:movieid/reviews/:reviewid */
 const reviewsDeleteOne = (req, res) => {
-  const parseMovieId = req.params.movieid.toString();
-  const parseReviewId = req.params.reviewid.toString();
+  const parseMovieId = String(req.params.movieid);
+  const parseReviewId = String(req.params.reviewid);
 
   if (!parseMovieId || !parseReviewId) {
     sendJSONresponse(res, 404, {
@@ -195,7 +196,7 @@ const reviewsDeleteOne = (req, res) => {
       if (!movie) {
         sendJSONresponse(res, 404, { message: "movie not found" });
       } else if (err) {
-        sendJSONresponse(res, 400, err);
+        sendJSONresponse(res, 406, err._message);
       }
       if (movie.reviews && movie.reviews.length > 0) {
         if (!movie.reviews.id(parseReviewId)) {
@@ -204,7 +205,7 @@ const reviewsDeleteOne = (req, res) => {
           movie.reviews.id(parseReviewId).remove();
           movie.save((err) => {
             if (err) {
-              sendJSONresponse(res, 404, err);
+              sendJSONresponse(res, 406, err._message);
             } else {
               updateAverageRating(movie._id);
               sendJSONresponse(res, 204, null);
