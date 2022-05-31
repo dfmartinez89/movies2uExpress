@@ -24,7 +24,7 @@ const moviesFindAll = (req, res) => {
 const moviesCreate = (req, res) => {
   if (!req.body.title) {
     return res.status(422).json({
-      message: "invalid movie data"
+      message: "invalid movie data",
     });
   } else {
     const parseTitle = String(req.body.title);
@@ -40,6 +40,7 @@ const moviesCreate = (req, res) => {
         genre: parseGenre,
         poster: parsePoster,
         rating: parseRating,
+        coords: [parseFloat(req.body.lng), parseFloat(req.body.lat)],
       },
       (err, movie) => {
         if (err) {
@@ -71,31 +72,39 @@ const moviesReadOne = (req, res) => {
 
 /* PUT /movies/:moviesid */
 const moviesUpdateOne = (req, res) => {
-  if (!req.params.movieid) {
-    sendJSONresponse(res, 406, { message: "Not found, movieid is required" });
-  }
-  Movies.findOneAndUpdate({ id: req.params.movieid }, { new: true }).exec(
-    (err, movie) => {
-      if (!movie) {
-        sendJSONresponse(res, 404, { message: "movie not found" });
-      } else if (err) {
-        sendJSONresponse(res, 406, err._message);
-      }
-      movie.title = req.body.title;
-      movie.year = req.body.year;
-      movie.genre = req.body.genre;
-      movie.poster = req.body.poster;
-      movie.poster = req.body.poster;
-      //not updating reviews via this endpoint1
-      movie.save((err, movie) => {
-        if (err) {
+  if (!req.body.title || !req.params.movieid) {
+    return res.status(422).json({
+      message: "invalid movie data",
+    });
+  } else {
+    const parseTitle = String(req.body.title);
+    const parseYear = req.body.year;
+    const parseGenre = String(req.body.genre);
+    const parsePoster = String(req.body.poster);
+    const parseRating = req.body.rating;
+    Movies.findOneAndUpdate({ id: req.params.movieid }, { new: true }).exec(
+      (err, movie) => {
+        if (!movie) {
+          sendJSONresponse(res, 404, { message: "movie not found" });
+        } else if (err) {
           sendJSONresponse(res, 406, err._message);
-        } else {
-          sendJSONresponse(res, 200, movie);
         }
-      });
-    }
-  );
+        movie.title = req.body.title;
+        movie.year = req.body.year;
+        movie.genre = req.body.genre;
+        movie.poster = req.body.poster;
+        movie.rating = req.body.rating;
+        //not updating reviews via this endpoint1
+        movie.save((err, movie) => {
+          if (err) {
+            sendJSONresponse(res, 406, err._message);
+          } else {
+            sendJSONresponse(res, 200, movie);
+          }
+        });
+      }
+    );
+  }
 };
 
 /* DELETE movies/:movieid */
