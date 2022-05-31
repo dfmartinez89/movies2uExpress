@@ -1,15 +1,19 @@
 const express = require("express");
+const app = express();
 require("dotenv/config");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const connectDB = require("./db");
+const cors = require('cors');
 
+//Middlewares
+
+app.use(cors());
 const indexRouter = require("./routes/index");
 const moviesRouter = require("./routes/movies");
 
 connectDB();
-const app = express();
 
 if (process.env.NODE_ENV === "development") {
   app.use(logger("dev"));
