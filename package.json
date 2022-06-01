@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=production node -r ./bin/www",
-    "dev": "cross-env NODE_ENV=development nodemon -r ./bin/www",
+    "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
     "test": "jest --coverage",
     "testwatch": "jest --watchAll --detectOpenHandles"
   },

@@ -4,6 +4,9 @@ const app = require("../app");
 /* TODO: MOCK DATABASE */
 
 describe("Movies Controller tests", () => {
+  beforeEach(() => {
+    jest.setTimeout(30000);
+  });
 
   it("GET /movies --> list all movies", () => {
     return request(app)

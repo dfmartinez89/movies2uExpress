@@ -4,6 +4,9 @@ const app = require("../app");
 /* TODO: MOCK DATABASE */
 
 describe("Search Controller tests", () => {
+  beforeEach(() => {
+    jest.setTimeout(30000);
+  });
 
   it("GET /movies/search?title --> search movie by title", () => {
     return request(app)

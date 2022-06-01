@@ -4,7 +4,9 @@ const app = require("../app");
 /* TODO: MOCK DATABASE */
 
 describe("Reviews Controller tests", () => {
-
+  beforeEach(() => {
+    jest.setTimeout(30000);
+  });
   xit("POST /movies/:movieid/reviews --> create new review", () => {});
 
   it("GET /movies/:movieid/reviews/:reviewid --> get review by id", () => {
