@@ -7,14 +7,16 @@ const logger = require("morgan");
 const connectDB = require("./db");
 const cors = require('cors');
 
-//Middlewares
-
-app.use(cors());
+/* Middleware */
 const indexRouter = require("./routes/index");
 const moviesRouter = require("./routes/movies");
+//Enable cors
+app.use(cors());
 
+//Connect database
 connectDB();
 
+//Enable logging in dev enviroment
 if (process.env.NODE_ENV === "development") {
   app.use(logger("dev"));
 }
