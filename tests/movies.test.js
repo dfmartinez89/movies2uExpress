@@ -14,7 +14,7 @@ describe("Movies Controller tests", () => {
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
-        expect(response.body.count).toBeGreaterThan(1);
+        expect(response.body.count).toBeGreaterThan(0);
       });
   });
 

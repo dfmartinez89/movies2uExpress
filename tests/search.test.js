@@ -10,14 +10,14 @@ describe("Search Controller tests", () => {
 
   it("GET /movies/search?title --> search movie by title", () => {
     return request(app)
-      .get("/search?title=Bumblebee")
+      .get("/search?title=Transformers: The Last Knight")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
-              title: "Bumblebee",
+              title: "Transformers: The Last Knight",
               year: expect.any(Number),
               genre: expect.any(String),
               poster: expect.any(String),
@@ -44,7 +44,7 @@ describe("Search Controller tests", () => {
 
   it("GET /search?year --> search movie by year", () => {
     return request(app)
-      .get("/search?year=2018")
+      .get("/search?year=2017")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -52,7 +52,7 @@ describe("Search Controller tests", () => {
           expect.arrayContaining([
             expect.objectContaining({
               title: expect.any(String),
-              year: 2018,
+              year: 2017,
               genre: expect.any(String),
               poster: expect.any(String),
               rating: expect.any(Number),
