@@ -41,6 +41,7 @@
       "<rootDir>/node_modules/",
       "<rootDir>/models/",
       "<rootDir>/config/",
+      "<rootDir>/utils/",
       "<rootDir>/routes/"
     ]
   }

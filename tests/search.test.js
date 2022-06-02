@@ -10,14 +10,14 @@ describe("Search Controller tests", () => {
 
   it("GET /movies/search?title --> search movie by title", () => {
     return request(app)
-      .get("/search?title=Terminator%20Genisys")
+      .get("/search?title=Bumblebee")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
-              title: "Terminator Genisys",
+              title: "Bumblebee",
               year: expect.any(Number),
               genre: expect.any(String),
               poster: expect.any(String),
@@ -44,7 +44,7 @@ describe("Search Controller tests", () => {
 
   it("GET /search?year --> search movie by year", () => {
     return request(app)
-      .get("/search?year=2015")
+      .get("/search?year=2018")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -52,7 +52,7 @@ describe("Search Controller tests", () => {
           expect.arrayContaining([
             expect.objectContaining({
               title: expect.any(String),
-              year: 2015,
+              year: 2018,
               genre: expect.any(String),
               poster: expect.any(String),
               rating: expect.any(Number),
@@ -78,7 +78,7 @@ describe("Search Controller tests", () => {
 
   it("GET /search?genre --> search movie by genre", () => {
     return request(app)
-      .get("/search?genre=Action,%20Adventure,%20Sci-Fi")
+      .get("/search?genre=Action, Adventure, Sci-Fi")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -105,6 +105,20 @@ describe("Search Controller tests", () => {
         expect(response.body).toEqual(
           expect.objectContaining({
             message: "there are no movies with genre Adult",
+          })
+        );
+      });
+  });
+
+  it("GET /search? --> 400 not found search criteria", () => {
+    return request(app)
+      .get("/search?genr")
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.objectContaining({
+            message: "missing search criteria, use title, year or genre",
           })
         );
       });
