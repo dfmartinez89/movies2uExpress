@@ -43,7 +43,8 @@
       "<rootDir>/models/",
       "<rootDir>/config/",
       "<rootDir>/utils/",
-      "<rootDir>/routes/"
+      "<rootDir>/routes/",
+      "<rootDir>/tests/"
     ]
   }
 }
