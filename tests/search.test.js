@@ -1,22 +1,23 @@
 const request = require("supertest");
 const app = require("../app");
-const mongoose = require("mongoose");
 
 /* TODO: MOCK DATABASE */
 
 describe("Search Controller tests", () => {
-  afterAll(() => mongoose.disconnect());
+  beforeEach(() => {
+    jest.setTimeout(30000);
+  });
 
   it("GET /movies/search?title --> search movie by title", () => {
     return request(app)
-      .get("/search?title=Terminator%20Genisys")
+      .get("/search?title=Transformers: The Last Knight")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
-              title: "Terminator Genisys",
+              title: "Transformers: The Last Knight",
               year: expect.any(Number),
               genre: expect.any(String),
               poster: expect.any(String),
@@ -43,7 +44,7 @@ describe("Search Controller tests", () => {
 
   it("GET /search?year --> search movie by year", () => {
     return request(app)
-      .get("/search?year=2015")
+      .get("/search?year=2017")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -51,7 +52,7 @@ describe("Search Controller tests", () => {
           expect.arrayContaining([
             expect.objectContaining({
               title: expect.any(String),
-              year: 2015,
+              year: 2017,
               genre: expect.any(String),
               poster: expect.any(String),
               rating: expect.any(Number),
@@ -77,7 +78,7 @@ describe("Search Controller tests", () => {
 
   it("GET /search?genre --> search movie by genre", () => {
     return request(app)
-      .get("/search?genre=Action,%20Adventure,%20Sci-Fi")
+      .get("/search?genre=Action, Adventure, Sci-Fi")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -104,6 +105,20 @@ describe("Search Controller tests", () => {
         expect(response.body).toEqual(
           expect.objectContaining({
             message: "there are no movies with genre Adult",
+          })
+        );
+      });
+  });
+
+  it("GET /search? --> 400 not found search criteria", () => {
+    return request(app)
+      .get("/search?genr")
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual(
+          expect.objectContaining({
+            message: "missing search criteria, use title, year or genre",
           })
         );
       });

@@ -1,15 +1,10 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-dotenv.config();
-let dbURI = "mongodb://localhost/movies";
+require("dotenv/config");
 
-if (process.env.NODE_ENV === "production") {
-  dbURI = process.env.ATLAS_URI;
-}
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(dbURI, {
+    const conn = await mongoose.connect(process.env.ATLAS_URI, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
     });
@@ -43,6 +38,6 @@ process.on("SIGINT", () => {
 });
 
 // BRING IN YOUR SCHEMAS & MODELS
-require("../models/movies");
+require("./models/movies");
 
 module.exports = connectDB;

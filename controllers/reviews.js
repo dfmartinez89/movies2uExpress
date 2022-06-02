@@ -1,104 +1,77 @@
 const mongoose = require("mongoose");
 const Movies = mongoose.model("Movie");
+const geocoder = require("../utils/geocoder");
 
 const sendJSONresponse = (res, status, content) => {
   res.status(status).json(content);
 };
 
-/* GET /movies/:movieid/reviews*/
-//https://bobbyhadz.com/blog/javascript-error-cannot-set-headers-after-they-are-sent-to-client#:~:text=The%20%22Cannot%20set%20headers%20after,single%20response%20for%20each%20request.
-const reviewsReadAll = (req, res) => {
-  const parseId = String(req.params.movieid);
-  Movies.findById(parseId)
-    .select("title reviews")
-    .exec((err, movie) => {
-      if (!movie) {
-        sendJSONresponse(res, 404, { message: "movie not found" });
-      } else if (err) {
-        sendJSONresponse(res, 400, err);
-      }
-      if (movie.reviews && movie.reviews.length > 0) {
-        const reviews = movie.reviews;
+/* GET review by id */
+const reviewsReadOne = async (req, res) => {
+  try {
+    const movie = await Movies.findById(req.params.movieid).select(
+      "title reviews"
+    );
+    if (!movie) {
+      sendJSONresponse(res, 404, { message: "movie not found" });
+    }
+    if (movie.reviews && movie.reviews.length > 0) {
+      const review = movie.reviews.id(req.params.reviewid);
+      if (!review) {
+        sendJSONresponse(res, 404, { message: "review not found" });
+      } else {
         response = {
           movie: {
             title: movie.title,
-            id: parseId,
+            id: req.params.movieid,
           },
-          reviews,
+          review,
         };
         sendJSONresponse(res, 200, response);
       }
+    } else {
       sendJSONresponse(res, 404, { message: "No reviews found" });
-    });
-};
-
-/* GET /movies/:movieid/reviews/:reviewid */
-const reviewsReadOne = (req, res) => {
-  const parsemovieId = String(req.params.movieid);
-  const parsereviewId = String(req.params.reviewid);
-
-  Movies.findById(parsemovieId)
-    .select("title reviews")
-    .exec((err, movie) => {
-      if (!movie) {
-        sendJSONresponse(res, 404, { message: "movie not found" });
-      } else if (err) {
-        sendJSONresponse(res, 400, err);
-      }
-      if (movie.reviews && movie.reviews.length > 0) {
-        const review = movie.reviews.id(parsereviewId);
-        if (!review) {
-          sendJSONresponse(res, 404, { message: "review not found" });
-        } else {
-          response = {
-            movie: {
-              title: movie.title,
-              id: req.params.parsemovieId,
-            },
-            review,
-          };
-          sendJSONresponse(res, 200, response);
-        }
-      } else {
-        sendJSONresponse(res, 404, { message: "No reviews found" });
-      }
-    });
-};
-
-/* POST /movies/:movieid/reviews */
-const reviewsCreate = (req, res) => {
-  const parseMovieId = String(req.params.movieid);
-
-  if (parseMovieId) {
-    Movies.findById(parseMovieId)
-      .select("reviews")
-      .exec((err, movie) => {
-        if (err) {
-          sendJSONresponse(res, 400, err);
-        } else {
-          doAddReview(req, res, movie);
-        }
-      });
-  } else {
-    sendJSONresponse(res, 404, { message: "movie not found" });
+    }
+  } catch (e) {
+    sendJSONresponse(res, 400, e.message);
   }
 };
 
-const doAddReview = (req, res, movie) => {
-  const parseAuthor = String(req.body.author);
-  const parseRating = req.body.rating;
-  const parseDescription = String(req.body.description);
+/* POST review to a movie */
+const reviewsCreate = async (req, res, next) => {
+  if (!req.body.reviewLocation) {
+    sendJSONresponse(res, 400, { message: "reviewLocation is required" });
+  } else {
+    try {
+      const movie = await Movies.findById(req.params.movieid).select("reviews");
+      doAddReview(req, res, movie);
+    } catch (e) {
+      res.status(400).json(e.message);
+    }
+  }
+};
+
+const doAddReview = async (req, res, movie) => {
+  const loc = await geocoder.geocode(req.body.reviewLocation);
+  const parseLocation = {
+    type: "Point",
+    coordinates: [loc[0].longitude, loc[0].latitude],
+    formattedLocation: loc[0].formattedAddress,
+  };
   if (!movie) {
     sendJSONresponse(res, 404, { message: "movie not found" });
   } else {
     movie.reviews.push({
-      author: parseAuthor,
-      rating: parseRating,
-      description: parseDescription,
+      author: req.body.author,
+      rating: req.body.rating,
+      description: req.body.description,
+      reviewGeoLocation: parseLocation,
     });
-    movie.save((err, movie) => {
-      if (err) {
-        sendJSONresponse(res, 400, err);
+
+    movie.save((error, movie) => {
+      //pre saving a movie middleware breaks here expecting a location on parent document
+      if (error) {
+        sendJSONresponse(res, 406, error.message);
       } else {
         updateAverageRating(movie._id);
         let thisReview = movie.reviews[movie.reviews.length - 1];
@@ -108,11 +81,11 @@ const doAddReview = (req, res, movie) => {
   }
 };
 
-const updateAverageRating = (parseMovieId) => {
-  Movies.findById(parseMovieId)
+const updateAverageRating = async (movieid) => {
+  Movies.findById(movieid)
     .select("rating reviews")
-    .exec((err, movie) => {
-      if (!err) {
+    .exec((error, movie) => {
+      if (!error) {
         doSetAverageRating(movie);
       }
     });
@@ -128,9 +101,9 @@ const doSetAverageRating = (movie) => {
     }
     ratingAverage = parseInt(ratingTotal / reviewCount, 10);
     movie.rating = ratingAverage;
-    movie.save((err) => {
-      if (err) {
-        console.log(err);
+    movie.save((error) => {
+      if (error) {
+        console.log(error);
       } else {
         console.log("Average rating updated to", ratingAverage);
       }
@@ -138,36 +111,35 @@ const doSetAverageRating = (movie) => {
   }
 };
 
-/* PUT /movies/:movieid/reviews/:reviewid */
-const reviewsUpdateOne = (req, res) => {
-  if (!req.params.movieid || !req.params.reviewid) {
-    sendJSONresponse(res, 422, "request validation error");
-  }
-  const parseMovieId = String(req.params.movieid);
-  const parseReviewId = String(req.params.reviewid);
-  const parseAuthor = String(req.body.author);
-  const parseRating = req.body.rating;
-  const parseDescription = String(req.body.description);
-
-  Movies.findById(parseMovieId)
-    .select("reviews")
-    .exec((err, movie) => {
+/* PUT review  */
+const reviewsUpdateOne = async (req, res) => {
+  if (!req.body.reviewLocation) {
+    sendJSONresponse(res, 400, { message: "reviewLocation is required" });
+  } else {
+    try {
+      const loc = await geocoder.geocode(req.body.reviewLocation);
+      const parseLocation = {
+        type: "Point",
+        coordinates: [loc[0].longitude, loc[0].latitude],
+        formattedLocation: loc[0].formattedAddress,
+      };
+      const movie = await Movies.findById(req.params.movieid).select("reviews");
       if (!movie) {
         sendJSONresponse(res, 404, { message: "movie not found" });
-      } else if (err) {
-        sendJSONresponse(res, 400, err);
       }
       if (movie.reviews && movie.reviews.length > 0) {
-        thisReview = movie.reviews.id(parseReviewId);
+        thisReview = movie.reviews.id(req.params.reviewid);
         if (!thisReview) {
           sendJSONresponse(res, 404, { message: "review not found" });
         } else {
-          thisReview.author = parseAuthor;
-          thisReview.rating = parseRating;
-          thisReview.description = parseDescription;
-          movie.save((err, movie) => {
-            if (err) {
-              sendJSONresponse(res, 404, err);
+          thisReview.author = req.body.author;
+          thisReview.rating = req.body.rating;
+          thisReview.description = req.body.description;
+          thisReview.reviewGeoLocation = parseLocation;
+
+          movie.save((error, movie) => {
+            if (error) {
+              sendJSONresponse(res, 400, error.message);
             } else {
               updateAverageRating(movie._id);
               sendJSONresponse(res, 200, thisReview);
@@ -177,49 +149,48 @@ const reviewsUpdateOne = (req, res) => {
       } else {
         sendJSONresponse(res, 404, { message: "No review to update" });
       }
-    });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 };
 
-/* DELETE movies/:movieid/reviews/:reviewid */
-const reviewsDeleteOne = (req, res) => {
-  const parseMovieId = String(req.params.movieid);
-  const parseReviewId = String(req.params.reviewid);
-
-  if (!parseMovieId || !parseReviewId) {
+/* DELETE review */
+const reviewsDeleteOne = async (req, res) => {
+  if (!req.params.movieid || !req.params.reviewid) {
     sendJSONresponse(res, 404, {
       message: "Not found, movieid and reviewid are both required",
     });
   }
-  Movies.findById(parseMovieId)
-    .select("reviews")
-    .exec((err, movie) => {
-      if (!movie) {
-        sendJSONresponse(res, 404, { message: "movie not found" });
-      } else if (err) {
-        sendJSONresponse(res, 406, err._message);
-      }
-      if (movie.reviews && movie.reviews.length > 0) {
-        if (!movie.reviews.id(parseReviewId)) {
-          sendJSONresponse(res, 404, { message: "review not found" });
-        } else {
-          movie.reviews.id(parseReviewId).remove();
-          movie.save((err) => {
-            if (err) {
-              sendJSONresponse(res, 406, err._message);
-            } else {
-              updateAverageRating(movie._id);
-              sendJSONresponse(res, 204, null);
-            }
-          });
-        }
+  try {
+    const movie = await Movies.findById(req.params.movieid).select("reviews");
+
+    if (!movie) {
+      sendJSONresponse(res, 404, { message: "movie not found" });
+    }
+    if (movie.reviews && movie.reviews.length > 0) {
+      if (!movie.reviews.id(req.params.reviewid)) {
+        sendJSONresponse(res, 404, { message: "review not found" });
       } else {
-        sendJSONresponse(res, 404, { message: "No review to delete" });
+        movie.reviews.id(req.params.reviewid).remove();
+        movie.save((err) => {
+          if (err) {
+            sendJSONresponse(res, 406, err._message);
+          } else {
+            updateAverageRating(movie._id);
+            sendJSONresponse(res, 204, null);
+          }
+        });
       }
-    });
+    } else {
+      sendJSONresponse(res, 404, { message: "No review to delete" });
+    }
+  } catch (e) {
+    res.status(400).json(e.message);
+  }
 };
 
 module.exports = {
-  reviewsReadAll,
   reviewsReadOne,
   reviewsCreate,
   reviewsUpdateOne,

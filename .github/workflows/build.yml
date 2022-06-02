@@ -10,43 +10,43 @@ on:
       - develop
   pull_request:
     types: [opened, synchronize, reopened]
-    
+
+env:
+  ATLAS_URI: ${{ secrets.ATLAS_URI }}   
+  IMDB_KEY: ${{ secrets.IMDB_KEY }} 
+  MAPQQUEST_KEY: ${{ secrets.MAPQQUEST_KEY }} 
+
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-  # Sonar Cloud
     steps:
+
+  # Test
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 0 
-    - name: Install dependencies
-      run: npm i
+        fetch-depth: 0
     - name: Install Jest globally
-      run:  sudo npm install -g jest
+      run:  sudo npm install -g jest 
+    - name: Install Jest Sonar Reporter
+      run:  sudo npm install jest-sonar-reporter     
     - name: Test and coverage
       run: npm run test
 
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+  # Sonar Cloud
     - name: SonarCloud Scan
+      if: success() || failure()
       uses: SonarSource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     # Build node
-    - uses: actions/checkout@v2
-      with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
