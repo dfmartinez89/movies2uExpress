@@ -1,19 +1,32 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const ctrlMovies = require('../controllers/movies');
-const ctrlReviews = require('../controllers/reviews');
+const { protect } = require("../middleware/auth");
 
-// Movies 
-router.get('/', ctrlMovies.moviesFindAll);
-router.post('/', ctrlMovies.moviesCreate);
-router.get('/:movieid', ctrlMovies.moviesReadOne);
-router.put('/:movieid', ctrlMovies.moviesUpdateOne);
-router.delete('/:movieid', ctrlMovies.moviesDeleteOne);
+const {
+  moviesFindAll,
+  moviesCreate,
+  moviesReadOne,
+  moviesUpdateOne,
+  moviesDeleteOne,
+} = require("../controllers/movies");
+const {
+  reviewsCreate,
+  reviewsReadOne,
+  reviewsUpdateOne,
+  reviewsDeleteOne,
+} = require("../controllers/reviews");
+
+// Movies
+router.get("/", moviesFindAll);
+router.post("/", protect, moviesCreate);
+router.get("/:movieid", moviesReadOne);
+router.put("/:movieid", protect, moviesUpdateOne);
+router.delete("/:movieid", protect, moviesDeleteOne);
 
 // Reviews
-router.post('/:movieid/reviews', ctrlReviews.reviewsCreate);
-router.get('/:movieid/reviews/:reviewid', ctrlReviews.reviewsReadOne);
-router.put('/:movieid/reviews/:reviewid', ctrlReviews.reviewsUpdateOne);
-router.delete('/:movieid/reviews/:reviewid', ctrlReviews.reviewsDeleteOne);
+router.post("/:movieid/reviews", reviewsCreate);
+router.get("/:movieid/reviews/:reviewid", reviewsReadOne);
+router.put("/:movieid/reviews/:reviewid", protect, reviewsUpdateOne);
+router.delete("/:movieid/reviews/:reviewid", protect, reviewsDeleteOne);
 
 module.exports = router;

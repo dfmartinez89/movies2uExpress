@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Movies = mongoose.model("Movie");
+const asyncHandler = require("express-async-handler");
 require("dotenv/config");
 const axios = require("axios");
 const imdb = require("../utils/imdb");
@@ -8,21 +9,21 @@ const axiosOptions = {
   apikey: process.env.IMDB_KEY,
 };
 
-const getImdbResponse = async (criteria) => {
+const getImdbResponse = asyncHandler(async (criteria) => {
   const res = await axios
     .get(imdb.imdbUrl(axiosOptions.apikey, criteria))
     .catch(function (error) {
       console.log(error.toJSON());
     });
   return res.data;
-};
+});
 
 const sendJSONresponse = (res, status, content) => {
   res.status(status).json(content);
 };
 
 /* Search IMDb movies */
-const findImdbMoviesBy = async (req, res) => {
+const findImdbMoviesBy = asyncHandler(async (req, res) => {
   if (!req.query.criteria) {
     return res.status(403).json({
       message: "missing search criteria",
@@ -31,10 +32,10 @@ const findImdbMoviesBy = async (req, res) => {
   const criteria = req.query.criteria;
   const data = await getImdbResponse(criteria);
   return res.status(200).json(data);
-};
+});
 
 /* Search movies */
-const searchUtils = async (req, res) => {
+const searchUtils = asyncHandler(async (req, res) => {
   const queryParams = req.query;
   //Find by title.
   if (queryParams.hasOwnProperty("title")) {
@@ -87,6 +88,6 @@ const searchUtils = async (req, res) => {
       message: "missing search criteria, use title, year or genre",
     });
   }
-};
+});
 
 module.exports = { searchUtils, findImdbMoviesBy, getImdbResponse };

@@ -1,13 +1,18 @@
 const mongoose = require("mongoose");
 const Movies = mongoose.model("Movie");
 const geocoder = require("../utils/geocoder");
+const asyncHandler = require("express-async-handler");
 
 const sendJSONresponse = (res, status, content) => {
   res.status(status).json(content);
 };
 
-/* GET review by id */
-const reviewsReadOne = async (req, res) => {
+/**
+ * @desc Find review by id
+ * @route GET movies/:movieid/reviews/:reviewid
+ * @acces public */
+
+const reviewsReadOne = asyncHandler(async (req, res) => {
   try {
     const movie = await Movies.findById(req.params.movieid).select(
       "title reviews"
@@ -35,10 +40,13 @@ const reviewsReadOne = async (req, res) => {
   } catch (e) {
     sendJSONresponse(res, 400, e.message);
   }
-};
+});
 
-/* POST review to a movie */
-const reviewsCreate = async (req, res, next) => {
+/**
+ * @desc Create new review
+ * @route POST movies/:movieid/reviews/
+ * @acces public */
+const reviewsCreate = asyncHandler(async (req, res, next) => {
   if (!req.body.reviewLocation) {
     sendJSONresponse(res, 400, { message: "reviewLocation is required" });
   } else {
@@ -49,7 +57,7 @@ const reviewsCreate = async (req, res, next) => {
       res.status(400).json(e.message);
     }
   }
-};
+});
 
 const doAddReview = async (req, res, movie) => {
   const loc = await geocoder.geocode(req.body.reviewLocation);
@@ -81,7 +89,7 @@ const doAddReview = async (req, res, movie) => {
   }
 };
 
-const updateAverageRating = async (movieid) => {
+const updateAverageRating = asyncHandler(async (movieid) => {
   Movies.findById(movieid)
     .select("rating reviews")
     .exec((error, movie) => {
@@ -89,7 +97,7 @@ const updateAverageRating = async (movieid) => {
         doSetAverageRating(movie);
       }
     });
-};
+});
 
 const doSetAverageRating = (movie) => {
   let i, reviewCount, ratingAverage, ratingTotal;
@@ -111,8 +119,12 @@ const doSetAverageRating = (movie) => {
   }
 };
 
-/* PUT review  */
-const reviewsUpdateOne = async (req, res) => {
+/**
+ * @desc Update review
+ * @route PUT movies/:movieid/reviews/:reviewid
+ * @acces private */
+
+const reviewsUpdateOne = asyncHandler(async (req, res) => {
   if (!req.body.reviewLocation) {
     sendJSONresponse(res, 400, { message: "reviewLocation is required" });
   } else {
@@ -153,10 +165,13 @@ const reviewsUpdateOne = async (req, res) => {
       console.log(e);
     }
   }
-};
+});
 
-/* DELETE review */
-const reviewsDeleteOne = async (req, res) => {
+/**
+ * @desc Delete review
+ * @route DELETE movies/:movieid/reviews/:reviewid
+ * @acces private */
+const reviewsDeleteOne = asyncHandler(async (req, res) => {
   if (!req.params.movieid || !req.params.reviewid) {
     sendJSONresponse(res, 404, {
       message: "Not found, movieid and reviewid are both required",
@@ -188,7 +203,7 @@ const reviewsDeleteOne = async (req, res) => {
   } catch (e) {
     res.status(400).json(e.message);
   }
-};
+});
 
 module.exports = {
   reviewsReadOne,

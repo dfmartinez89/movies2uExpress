@@ -5,7 +5,7 @@ const reviewSchema = new mongoose.Schema({
   author: { type: String, required: true, min: 3, max: 60 },
   rating: { type: Number, required: true, min: 0, max: 5 },
   description: { type: String, required: false, min: 3, max: 260 },
-  reviewLocation: { type: String},
+  reviewLocation: { type: String },
   // Note that longitude comes first in a GeoJSON coordinate array, not latitude.
   reviewGeoLocation: {
     type: {
@@ -27,7 +27,7 @@ const movieSchema = new mongoose.Schema({
   genre: { type: String, required: false, min: 1, max: 10 },
   poster: { type: String, required: false, min: 12, max: 80 },
   rating: { type: Number, default: 0, min: 0, max: 5 },
-  location: {type: String},
+  location: { type: String },
   // Note that longitude comes first in a GeoJSON coordinate array, not latitude.
   geoLocation: {
     type: {
