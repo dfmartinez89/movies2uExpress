@@ -57,7 +57,12 @@ describe("Reviews Controller tests", () => {
         reviewLocation: "Anfield, Anfield Road, Liverpool, UK",
       })
       .expect("Content-Type", /json/)
-      .expect(400);
+      .expect(401)
+      .then((response) => {
+        expect(response.body.message).toEqual(
+          "Not authorized, token is required"
+        );
+      });
   });
 
   xit("DEL /movies/:movieid/reviews/:reviewid --> delete review", () => {});
