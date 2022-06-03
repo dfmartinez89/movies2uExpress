@@ -38,6 +38,6 @@ process.on("SIGINT", () => {
 });
 
 // BRING IN YOUR SCHEMAS & MODELS
-require("./models/movies");
+require("../models/movies");
 
 module.exports = connectDB;

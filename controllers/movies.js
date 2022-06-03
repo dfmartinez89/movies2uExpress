@@ -2,13 +2,17 @@ require("dotenv/config");
 const mongoose = require("mongoose");
 const Movies = require("../models/movies");
 const geocoder = require("../utils/geocoder");
+const asyncHandler = require("express-async-handler");
 
 const sendJSONresponse = (res, status, content) => {
   res.status(status).json(content);
 };
 
-/* GET /movies */
-const moviesFindAll = async (req, res, next) => {
+/**
+ * @desc List movies
+ * @route GET /movies
+ * @acces public */
+const moviesFindAll = asyncHandler(async (req, res, next) => {
   try {
     const movies = await Movies.find();
     return res.status(200).json({
@@ -21,10 +25,13 @@ const moviesFindAll = async (req, res, next) => {
       error: "Server error",
     });
   }
-};
+});
 
-/* GET /movies/:movieid */
-const moviesReadOne = async (req, res, next) => {
+/**
+ * @desc Find movie by id
+ * @route GET /movies/:movieid
+ * @acces public */
+const moviesReadOne = asyncHandler(async (req, res, next) => {
   try {
     const movie = await Movies.findById(req.params.movieid);
     return res.status(200).json({
@@ -36,10 +43,13 @@ const moviesReadOne = async (req, res, next) => {
       error: "movie not found",
     });
   }
-};
+});
 
-/* POST /movies */
-const moviesCreate = async (req, res, next) => {
+/**
+ * @desc Insert new movie
+ * @route POST /movies
+ * @acces private */
+const moviesCreate = asyncHandler(async (req, res, next) => {
   if (!req.body.location) {
     sendJSONresponse(res, 400, { message: "location is required" });
   } else {
@@ -66,10 +76,13 @@ const moviesCreate = async (req, res, next) => {
       res.status(406).json(e.message);
     }
   }
-};
+});
 
-/* PUT /movies/:moviesid */
-const moviesUpdateOne = async (req, res, next) => {
+/**
+ * @desc Update movie
+ * @route PUT /movies/:moviesid
+ * @acces private */
+const moviesUpdateOne = asyncHandler(async (req, res, next) => {
   if (!req.body.location) {
     sendJSONresponse(res, 400, { message: "location is required" });
   } else {
@@ -107,10 +120,13 @@ const moviesUpdateOne = async (req, res, next) => {
       res.status(400).json(e.message);
     }
   }
-};
+});
 
-/* DELETE movies/:movieid */
-const moviesDeleteOne = async (req, res) => {
+/**
+ * @desc Delete movie
+ * @route DELETE movies/:movieid
+ * @acces private */
+const moviesDeleteOne = asyncHandler(async (req, res) => {
   try {
     await Movies.findByIdAndRemove(req.params.movieid);
     return res.status(204).json({
@@ -120,7 +136,7 @@ const moviesDeleteOne = async (req, res) => {
   } catch (e) {
     res.status(404).json(e.message);
   }
-};
+});
 
 module.exports = {
   moviesFindAll,

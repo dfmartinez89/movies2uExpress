@@ -18,7 +18,7 @@ describe("Movies Controller tests", () => {
       });
   });
 
-  xit("POST /movies --> create new movie", () => {
+  it("POST /movies --> create new movie", () => {
     return request(app)
       .post("/movies")
       .send({
@@ -28,19 +28,13 @@ describe("Movies Controller tests", () => {
         poster:
           "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
         rating: 5,
+        location: "La Cañada, Almería, Andalucia",
       })
       .expect("Content-Type", /json/)
-      .expect(201)
+      .expect(401)
       .then((response) => {
-        expect(response.body).toEqual(
-          expect.objectContaining({
-            title: "Coconuts",
-            year: 2022,
-            genre: "Sci-FI",
-            poster:
-              "https://m.media-amazon.com/images/M/MV5BYjQ5NjM0Y2YtNjZkNC00ZDhkLWJjMWItN2QyNzFkMDE3ZjAxXkEyXkFqcGdeQXVyODIxMzk5NjA@._V1_SX300.jpg",
-            rating: 5,
-          })
+        expect(response.body.message).toEqual(
+          "Not authorized, token is required"
         );
       });
   });
@@ -63,14 +57,21 @@ describe("Movies Controller tests", () => {
         rating: 5,
       })
       .expect("Content-Type", /json/)
-      .expect(400)
+      .expect(401)
       .then((response) => {
-        expect(response.body).toEqual({"message": "location is required"});
+        expect(response.body.message).toEqual(
+          "Not authorized, token is required"
+        );
       });
   });
 
   it("GET /movies/:movieid --> 404 if not found", () => {
-    return request(app).get("/movies/9999").expect(404);
+    return request(app)
+      .get("/movies/629525b0b3da7e5845842c")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.error).toEqual("movie not found");
+      });
   });
 
   it("PUT /movies/:movieid --> 400 invalid request body", () => {
@@ -84,13 +85,15 @@ describe("Movies Controller tests", () => {
         rating: 5,
       })
       .expect("Content-Type", /json/)
-      .expect(400)
+      .expect(401)
       .then((response) => {
-        expect(response.body).toEqual({"message": "location is required"});
+        expect(response.body.message).toEqual(
+          "Not authorized, token is required"
+        );
       });
   });
 
   it("DEL /movies/:movieid --> delete a movie not found error", () => {
-    return request(app).del("/movies/hola").expect(404);
+    return request(app).del("/movies/hola").expect(401);
   });
 });

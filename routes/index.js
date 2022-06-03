@@ -1,6 +1,6 @@
-var express = require("express");
-var router = express.Router();
-const ctrlSearch = require("../controllers/search");
+const express = require("express");
+const router = express.Router();
+const { searchUtils, findImdbMoviesBy } = require("../controllers/search");
 
 /* GET home page */
 router.get("/", function (req, res, next) {
@@ -8,7 +8,7 @@ router.get("/", function (req, res, next) {
 });
 
 /* Search movies */
-router.get("/search", ctrlSearch.searchUtils);
-router.get("/imdb", ctrlSearch.findImdbMoviesBy);
+router.get("/search", searchUtils);
+router.get("/imdb", findImdbMoviesBy);
 
 module.exports = router;
