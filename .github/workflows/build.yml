@@ -15,6 +15,7 @@ env:
   ATLAS_URI: ${{ secrets.ATLAS_URI }}   
   IMDB_KEY: ${{ secrets.IMDB_KEY }} 
   MAPQQUEST_KEY: ${{ secrets.MAPQQUEST_KEY }} 
+  JWT_SECRET: ${{ secrets.JWT_SECRET }} 
 
 
 jobs:
