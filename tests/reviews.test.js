@@ -27,6 +27,23 @@ describe("Reviews Controller tests", () => {
       });
   });
 
+  it("POST /movies/:movieid/reviews --> 400 reviewLocation is required", () => {
+    return request(app)
+      .post("/movies/6299c228bd68f47512f96087/reviews")
+      .send({
+        author: "Visitante",
+        rating: 1.9,
+        description: "Awful movie",
+      })
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+          message: "reviewLocation is required",
+        });
+      });
+  });
+
   it("GET /movies/:movieid/reviews/:reviewid --> get review by id", () => {
     return request(app)
       .get("/movies/6299c228bd68f47512f96087/reviews/6299c250bd68f47512f9608a")
@@ -37,13 +54,23 @@ describe("Reviews Controller tests", () => {
       });
   });
 
-  it("GET /movies/:movieid/reviews/:reviewid --> 404 not found", () => {
+  it("GET /movies/:movieid/reviews/:reviewid --> 404 review not found", () => {
     return request(app)
       .get("/movies/6299c228bd68f47512f96087/reviews/6298c12851c6e3ace7e78fd1")
       .expect("Content-Type", /json/)
       .expect(404)
       .then((response) => {
         expect(response.body).toEqual({ message: "review not found" });
+      });
+  });
+
+  it("GET /movies/:movieid/reviews/:reviewid --> 404 movie not found", () => {
+    return request(app)
+      .get("/movies/6299c228ba68f47512f96087/reviews/6298c12851c6e3ace7e78fd1")
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({ message: "movie not found" });
       });
   });
 
