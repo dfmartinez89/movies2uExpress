@@ -12,7 +12,7 @@ describe("Reviews Controller tests", () => {
 
   it("POST /movies/:movieid/reviews --> 400 invalid request body", () => {
     return request(app)
-      .post("/movies/6298c0c251c6e3ace7e74fcb/reviews")
+      .post("/movies/6299c228bd68f47512f96087/reviews")
       .send({
         rating: 1.9,
         description: "Awful movie",
@@ -29,17 +29,17 @@ describe("Reviews Controller tests", () => {
 
   it("GET /movies/:movieid/reviews/:reviewid --> get review by id", () => {
     return request(app)
-      .get("/movies/6298c0c251c6e3ace7e74fcb/reviews/6298c12851c6e3ace7e74fd1")
+      .get("/movies/6299c228bd68f47512f96087/reviews/6299c250bd68f47512f9608a")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
-        expect(response.body.review._id).toBe("6298c12851c6e3ace7e74fd1");
+        expect(response.body.review._id).toBe("6299c250bd68f47512f9608a");
       });
   });
 
   it("GET /movies/:movieid/reviews/:reviewid --> 404 not found", () => {
     return request(app)
-      .get("/movies/6298c0c251c6e3ace7e74fcb/reviews/6298c12851c6e3ace7e78fd1")
+      .get("/movies/6299c228bd68f47512f96087/reviews/6298c12851c6e3ace7e78fd1")
       .expect("Content-Type", /json/)
       .expect(404)
       .then((response) => {
@@ -49,7 +49,7 @@ describe("Reviews Controller tests", () => {
 
   it("PUT /movies/:movieid/reviews/:reviewid --> 400 invalid request body", () => {
     return request(app)
-      .put("/movies/6298c0c251c6e3ace7e74fcb/reviews/6298c12851c6e3ace7e74fd1")
+      .put("/movies/6299c228bd68f47512f96087/reviews/6299c250bd68f47512f9608a")
       .send({
         rating: "4.3",
         description:

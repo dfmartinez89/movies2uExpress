@@ -25,7 +25,7 @@ const sendJSONresponse = (res, status, content) => {
 /* Search IMDb movies */
 const findImdbMoviesBy = asyncHandler(async (req, res) => {
   if (!req.query.criteria) {
-    return res.status(403).json({
+    return res.status(400).json({
       message: "missing search criteria",
     });
   }
