@@ -7,6 +7,34 @@ const logger = require("morgan");
 const connectDB = require("./middleware/db");
 const cors = require("cors");
 const { errorHandler } = require("./middleware/errorHandler");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
+
+/* Swagger */
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi:"3.0.0",
+    info: {
+      title: "Movies API",
+      version: "0.1.0",
+      description:
+        "API with required functionality for UAL's signature final proyect",
+      contact: {
+        name: "Damian Ferro",
+        url: "https://github.com/thywillbedone/movies2uExpress",
+        email: "dfm354@inlumine.ual.es",
+      },
+    },
+    servers: [
+      { url: "http://localhost:3000", description: "Dev server" },
+      { url: "https://movies2uexpress-xqmie7qm3a-uc.a.run.app", description: "Prod server" },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+
+const specs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 /* Middleware */
 const indexRouter = require("./routes/index");

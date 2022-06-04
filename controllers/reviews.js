@@ -154,7 +154,7 @@ const reviewsUpdateOne = asyncHandler(async (req, res) => {
               sendJSONresponse(res, 400, error.message);
             } else {
               updateAverageRating(movie._id);
-              sendJSONresponse(res, 200, thisReview);
+              sendJSONresponse(res, 201, thisReview);
             }
           });
         }
