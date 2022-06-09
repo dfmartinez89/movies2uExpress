@@ -22,7 +22,7 @@ describe("Reviews Controller tests", () => {
       .expect(406)
       .then((response) => {
         expect(response.body).toEqual(
-          "Movie validation failed: reviews.1.author: Path `author` is required."
+          "Movie validation failed: reviews.2.author: Path `author` is required."
         );
       });
   });
