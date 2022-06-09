@@ -258,12 +258,6 @@ router.post("/:movieid/reviews", reviewsCreate);
  *           type: string
  *         required: true
  *         description: The review id
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Review'
  *     responses:
  *       201:
  *         description: Review created succesfully

@@ -21,8 +21,8 @@ describe("Reviews Controller tests", () => {
       .expect("Content-Type", /json/)
       .expect(406)
       .then((response) => {
-        expect(response.body).toEqual(
-          "Movie validation failed: reviews.2.author: Path `author` is required."
+        expect(response.body).toContain(
+          "Movie validation failed"
         );
       });
   });
