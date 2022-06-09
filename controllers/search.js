@@ -40,13 +40,17 @@ const searchUtils = asyncHandler(async (req, res) => {
   //Find by title.
   if (queryParams.hasOwnProperty("title")) {
     try {
-      const movie = await Movies.find({ title: req.query.title });
-      if (movie.length === 0) {
+      const movies = await Movies.find({ title: req.query.title });
+      if (movies.length === 0) {
         sendJSONresponse(res, 404, {
           message: "there are no movies with title " + req.query.title,
         });
       }
-      res.status(200).json(movie);
+      res.status(200).json({
+        success: true,
+        count: movies.length,
+        data: movies,
+      });
     } catch (e) {
       console.log(e.message);
     }
@@ -60,26 +64,34 @@ const searchUtils = asyncHandler(async (req, res) => {
       parseYear = req.query.year;
     }
     try {
-      const movie = await Movies.find({ year: parseYear });
-      if (movie.length === 0) {
+      const movies = await Movies.find({ year: parseYear });
+      if (movies.length === 0) {
         sendJSONresponse(res, 404, {
           message: "there are no movies on year " + req.query.year,
         });
       }
-      res.status(200).json(movie);
+      res.status(200).json({
+        success: true,
+        count: movies.length,
+        data: movies,
+      });
     } catch (e) {
       console.log(e.message);
     }
     //Find by genre
   } else if (queryParams.hasOwnProperty("genre")) {
     try {
-      const movie = await Movies.find({ genre: req.query.genre });
-      if (movie.length === 0) {
+      const movies = await Movies.find({ genre: req.query.genre });
+      if (movies.length === 0) {
         sendJSONresponse(res, 404, {
           message: "there are no movies with genre " + req.query.genre,
         });
       }
-      res.status(200).json(movie);
+      res.status(200).json({
+        success: true,
+        count: movies.length,
+        data: movies,
+      });
     } catch (e) {
       console.log(e.message);
     }
