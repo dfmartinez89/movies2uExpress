@@ -214,6 +214,13 @@ router.delete("/:movieid", protect, moviesDeleteOne);
  *   post:
  *     summary: Creates a new review for the given movie
  *     tags: [reviews]
+ *     parameters:
+ *       - in: path
+ *         name: movieid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The movie id
  *     requestBody:
  *       required: true
  *       content:
