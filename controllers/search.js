@@ -40,7 +40,7 @@ const searchUtils = asyncHandler(async (req, res) => {
   //Find by title.
   if (queryParams.hasOwnProperty("title")) {
     try {
-      const movies = await Movies.find({ title: req.query.title });
+      const movies = await Movies.find({ title: { $regex: req.query.title } });
       if (movies.length === 0) {
         sendJSONresponse(res, 404, {
           message: "there are no movies with title " + req.query.title,
@@ -81,7 +81,7 @@ const searchUtils = asyncHandler(async (req, res) => {
     //Find by genre
   } else if (queryParams.hasOwnProperty("genre")) {
     try {
-      const movies = await Movies.find({ genre: req.query.genre });
+      const movies = await Movies.find({ genre: { $regex: req.query.genre } });
       if (movies.length === 0) {
         sendJSONresponse(res, 404, {
           message: "there are no movies with genre " + req.query.genre,
