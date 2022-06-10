@@ -21,7 +21,6 @@ describe("Users Controller tests", () => {
 
   xit("POST /user --> register new user", () => {
     const user = {
-      name: "Corba",
       email: "corba@user.test",
       password: "Corba123",
     };
@@ -52,8 +51,7 @@ describe("Users Controller tests", () => {
 
   it("POST /user --> 400 if user duplicated", () => {
     const user = {
-      name: "Corba",
-      email: "corba@user.test",
+      email: "user1@test.com",
       password: "Corba123",
     };
     return request(app)
@@ -68,7 +66,6 @@ describe("Users Controller tests", () => {
 
   it("POST /user/login --> 403 if wrong creddentials", () => {
     const user = {
-      name: "Corba",
       email: "corba@user.test",
       password: "CorBa123",
     };
@@ -84,7 +81,6 @@ describe("Users Controller tests", () => {
 
   it("POST /user/login --> 200 login user", () => {
     const user = {
-      name: "Corba",
       email: "corba@user.test",
       password: "Corba123",
     };
