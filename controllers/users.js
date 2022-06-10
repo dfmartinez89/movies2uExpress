@@ -10,7 +10,7 @@ const asyncHandler = require("express-async-handler");
  * @acces public */
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
-  if (!name || !email || !password) {
+  if (!email || !password) {
     res.status(400);
     throw new Error("Please add all required fields");
   }
@@ -46,6 +46,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
+      success: true,
       _id: user.id,
       name: user.name,
       email: user.email,
@@ -63,10 +64,9 @@ const loginUser = asyncHandler(async (req, res) => {
  * @acces private */
 const getUser = asyncHandler(async (req, res) => {
   //Grab id user from request available thanks to middleware
-  const { _id, name, email } = await User.findById(req.user.id);
+  const { _id, email } = await User.findById(req.user.id);
   res.status(200).json({
     id: _id,
-    name,
     email,
   });
 });

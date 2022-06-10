@@ -18,13 +18,9 @@ const { protect } = require("../middleware/auth");
  *     User:
  *       type: object
  *       required:
- *         - name
  *         - email
  *         - password
  *       properties:
- *         name:
- *           type: string
- *           description: Name of the user
  *         email:
  *           type: string
  *           description: Email of the user
