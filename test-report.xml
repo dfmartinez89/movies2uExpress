@@ -1,42 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testExecutions version="1">
   <file path="/home/delia/Documentos/Master/movies2u/BackEnd/movies2uExpress/tests/search.test.js">
-    <testCase name="Search Controller tests GET /movies/search?title --&gt; search movie by title" duration="677"/>
-    <testCase name="Search Controller tests GET /movies/search?title --&gt; 404 if not found" duration="167"/>
-    <testCase name="Search Controller tests GET /search?year --&gt; search movie by year" duration="60"/>
-    <testCase name="Search Controller tests GET /search?year --&gt; 404 if not found" duration="37"/>
-    <testCase name="Search Controller tests GET /search?genre --&gt; search movie by genre" duration="44"/>
-    <testCase name="Search Controller tests GET /search?genre --&gt; 404 if not found" duration="40"/>
-    <testCase name="Search Controller tests GET /search? --&gt; 400 not found search criteria" duration="17"/>
-  </file>
-  <file path="/home/delia/Documentos/Master/movies2u/BackEnd/movies2uExpress/tests/reviews.test.js">
-    <testCase name="Reviews Controller tests POST /movies/:movieid/reviews --&gt; create new review" duration="0"/>
-    <testCase name="Reviews Controller tests POST /movies/:movieid/reviews --&gt; 400 invalid request body" duration="1460"/>
-    <testCase name="Reviews Controller tests POST /movies/:movieid/reviews --&gt; 400 reviewLocation is required" duration="21"/>
-    <testCase name="Reviews Controller tests GET /movies/:movieid/reviews/:reviewid --&gt; get review by id" duration="45"/>
-    <testCase name="Reviews Controller tests GET /movies/:movieid/reviews/:reviewid --&gt; 404 review not found" duration="46"/>
-    <testCase name="Reviews Controller tests GET /movies/:movieid/reviews/:reviewid --&gt; 404 movie not found" duration="68"/>
-    <testCase name="Reviews Controller tests PUT /movies/:movieid/reviews/:reviewid --&gt; 400 invalid request body" duration="15"/>
-    <testCase name="Reviews Controller tests DEL /movies/:movieid/reviews/:reviewid --&gt; delete review" duration="0"/>
-  </file>
-  <file path="/home/delia/Documentos/Master/movies2u/BackEnd/movies2uExpress/tests/movies.test.js">
-    <testCase name="Movies Controller tests GET /movies --&gt; list all movies" duration="667"/>
-    <testCase name="Movies Controller tests POST /movies --&gt; create new movie" duration="27"/>
-    <testCase name="Movies Controller tests GET /movies/:movieid --&gt; get movie by id" duration="130"/>
-    <testCase name="Movies Controller tests POST /movies --&gt; 400 invalid request body" duration="10"/>
-    <testCase name="Movies Controller tests GET /movies/:movieid --&gt; 404 if not found" duration="5"/>
-    <testCase name="Movies Controller tests PUT /movies/:movieid --&gt; 400 invalid request body" duration="5"/>
-    <testCase name="Movies Controller tests DEL /movies/:movieid --&gt; delete a movie not found error" duration="4"/>
-  </file>
-  <file path="/home/delia/Documentos/Master/movies2u/BackEnd/movies2uExpress/tests/users.test.js">
-    <testCase name="Users Controller tests GET /user --&gt; get data from current logged user" duration="0"/>
-    <testCase name="Users Controller tests POST /user --&gt; register new user" duration="0"/>
-    <testCase name="Users Controller tests POST /user --&gt; 400 if missing fields" duration="62"/>
-    <testCase name="Users Controller tests POST /user --&gt; 400 if user duplicated" duration="588"/>
-    <testCase name="Users Controller tests POST /user/login --&gt; 403 if wrong creddentials" duration="360"/>
-    <testCase name="Users Controller tests POST /user/login --&gt; 200 login user" duration="208"/>
-  </file>
-  <file path="/home/delia/Documentos/Master/movies2u/BackEnd/movies2uExpress/tests/app.test.js">
-    <testCase name="Movies API should hit homepage" duration="32"/>
+    <testCase name="Search Controller tests GET /movies/search?title --&gt; search movie by title" duration="687"/>
+    <testCase name="Search Controller tests GET /movies/search?title --&gt; 404 if not found" duration="188"/>
+    <testCase name="Search Controller tests GET /search?year --&gt; search movie by year" duration="42"/>
+    <testCase name="Search Controller tests GET /search?year --&gt; 404 if not found" duration="41"/>
+    <testCase name="Search Controller tests GET /search?genre --&gt; search movie by genre" duration="54"/>
+    <testCase name="Search Controller tests GET /search?genre --&gt; 404 if not found" duration="42"/>
+    <testCase name="Search Controller tests GET /search? --&gt; 400 not found search criteria" duration="6"/>
   </file>
 </testExecutions>

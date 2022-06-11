@@ -58,7 +58,7 @@ describe("Search Controller tests", () => {
 
   it("GET /search?genre --> search movie by genre", () => {
     return request(app)
-      .get("/search?genre=Sci-Fi")
+      .get("/search?genre=Action")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
