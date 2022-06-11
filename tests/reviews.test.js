@@ -14,15 +14,16 @@ describe("Reviews Controller tests", () => {
     return request(app)
       .post("/movies/6299c228bd68f47512f96087/reviews")
       .send({
+        author: 'Paco',
         rating: 1.9,
         description: "Awful movie",
-        reviewLocation: "Altamira 42, Almeria, Andalucia, ES",
+      
       })
       .expect("Content-Type", /json/)
-      .expect(406)
+      .expect(400)
       .then((response) => {
-        expect(response.body).toContain(
-          "Movie validation failed"
+        expect(response.body.message).toContain(
+          "reviewLocation is required"
         );
       });
   });
@@ -46,17 +47,17 @@ describe("Reviews Controller tests", () => {
 
   it("GET /movies/:movieid/reviews/:reviewid --> get review by id", () => {
     return request(app)
-      .get("/movies/6299c228bd68f47512f96087/reviews/6299c250bd68f47512f9608a")
+      .get("/movies/62a3df660bb03a2ceb19f787/reviews/62a3e221696750be6f2eda82")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
-        expect(response.body.review._id).toBe("6299c250bd68f47512f9608a");
+        expect(response.body.review._id).toBe("62a3e221696750be6f2eda82");
       });
   });
 
   it("GET /movies/:movieid/reviews/:reviewid --> 404 review not found", () => {
     return request(app)
-      .get("/movies/6299c228bd68f47512f96087/reviews/6298c12851c6e3ace7e78fd1")
+      .get("/movies/62a3df660bb03a2ceb19f787/reviews/6298c12851c6e3ace7e78fd1")
       .expect("Content-Type", /json/)
       .expect(404)
       .then((response) => {
