@@ -47,11 +47,11 @@ describe("Reviews Controller tests", () => {
 
   it("GET /movies/:movieid/reviews/:reviewid --> get review by id", () => {
     return request(app)
-      .get("/movies/62a3df660bb03a2ceb19f787/reviews/62a3e221696750be6f2eda82")
+      .get("/movies/62a3db726632beaf2869c0fc/reviews/62a47845e3a473f037927952")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
-        expect(response.body.review._id).toBe("62a3e221696750be6f2eda82");
+        expect(response.body.review._id).toBe("62a47845e3a473f037927952");
       });
   });
 
@@ -61,7 +61,7 @@ describe("Reviews Controller tests", () => {
       .expect("Content-Type", /json/)
       .expect(404)
       .then((response) => {
-        expect(response.body).toEqual({ message: "review not found" });
+        expect(response.body).toEqual({ message: "No reviews found" });
       });
   });
 
