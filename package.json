@@ -17,7 +17,7 @@
     "cross-env": "^7.0.3",
     "debug": "~2.6.9",
     "dotenv": "^16.0.1",
-    "express": "~4.16.1",
+    "express": "~4.17.3",
     "express-async-handler": "^1.2.0",
     "jest": "^28.1.0",
     "jsonwebtoken": "^8.5.1",
