@@ -13,7 +13,7 @@ const swaggerUI = require("swagger-ui-express");
 /* Swagger */
 const swaggerOptions = {
   swaggerDefinition: {
-    openapi:"3.0.0",
+    openapi: "3.0.0",
     info: {
       title: "Movies API",
       version: "0.1.0",
@@ -27,10 +27,13 @@ const swaggerOptions = {
     },
     servers: [
       { url: "http://localhost:3000", description: "Dev server" },
-      { url: "https://movies2uexpress-xqmie7qm3a-uc.a.run.app", description: "Prod server" },
+      {
+        url: "https://movies2uexpress-xqmie7qm3a-uc.a.run.app",
+        description: "Prod server",
+      },
     ],
   },
-  apis: ["./routes/*.js"],
+  apis: ["src/routes/*.js"],
 };
 
 const specs = swaggerJsDoc(swaggerOptions);
@@ -68,4 +71,12 @@ app.disable("x-powered-by"); //security fix
 console.log(
   `Server running in ${process.env.NODE_ENV} mode on ${process.env.PORT}`
 );
+
+// returns code coverage information if available
+// https://github.com/cypress-io/code-coverage
+/* istanbul ignore next */
+if (global.__coverage__) {
+  require("@cypress/code-coverage/middleware/express")(app);
+}
+
 module.exports = app;

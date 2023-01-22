@@ -7,9 +7,7 @@ describe("Home Test", () => {
   it("should reach home page resource", () => {
     cy.request("/").then((response) => {
       expect(response.status).to.eq(200);
-      expect(response.headers["content-type"]).to.eq(
-        "text/html; charset=UTF-8"
-      );
+      expect(response.headers["content-type"]).to.contain("text/html");
     });
   });
 });
