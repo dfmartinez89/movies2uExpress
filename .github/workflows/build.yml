@@ -36,7 +36,7 @@ jobs:
     - name: Cypress
       uses: cypress-io/github-action@v5
       with:
-        start: npm dev
+        start: npm run dev
         browser: chrome
 
   # Sonar Cloud
