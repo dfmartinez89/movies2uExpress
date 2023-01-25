@@ -33,16 +33,13 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    #- name: Cypress
-     # uses: cypress-io/github-action@v5
-     # with:
-        #start: npm run dev
-       # browser: chrome
-    - name: Test and coverage
-    - run: npm i
-    - run: npm run dev
-    - run: npm run test
-
+    - name: Cypress
+      uses: cypress-io/github-action@v5
+      with:
+        start: npm run dev
+        browser: chrome
+        wait-on: http://localhost:3000
+    
   # Sonar Cloud
     - name: SonarCloud Scan
       if: success() || failure()
