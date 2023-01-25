@@ -43,9 +43,6 @@ jobs:
     - name: SonarCloud Scan
       if: success() || failure()
       uses: SonarSource/sonarcloud-github-action@master
-      with:
-        args: >
-          -Dsonar.log.level=DEBUG
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
