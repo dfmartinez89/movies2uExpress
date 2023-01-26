@@ -6,6 +6,8 @@
     "start": "cross-env NODE_ENV=production node -r ./src/bin/www",
     "dev": "nyc --silent cross-env NODE_ENV=development nodemon ./src/bin/www",
     "test": "nyc npx cypress run",
+    "ci": "start-server-and-test dev http://localhost:3000 test",
+    "coverage": "nyc report --reporter lcov --report-dir ./coverage",
     "test_": "jest --coverage --forceExit --runInBand",
     "testwatch": "jest --watchAll --detectOpenHandles"
   },
@@ -26,6 +28,7 @@
     "mongoose": "^6.3.4",
     "morgan": "~1.9.1",
     "node-geocoder": "^4.0.0",
+    "start-server-and-test": "^1.15.3",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.4.0"
   },
