@@ -1,4 +1,4 @@
-describe("template spec", () => {
+describe("Home spec", () => {
   it("should return the list of all the movies", () => {
     cy.request("GET", "/movies").then((response) => {
       expect(response.status).to.eq(200);
