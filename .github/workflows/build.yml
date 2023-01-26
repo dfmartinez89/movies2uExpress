@@ -29,23 +29,22 @@ jobs:
 
     steps:
 
-  # Test
+  # Install
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - name: Cypress
-      uses: cypress-io/github-action@v5
-      with:
-        start: npm start
-        browser: chrome
+    - name: Install dependencies
+      run: npm i
 
-  # Sonar Cloud
-    - name: SonarCloud Scan
-      if: success() || failure()
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  # Test
+    - name: Cypress tests
+      run: npm run ci
+
+  # Coverage
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     # Build node
     - name: Use Node.js ${{ matrix.node-version }}
