@@ -2,14 +2,13 @@
   "name": "movies2uexpress",
   "version": "0.1.0",
   "private": true,
+  "main": "app.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node -r ./src/bin/www",
     "dev": "nyc --silent cross-env NODE_ENV=development nodemon ./src/bin/www",
-    "test": "nyc npx cypress run",
-    "ci": "start-server-and-test dev http://localhost:3000 test",
-    "coverage": "nyc report --reporter lcov --report-dir ./coverage",
-    "test_": "jest --coverage --forceExit --runInBand",
-    "testwatch": "jest --watchAll --detectOpenHandles"
+    "coverage": "nyc --reporter=lcov npm run unit",
+    "unit": "node --test test/",
+    "testwatch": "node --test --test-reporter=spec --watch test/"
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -22,12 +21,12 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
-    "jest": "^28.1.0",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^4.6.0",
     "mongoose": "^6.3.4",
     "morgan": "~1.9.1",
     "node-geocoder": "^4.0.0",
+    "sinon": "^15.0.1",
     "start-server-and-test": "^1.15.3",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.4.0"
@@ -38,33 +37,15 @@
     "@shelf/jest-mongodb": "^3.0.1",
     "babel-plugin-istanbul": "^6.1.1",
     "cross-env": "^7.0.3",
-    "cypress": "12.3.0",
     "dotenv": "^16.0.1",
     "eslint": "^8.33.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-promise": "^6.1.1",
-    "jest": "^28.1.0",
-    "jest-sonar-reporter": "^2.0.0",
     "mongodb-memory-server": "^8.6.0",
+    "node-mocks-http": "^1.12.1",
     "nodemon": "^2.0.16",
-    "nyc": "^15.1.0",
-    "supertest": "^6.2.3"
-  },
-  "jest": {
-    "verbose": true,
-    "testEnvironment": "node",
-    "collectCoverage": true,
-    "testResultsProcessor": "jest-sonar-reporter",
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/node_modules/",
-      "<rootDir>/models/",
-      "<rootDir>/config/",
-      "<rootDir>/utils/",
-      "<rootDir>/routes/",
-      "<rootDir>/tests/",
-      "<rootDir>/middleware/"
-    ]
+    "nyc": "^15.1.0"
   }
 }
