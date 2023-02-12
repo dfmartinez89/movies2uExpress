@@ -1,20 +1,20 @@
-const express = require("express");
-const router = express.Router();
-const { protect } = require("../middleware/auth");
+const express = require('express')
+const router = express.Router()
+const { protect } = require('../middleware/auth')
 
 const {
   moviesFindAll,
   moviesCreate,
   moviesReadOne,
   moviesUpdateOne,
-  moviesDeleteOne,
-} = require("../controllers/movies");
+  moviesDeleteOne
+} = require('../controllers/movies')
 const {
   reviewsCreate,
   reviewsReadOne,
   reviewsUpdateOne,
-  reviewsDeleteOne,
-} = require("../controllers/reviews");
+  reviewsDeleteOne
+} = require('../controllers/reviews')
 
 /**
  * @swagger
@@ -26,7 +26,7 @@ const {
   *      bearerFormat: JWT
  *     responses:
  *       UnauthorizedError:
- *         description: Not authorized, token is required 
+ *         description: Not authorized, token is required
  *   schemas:
  *     Movie:
  *       type: object
@@ -91,7 +91,7 @@ const {
  *       500:
  *         description: Server error
  */
-router.get("/", moviesFindAll);
+router.get('/', moviesFindAll)
 
 /**
  * @swagger
@@ -119,7 +119,7 @@ router.get("/", moviesFindAll);
  *       406:
  *         description: request body validation
  */
-router.post("/", protect, moviesCreate);
+router.post('/', protect, moviesCreate)
 
 /**
  * @swagger
@@ -146,7 +146,7 @@ router.post("/", protect, moviesCreate);
  *       406:
  *         description: request body validation
  */
-router.get("/:movieid", moviesReadOne);
+router.get('/:movieid', moviesReadOne)
 
 /**
  * @swagger
@@ -179,7 +179,7 @@ router.get("/:movieid", moviesReadOne);
  *       404:
  *         description: movie not found
  */
-router.put("/:movieid", protect, moviesUpdateOne);
+router.put('/:movieid', protect, moviesUpdateOne)
 
 /**
  * @swagger
@@ -206,7 +206,7 @@ router.put("/:movieid", protect, moviesUpdateOne);
  *       404:
  *         description: movie not found
  */
-router.delete("/:movieid", protect, moviesDeleteOne);
+router.delete('/:movieid', protect, moviesDeleteOne)
 
 /**
  * @swagger
@@ -237,7 +237,7 @@ router.delete("/:movieid", protect, moviesDeleteOne);
  *       400:
  *         description: request body validation
  */
-router.post("/:movieid/reviews", reviewsCreate);
+router.post('/:movieid/reviews', reviewsCreate)
 
 /**
  * @swagger
@@ -270,7 +270,7 @@ router.post("/:movieid/reviews", reviewsCreate);
  *       406:
  *         description: request body validation
  */
-router.get("/:movieid/reviews/:reviewid", reviewsReadOne);
+router.get('/:movieid/reviews/:reviewid', reviewsReadOne)
 
 /**
  * @swagger
@@ -305,7 +305,7 @@ router.get("/:movieid/reviews/:reviewid", reviewsReadOne);
  *       406:
  *         description: request body validation
  */
-router.put("/:movieid/reviews/:reviewid", protect, reviewsUpdateOne);
+router.put('/:movieid/reviews/:reviewid', protect, reviewsUpdateOne)
 
 /**
  * @swagger
@@ -338,6 +338,6 @@ router.put("/:movieid/reviews/:reviewid", protect, reviewsUpdateOne);
  *       404:
  *         description: review not found
  */
-router.delete("/:movieid/reviews/:reviewid", protect, reviewsDeleteOne);
+router.delete('/:movieid/reviews/:reviewid', protect, reviewsDeleteOne)
 
-module.exports = router;
+module.exports = router
