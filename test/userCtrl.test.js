@@ -1,14 +1,11 @@
-const userCtrl = require('../src/controllers/users.js')
-const assert = require('node:assert/strict')
 const { describe, it, afterEach } = require('node:test')
+const assert = require('node:assert/strict')
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
-const User = require('../src/models/users.js')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-
-const callTracker = new assert.CallTracker()
-process.on('exit', () => callTracker.verify())
+const userCtrl = require('../src/controllers/users.js')
+const User = require('../src/models/users.js')
 
 describe('user controller unit tests', () => {
   describe('register user unit tests', () => {
