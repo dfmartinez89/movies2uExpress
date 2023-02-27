@@ -63,7 +63,7 @@ describe('user controller unit tests', () => {
           email: 'test@test.com'
         }
       })
-      sinon.stub(User, 'findOne').returns(true)
+      const userStub = sinon.stub(User, 'findOne').returns(true)
       await assert.rejects(
         async () => {
           await userCtrl.registerUser(req, res)
@@ -71,6 +71,7 @@ describe('user controller unit tests', () => {
         (err) => {
           assert.strictEqual(err.message, 'User already exists')
           assert.strictEqual(res.statusCode, 400)
+          assert.strictEqual(userStub.calledOnce, true)
           return true
         }
       )
@@ -87,8 +88,8 @@ describe('user controller unit tests', () => {
         }
       })
 
-      sinon.stub(User, 'findOne').returns(false)
-      sinon.stub(User, 'create').returns(false)
+      const userStubFind = sinon.stub(User, 'findOne').returns(false)
+      const userStubCreate = sinon.stub(User, 'create').returns(false)
 
       await assert.rejects(
         async () => {
@@ -97,6 +98,8 @@ describe('user controller unit tests', () => {
         (err) => {
           assert.strictEqual(err.message, 'Invalid user data')
           assert.strictEqual(res.statusCode, 406)
+          assert.strictEqual(userStubFind.calledOnce, true)
+          assert.strictEqual(userStubCreate.calledOnce, true)
           return true
         }
       )
@@ -113,12 +116,15 @@ describe('user controller unit tests', () => {
         }
       })
 
-      sinon.stub(User, 'findOne').returns(false)
-      sinon.stub(User, 'create').returns(true)
-      sinon.stub(jwt, 'sign').returns('fake-token')
+      const userStubFind = sinon.stub(User, 'findOne').returns(false)
+      const userStubCreate = sinon.stub(User, 'create').returns(true)
+      const jwtStub = sinon.stub(jwt, 'sign').returns('fake-token')
       await userCtrl.registerUser(req, res)
       assert.strictEqual(res._getJSONData().token, 'fake-token')
       assert.strictEqual(res.statusCode, 201)
+      assert.strictEqual(userStubFind.calledOnce, true)
+      assert.strictEqual(userStubCreate.calledOnce, true)
+      assert.strictEqual(jwtStub.calledOnce, true)
     })
   })
 
@@ -136,8 +142,8 @@ describe('user controller unit tests', () => {
           email: 'test@test.com'
         }
       })
-      sinon.stub(User, 'findOne').returns(false)
-      sinon.stub(bcrypt, 'compare').returns(true)
+      const userStubFind = sinon.stub(User, 'findOne').returns(false)
+      const bcryptStub = sinon.stub(bcrypt, 'compare').returns(true)
 
       await assert.rejects(
         async () => {
@@ -146,6 +152,8 @@ describe('user controller unit tests', () => {
         (err) => {
           assert.strictEqual(err.message, 'Invalid credentials')
           assert.strictEqual(res.statusCode, 403)
+          assert.strictEqual(userStubFind.calledOnce, true)
+          assert.strictEqual(bcryptStub.notCalled, true)
           return true
         }
       )
@@ -161,8 +169,8 @@ describe('user controller unit tests', () => {
           email: 'test@test.com'
         }
       })
-      sinon.stub(User, 'findOne').returns(true)
-      sinon.stub(bcrypt, 'compare').returns(false)
+      const userStubFind = sinon.stub(User, 'findOne').returns(true)
+      const bcryptStub = sinon.stub(bcrypt, 'compare').returns(false)
 
       await assert.rejects(
         async () => {
@@ -171,6 +179,9 @@ describe('user controller unit tests', () => {
         (err) => {
           assert.strictEqual(err.message, 'Invalid credentials')
           assert.strictEqual(res.statusCode, 403)
+          assert.strictEqual(userStubFind.calledOnce, true)
+          assert.strictEqual(bcryptStub.calledOnce, true)
+
           return true
         }
       )
@@ -181,19 +192,21 @@ describe('user controller unit tests', () => {
       const req = httpMocks.createRequest({
         method: 'POST',
         body: {
-          name: 'test',
           password: 'test',
           email: 'test@test.com'
         }
       })
-      sinon.stub(User, 'findOne').returns(true)
-      sinon.stub(bcrypt, 'compare').returns(true)
-      sinon.stub(jwt, 'sign').returns('fake-token')
+      const userStubFind = sinon.stub(User, 'findOne').returns(true)
+      const bcryptStub = sinon.stub(bcrypt, 'compare').returns(true)
+      const jwtSub = sinon.stub(jwt, 'sign').returns('fake-token')
 
       await userCtrl.loginUser(req, res)
       assert.strictEqual(res._getJSONData().token, 'fake-token')
       assert.strictEqual(res._getJSONData().success, true)
       assert.strictEqual(res.statusCode, 200)
+      assert.strictEqual(userStubFind.calledOnce, true)
+      assert.strictEqual(bcryptStub.calledOnce, true)
+      assert.strictEqual(jwtSub.calledOnce, true)
     })
   })
 
@@ -203,12 +216,13 @@ describe('user controller unit tests', () => {
       const req = httpMocks.createRequest({
         method: 'GET'
       })
-      sinon.stub(User, 'findById').returns({ _id: 'fake-id', email: 'fake-mail' })
-      // Fails
-      await assert.doesNotReject(async () => {
-        await userCtrl.getUser(req, res)
-        assert.strictEqual(res.statusCode, 200)
+      const userStub = sinon.stub(User, 'findById').returns({
+        id: sinon.stub().resolves('fake-id'),
+        email: sinon.stub().resolves('fake-mail')
       })
+      await userCtrl.getUser(req, res)
+      assert.strictEqual(userStub.calledOnceWith('test@test.com'), true)
+      assert.strictEqual(res.statusCode, 200)
     })
   })
 
@@ -216,9 +230,11 @@ describe('user controller unit tests', () => {
     afterEach(() => {
       sinon.restore()
     })
+
     it('should return jwt with 30 days expiration', async () => {
-      sinon.stub(jwt, 'sign').returns('fake-token')
+      const jwtSub = sinon.stub(jwt, 'sign').returns('fake-token')
       assert.strictEqual(userCtrl.genToken('fake-id'), 'fake-token')
+      assert.strictEqual(jwtSub.calledOnce, true)
     })
   })
 })

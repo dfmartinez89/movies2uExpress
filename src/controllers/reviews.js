@@ -47,43 +47,6 @@ const reviewsReadOne = asyncHandler(async (req, res) => {
   }
 })
 
-/* const reviewsReadOne = asyncHandler((req, res) => {
-  Movies
-    .findById(req.params.movieid)
-    .select('title reviews')
-    .exec((err, movie) => {
-      if (!movie) {
-        return res.status(404).json({
-          message: 'movie not found'
-        })
-      } else if (err) {
-        return res.status(400).json({
-          message: err.message
-        })
-      }
-      if (movie.reviews && movie.reviews.length > 0) {
-        const review = movie.reviews.id(req.params.reviewid)
-        if (!review) {
-          return res.status(404).json({
-            message: 'reviewid not found'
-          })
-        } else {
-          return res.status(200).json({
-            movie: {
-              title: movie.title,
-              id: req.params.movieid,
-              review
-            }
-          })
-        }
-      } else {
-        return res.status(404).json({
-          message: 'No reviews found'
-        })
-      }
-    })
-}) */
-
 /**
  * @desc Create new review
  * @route POST movies/:movieid/reviews/
@@ -93,13 +56,12 @@ const reviewsCreate = asyncHandler(async (req, res, next) => {
     return res.status(400).json({
       message: 'reviewLocation is required'
     })
-  } else {
-    try {
-      const movie = await Movies.findById(req.params.movieid).select('reviews')
-      doAddReview(req, res, movie)
-    } catch (e) {
-      res.status(400).json(e.message)
-    }
+  }
+  try {
+    const movie = await Movies.findById(req.params.movieid).select('reviews')
+    await doAddReview(req, res, movie)
+  } catch (e) {
+    res.status(400).json({ message: e.message })
   }
 })
 
@@ -111,10 +73,11 @@ const doAddReview = async (req, res, movie) => {
     formattedLocation: loc[0].formattedAddress
   }
   if (!movie) {
-    return res.status(400).json({
+    return res.status(404).json({
       message: 'movie not found'
     })
-  } else {
+  }
+  try {
     movie.reviews.push({
       author: req.body.author,
       rating: req.body.rating,
@@ -122,19 +85,15 @@ const doAddReview = async (req, res, movie) => {
       reviewGeoLocation: parseLocation
     })
 
-    movie.save((error, movie) => {
-      // pre saving a movie middleware breaks here expecting a location on parent document
-      if (error) {
-        res.status(406).json(error.message)
-      } else {
-        updateAverageRating(movie._id)
-        const thisReview = movie.reviews[movie.reviews.length - 1]
-        return res.status(201).json({
-          success: true,
-          data: thisReview
-        })
-      }
+    await movie.save(movie)
+    await updateAverageRating(movie._id)
+    const thisReview = movie.reviews[movie.reviews.length - 1]
+    return res.status(201).json({
+      success: true,
+      data: thisReview
     })
+  } catch (error) {
+    res.status(406).json(error.message)
   }
 }
 
@@ -159,11 +118,10 @@ const doSetAverageRating = (movie) => {
     ratingAverage = parseInt(ratingTotal / reviewCount, 10)
     movie.rating = ratingAverage
     movie.save((error) => {
-      if (error) {
-        console.log(error)
-      } else {
+      if (!error) {
         console.log('Average rating updated to', ratingAverage)
       }
+      console.log(error)
     })
   }
 }
@@ -280,5 +238,8 @@ module.exports = {
   reviewsReadOne,
   reviewsCreate,
   reviewsUpdateOne,
-  reviewsDeleteOne
+  reviewsDeleteOne,
+  doAddReview,
+  updateAverageRating,
+  doSetAverageRating
 }

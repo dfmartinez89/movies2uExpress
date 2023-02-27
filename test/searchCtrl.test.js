@@ -13,12 +13,13 @@ describe('search controller unit tests', () => {
     })
 
     it('getImdbResponse should console log error from imdb', async () => {
-      sinon.stub(axios, 'get').throws(new Error('error conecting to imdb'))
+      const axiosStub = sinon.stub(axios, 'get').throws(new Error('error conecting to imdb'))
       await assert.rejects(
         async () => {
           await searchCtrl.getImdbResponse('test')
         },
         (err) => {
+          assert.strictEqual(axiosStub.calledOnce, true)
           assert.strictEqual(err.message, 'error conecting to imdb')
           return true
         }
@@ -33,11 +34,12 @@ describe('search controller unit tests', () => {
           rated: 'R'
         }
       }
-      sinon.stub(axios, 'get').resolves(mockResponse)
+      const axiosStub = sinon.stub(axios, 'get').resolves(mockResponse)
       const result = await searchCtrl.getImdbResponse('test')
       assert.strictEqual(result.title, 'The Matrix')
       assert.strictEqual(result.year, '1999')
       assert.strictEqual(result.rated, 'R')
+      assert.strictEqual(axiosStub.calledOnce, true)
     })
   })
 
@@ -47,7 +49,7 @@ describe('search controller unit tests', () => {
     })
 
     it('findImdbMoviesBy should return 400 when search criteria is empty', async () => {
-      sinon.stub(Movies, 'find').returns([])
+      const movieStub = sinon.stub(Movies, 'find').returns([])
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
         method: 'POST',
@@ -58,6 +60,7 @@ describe('search controller unit tests', () => {
       await searchCtrl.findImdbMoviesBy(req, res)
       assert.strictEqual(res.statusCode, 400)
       assert.strictEqual(res._getJSONData().message, 'missing search criteria')
+      assert.strictEqual(movieStub.notCalled, true)
     })
 
     it('findImdbMoviesBy should return 200 and json data when getImdbResponse resolves', async () => {
@@ -68,7 +71,7 @@ describe('search controller unit tests', () => {
           rated: 'R'
         }
       }
-      sinon.stub(axios, 'get').resolves(mockResponse)
+      const axiosStub = sinon.stub(axios, 'get').resolves(mockResponse)
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
         method: 'GET',
@@ -81,6 +84,7 @@ describe('search controller unit tests', () => {
       assert.strictEqual(res._getJSONData().title, 'The Matrix')
       assert.strictEqual(res._getJSONData().year, '1999')
       assert.strictEqual(res._getJSONData().rated, 'R')
+      assert.strictEqual(axiosStub.calledOnce, true)
     })
   })
 
@@ -97,12 +101,13 @@ describe('search controller unit tests', () => {
           title: 'TEST'
         }
       })
-      sinon.stub(Movies, 'find').returns([])
+      const movieStub = sinon.stub(Movies, 'find').returns([])
       await searchCtrl.searchUtils(req, res)
       assert.strictEqual(res.statusCode, 404)
       assert.strictEqual(res._getJSONData().data, 'there are no movies with title TEST')
       assert.strictEqual(res._getJSONData().success, true)
       assert.strictEqual(res._getJSONData().count, 0)
+      assert.strictEqual(movieStub.calledOnce, true)
     })
 
     it('searchUtils should return 200 and json data when movie is found by queried title', async () => {
@@ -129,10 +134,11 @@ describe('search controller unit tests', () => {
           }
         ]
       }
-      sinon.stub(Movies, 'find').returns(mockResponse)
+      const movieStub = sinon.stub(Movies, 'find').returns(mockResponse)
       await searchCtrl.searchUtils(req, res)
       assert.strictEqual(res.statusCode, 200)
       assert.strictEqual(res._getJSONData().success, true)
+      assert.strictEqual(movieStub.calledOnce, true)
     })
 
     it('searchUtils should return 404 when no movie is found by queried year', async () => {
@@ -143,12 +149,13 @@ describe('search controller unit tests', () => {
           year: 2007
         }
       })
-      sinon.stub(Movies, 'find').returns([])
+      const movieStub = sinon.stub(Movies, 'find').returns([])
       await searchCtrl.searchUtils(req, res)
       assert.strictEqual(res.statusCode, 404)
       assert.strictEqual(res._getJSONData().data, 'there are no movies on the year 2007')
       assert.strictEqual(res._getJSONData().success, true)
       assert.strictEqual(res._getJSONData().count, 0)
+      assert.strictEqual(movieStub.calledOnce, true)
     })
 
     it('searchUtils should return 422 when queried year is not a number', async () => {
@@ -188,10 +195,11 @@ describe('search controller unit tests', () => {
           }
         ]
       }
-      sinon.stub(Movies, 'find').returns(mockResponse)
+      const movieStub = sinon.stub(Movies, 'find').returns(mockResponse)
       await searchCtrl.searchUtils(req, res)
       assert.strictEqual(res.statusCode, 200)
       assert.strictEqual(res._getJSONData().success, true)
+      assert.strictEqual(movieStub.calledOnce, true)
     })
 
     it('searchUtils should return 404 when no movie is found by queried genre', async () => {
@@ -202,12 +210,13 @@ describe('search controller unit tests', () => {
           genre: 'Terror'
         }
       })
-      sinon.stub(Movies, 'find').returns([])
+      const movieStub = sinon.stub(Movies, 'find').returns([])
       await searchCtrl.searchUtils(req, res)
       assert.strictEqual(res.statusCode, 404)
       assert.strictEqual(res._getJSONData().data, 'there are no movies with genre Terror')
       assert.strictEqual(res._getJSONData().success, true)
       assert.strictEqual(res._getJSONData().count, 0)
+      assert.strictEqual(movieStub.calledOnce, true)
     })
 
     it('searchUtils should return 200 and json data when movie is found by queried genre', async () => {
@@ -234,10 +243,11 @@ describe('search controller unit tests', () => {
           }
         ]
       }
-      sinon.stub(Movies, 'find').returns(mockResponse)
+      const movieStub = sinon.stub(Movies, 'find').returns(mockResponse)
       await searchCtrl.searchUtils(req, res)
       assert.strictEqual(res.statusCode, 200)
       assert.strictEqual(res._getJSONData().success, true)
+      assert.strictEqual(movieStub.calledOnce, true)
     })
 
     it('searchUtils should return 400 when missing search criteria', async () => {
