@@ -609,6 +609,19 @@ describe('reviews controller unit tests', () => {
         title: 'Transformers',
         reviews: [{
           reviewGeoLocation: 'Almeria, Spain',
+          author: 'Damian',
+          rating: 5,
+          description: 'The very first movie of the saga is always the best',
+          _id: '507f1f77bcf86cd799439012',
+          createdAt: '2023-02-25T10:08:31.081Z'
+        }]
+      }
+      const movie = new Movies(mockMovie)
+      const mockMovieAfter = {
+        _id: '507f1f77bcf86cd799439011',
+        title: 'Transformers',
+        reviews: [{
+          reviewGeoLocation: 'Almeria, Spain',
           author: 'Nabe',
           rating: 4,
           description: 'Too nerdy for me',
@@ -617,12 +630,12 @@ describe('reviews controller unit tests', () => {
           createdAt: '2023-02-25T10:08:31.081Z'
         }]
       }
-      const movie = new Movies(mockMovie)
+      const movieAfter = new Movies(mockMovieAfter)
       const movieStub = sinon.stub(Movies, 'findById').onFirstCall().returns({
         select: sinon.stub().withArgs('reviews').resolves(movie)
       }).onSecondCall().returns({
         select: sinon.stub().withArgs('rating reviews').returnsThis(),
-        exec: sinon.stub().resolves(movie)
+        exec: sinon.stub().resolves(movieAfter)
       })
       const saveStub = sinon.stub(Movies.prototype, 'save').resolves(true)
       const averageStub = sinon.stub(reviewsCtrl, 'updateAverageRating').resolves(true)
@@ -686,13 +699,227 @@ describe('reviews controller unit tests', () => {
     afterEach(() => {
       sinon.restore()
     })
-    it.todo('should return 400 when movieid is not sent', async () => {})
-    it.todo('should return 400 when reviewid is not sent', async () => {})
-    it.todo('should return 404 when not movie is found for the given id', async () => {})
-    it.todo('should return 404 when not review is found for the given id', async () => {})
-    it.todo('should return 204 when the reviews is removed successfully', async () => {})
-    it.todo('should return 406 when model layer call throws an error saving the movie', async () => {})
-    it.todo('should return 404 when the movie has no review', async () => {})
-    it.todo('should return 400 when model layer call throws an error', async () => {})
+    it('should return 400 when movieid is not sent', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'DELETE',
+        params: {
+          reviewid: '507f1f77bcf86cd799439011'
+        }
+      })
+      await reviewsCtrl.reviewsDeleteOne(req, res)
+      assert.strictEqual(res.statusCode, 400)
+      assert.strictEqual(res._getJSONData().message, 'Not found, movieid and reviewid are both required')
+    })
+
+    it('should return 400 when reviewid is not sent', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'DELETE',
+        params: {
+          movieid: '507f1f77bcf86cd799439011'
+        }
+      })
+      await reviewsCtrl.reviewsDeleteOne(req, res)
+      assert.strictEqual(res.statusCode, 400)
+      assert.strictEqual(res._getJSONData().message, 'Not found, movieid and reviewid are both required')
+    })
+
+    it('should return 404 when not movie is found for the given id', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'DELETE',
+        params: {
+          movieid: '507f1f77bcf86cd799439011',
+          reviewid: '507f1f77bcf86cd799439012'
+        },
+        body: { reviewLocation: 'Trinidad, Cuba' }
+      })
+      const movieStub = sinon.stub(Movies, 'findById').returns({
+        select: sinon.stub().withArgs('reviews').resolves(null)
+      })
+      await reviewsCtrl.reviewsDeleteOne(req, res)
+      assert.strictEqual(res.statusCode, 404)
+      assert.strictEqual(res._getJSONData().message, 'Movie not found')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+    })
+
+    it('should return 404 when the movie has no reviews', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'DELETE',
+        params: {
+          movieid: '507f1f77bcf86cd799439011',
+          reviewid: '507f1f77bcf86cd799439012'
+        },
+        body: { reviewLocation: 'Trinidad, Cuba' }
+      })
+      const mockMovie = {
+        _id: '507f1f77bcf86cd799439011',
+        title: 'Transformers',
+        reviews: []
+      }
+      const movie = new Movies(mockMovie)
+      const movieStub = sinon.stub(Movies, 'findById').returns({
+        select: sinon.stub().withArgs('reviews').resolves(movie)
+      })
+      await reviewsCtrl.reviewsDeleteOne(req, res)
+      assert.strictEqual(res.statusCode, 404)
+      assert.strictEqual(res._getJSONData().message, 'No review to delete')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+    })
+
+    it('should return 404 when not review is found for the given id', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'DELETE',
+        params: {
+          movieid: '507f1f77bcf86cd799439011',
+          reviewid: '507f1f77bcf86cd799439012'
+        },
+        body: { reviewLocation: 'Trinidad, Cuba' }
+      })
+      const mockMovie = {
+        _id: '507f1f77bcf86cd799439011',
+        title: 'Transformers',
+        reviews: [{
+          reviewGeoLocation: 'Almeria, Spain',
+          author: 'Nabe',
+          rating: 4,
+          description: 'Too nerdy for me',
+          reviewLocation: 'Sevilla, Spain',
+          _id: '507f1f77bcf86cd799439013',
+          createdAt: '2023-02-25T10:08:31.081Z'
+        }]
+      }
+      const movie = new Movies(mockMovie)
+      const movieStub = sinon.stub(Movies, 'findById').returns({
+        select: sinon.stub().withArgs('reviews').resolves(movie)
+      })
+      await reviewsCtrl.reviewsDeleteOne(req, res)
+      assert.strictEqual(res.statusCode, 404)
+      assert.strictEqual(res._getJSONData().message, 'Review not found')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+    })
+
+    it('should return 204 when the reviews is removed successfully', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'DELETE',
+        params: {
+          movieid: '507f1f77bcf86cd799439011',
+          reviewid: '507f1f77bcf86cd799439012'
+        }
+      })
+      const mockMovie = {
+        _id: '507f1f77bcf86cd799439011',
+        title: 'Transformers',
+        reviews: [{
+          reviewGeoLocation: 'Almeria, Spain',
+          author: 'Nabe',
+          rating: 4,
+          description: 'Too nerdy for me',
+          reviewLocation: 'Sevilla, Spain',
+          _id: '507f1f77bcf86cd799439012',
+          createdAt: '2023-02-25T10:08:31.081Z'
+        },
+        {
+          reviewGeoLocation: 'Almeria, Spain',
+          author: 'Damian',
+          rating: 5,
+          description: 'The very first movie of the saga is always the best',
+          _id: '507f1f77bcf86cd799439013',
+          createdAt: '2023-02-25T10:08:31.081Z'
+        }]
+      }
+      const movie = new Movies(mockMovie)
+      const mockMovieAfter = {
+        _id: '507f1f77bcf86cd799439011',
+        title: 'Transformers',
+        reviews: [{
+          reviewGeoLocation: 'Almeria, Spain',
+          author: 'Nabe',
+          rating: 4,
+          description: 'Too nerdy for me',
+          reviewLocation: 'Sevilla, Spain',
+          _id: '507f1f77bcf86cd799439012',
+          createdAt: '2023-02-25T10:08:31.081Z'
+        }]
+      }
+      const movieAfter = new Movies(mockMovieAfter)
+      const movieStub = sinon.stub(Movies, 'findById').onFirstCall().returns({
+        select: sinon.stub().withArgs('reviews').resolves(movie)
+      }).onSecondCall().returns({
+        select: sinon.stub().withArgs('rating reviews').returnsThis(),
+        exec: sinon.stub().resolves(movieAfter)
+      })
+      const saveStub = sinon.stub(Movies.prototype, 'save').resolves(true)
+      await reviewsCtrl.reviewsDeleteOne(req, res)
+      assert.strictEqual(res.statusCode, 204)
+      assert.strictEqual(movie.reviews.length, 1)
+      assert.strictEqual(movieStub.calledTwice, true)
+      assert.strictEqual(movieStub.calledWithExactly(movie._id), true)
+      assert.strictEqual(saveStub.calledOnce, true)
+      assert.strictEqual(res._getJSONData().success, true)
+    })
+
+    it('should return 406 when model layer call throws an error saving the movie', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'DELETE',
+        params: {
+          movieid: '507f1f77bcf86cd799439011',
+          reviewid: '507f1f77bcf86cd799439012'
+        }
+      })
+      const mockMovie = {
+        _id: '507f1f77bcf86cd799439011',
+        title: 'Transformers',
+        reviews: [{
+          reviewGeoLocation: 'Almeria, Spain',
+          author: 'Nabe',
+          rating: 4,
+          description: 'Too nerdy for me',
+          reviewLocation: 'Sevilla, Spain',
+          _id: '507f1f77bcf86cd799439012',
+          createdAt: '2023-02-25T10:08:31.081Z'
+        },
+        {
+          reviewGeoLocation: 'Almeria, Spain',
+          author: 'Damian',
+          rating: 5,
+          description: 'The very first movie of the saga is always the best',
+          _id: '507f1f77bcf86cd799439013',
+          createdAt: '2023-02-25T10:08:31.081Z'
+        }]
+      }
+      const movie = new Movies(mockMovie)
+      const mockMovieAfter = {
+        _id: '507f1f77bcf86cd799439011',
+        title: 'Transformers',
+        reviews: [{
+          reviewGeoLocation: 'Almeria, Spain',
+          author: 'Nabe',
+          rating: 4,
+          description: 'Too nerdy for me',
+          reviewLocation: 'Sevilla, Spain',
+          _id: '507f1f77bcf86cd799439012',
+          createdAt: '2023-02-25T10:08:31.081Z'
+        }]
+      }
+      const movieAfter = new Movies(mockMovieAfter)
+      const movieStub = sinon.stub(Movies, 'findById').onFirstCall().returns({
+        select: sinon.stub().withArgs('reviews').resolves(movie)
+      }).onSecondCall().returns({
+        select: sinon.stub().withArgs('rating reviews').returnsThis(),
+        exec: sinon.stub().resolves(movieAfter)
+      })
+      const saveStub = sinon.stub(Movies.prototype, 'save').throwsException(new Error('error saving movie'))
+      await reviewsCtrl.reviewsDeleteOne(req, res)
+      assert.strictEqual(res.statusCode, 406)
+      assert.strictEqual(movieStub.calledOnceWith(req.params.movieid), true)
+      assert.strictEqual(saveStub.calledOnce, true)
+      assert.strictEqual(res._getJSONData().message, 'error saving movie')
+    })
   })
 })

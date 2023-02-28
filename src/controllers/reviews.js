@@ -192,36 +192,29 @@ const reviewsDeleteOne = asyncHandler(async (req, res) => {
     const movie = await Movies.findById(req.params.movieid).select('reviews')
     if (!movie) {
       return res.status(404).json({
-        message: 'movie not found'
+        message: 'Movie not found'
       })
     }
-    if (movie.reviews && movie.reviews.length > 0) {
-      if (!movie.reviews.id(req.params.reviewid)) {
-        return res.status(404).json({
-          message: 'review not found'
-        })
-      } else {
-        movie.reviews.id(req.params.reviewid).remove()
-        movie.save((err) => {
-          if (err) {
-            return res.status(406).json({
-              message: err._message
-            })
-          } else {
-            updateAverageRating(movie._id)
-            return res.status(204).json({
-              success: true
-            })
-          }
-        })
-      }
-    } else {
+    if (!movie.reviews || movie.reviews.length === 0) {
       return res.status(404).json({
         message: 'No review to delete'
       })
     }
+    if (!movie.reviews.id(req.params.reviewid)) {
+      return res.status(404).json({
+        message: 'Review not found'
+      })
+    }
+    movie.reviews.id(req.params.reviewid).remove()
+    await movie.save()
+    await updateAverageRating(movie._id)
+    return res.status(204).json({
+      success: true
+    })
   } catch (e) {
-    res.status(400).json(e.message)
+    return res.status(406).json({
+      message: e.message
+    })
   }
 })
 
