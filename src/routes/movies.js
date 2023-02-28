@@ -293,6 +293,12 @@ router.get('/:movieid/reviews/:reviewid', reviewsReadOne)
  *           type: string
  *         required: true
  *         description: The review id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Review'
  *     responses:
  *       200:
  *         description: The review details

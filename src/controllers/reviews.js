@@ -136,54 +136,45 @@ const reviewsUpdateOne = asyncHandler(async (req, res) => {
     return res.status(400).json({
       message: 'reviewLocation is required'
     })
-  } else {
-    try {
-      const loc = await geocoder.geocode(req.body.reviewLocation)
-      const parseLocation = {
-        type: 'Point',
-        coordinates: [loc[0].longitude, loc[0].latitude],
-        formattedLocation: loc[0].formattedAddress
-      }
-      const movie = await Movies.findById(req.params.movieid).select('reviews')
-      if (!movie) {
-        return res.status(404).json({
-          message: 'movie not found'
-        })
-      }
-      if (movie.reviews && movie.reviews.length > 0) {
-        const thisReview = movie.reviews.id(req.params.reviewid)
-        if (!thisReview) {
-          return res.status(400).json({
-            message: 'review not found'
-          })
-        } else {
-          thisReview.author = req.body.author
-          thisReview.rating = req.body.rating
-          thisReview.description = req.body.description
-          thisReview.reviewGeoLocation = parseLocation
-
-          movie.save((error, movie) => {
-            if (error) {
-              return res.status(406).json({
-                message: error.message
-              })
-            } else {
-              updateAverageRating(movie._id)
-              return res.status(201).json({
-                success: true,
-                data: thisReview
-              })
-            }
-          })
-        }
-      } else {
-        return res.status(404).json({
-          message: 'No review to update'
-        })
-      }
-    } catch (e) {
-      console.log(e)
+  }
+  try {
+    const loc = await geocoder.geocode(req.body.reviewLocation)
+    const parseLocation = {
+      type: 'Point',
+      coordinates: [loc[0].longitude, loc[0].latitude],
+      formattedLocation: loc[0].formattedAddress
     }
+    const movie = await Movies.findById(req.params.movieid).select('reviews')
+    if (!movie) {
+      return res.status(404).json({
+        message: 'Movie not found'
+      })
+    }
+    if (!movie.reviews || movie.reviews.length === 0) {
+      return res.status(404).json({
+        message: 'No review to update'
+      })
+    }
+    const thisReview = movie.reviews.id(req.params.reviewid)
+    if (!thisReview) {
+      return res.status(404).json({
+        message: 'Review not found'
+      })
+    }
+    thisReview.author = req.body.author
+    thisReview.rating = req.body.rating
+    thisReview.description = req.body.description
+    thisReview.reviewGeoLocation = parseLocation
+    movie.save(movie)
+    await updateAverageRating(movie._id)
+    return res.status(201).json({
+      success: true,
+      data: thisReview
+    })
+  } catch (e) {
+    return res.status(406).json({
+      message: e.message
+    })
   }
 })
 
