@@ -18,7 +18,7 @@ const swaggerOptions = {
       title: 'Movies API',
       version: '0.1.0',
       description:
-        "API with required functionality for UAL's signature final proyect",
+        'API with basic CRUD functionality',
       contact: {
         name: 'Damian Ferro',
         url: 'https://github.com/thywillbedone/movies2uExpress',
