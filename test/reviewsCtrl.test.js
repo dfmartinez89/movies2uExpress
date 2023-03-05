@@ -501,7 +501,7 @@ describe('reviews controller unit tests', () => {
     it('should return 400 when reviewLocation is not sent', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
-        method: 'POST',
+        method: 'PUT',
         params: {
           movieid: '507f1f77bcf86cd799439011',
           reviewid: '507f1f77bcf86cd799439012'
@@ -515,7 +515,7 @@ describe('reviews controller unit tests', () => {
     it('should return 404 when not movie is found for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
-        method: 'POST',
+        method: 'PUT',
         params: {
           movieid: '507f1f77bcf86cd799439011',
           reviewid: '507f1f77bcf86cd799439012'
@@ -534,7 +534,7 @@ describe('reviews controller unit tests', () => {
     it('should return 404 when the movie has no review', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
-        method: 'POST',
+        method: 'PUT',
         params: {
           movieid: '507f1f77bcf86cd799439011',
           reviewid: '507f1f77bcf86cd799439012'
@@ -559,7 +559,7 @@ describe('reviews controller unit tests', () => {
     it('should return 404 when not review is found for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
-        method: 'POST',
+        method: 'PUT',
         params: {
           movieid: '507f1f77bcf86cd799439011',
           reviewid: '507f1f77bcf86cd799439012'
@@ -592,7 +592,7 @@ describe('reviews controller unit tests', () => {
     it('should update the review with the data sent in request,return 201, call updateAverageRating and return data of review updated', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
-        method: 'GET',
+        method: 'PUT',
         params: {
           movieid: '507f1f77bcf86cd799439011',
           reviewid: '507f1f77bcf86cd799439012'
@@ -644,7 +644,7 @@ describe('reviews controller unit tests', () => {
       assert.strictEqual(movie.reviews.length, 1)
       assert.strictEqual(movieStub.calledTwice, true)
       assert.strictEqual(movieStub.calledWithExactly(movie._id), true)
-      assert.strictEqual(saveStub.calledOnceWith(movie), true)
+      assert.strictEqual(saveStub.calledOnce, true)
       assert.strictEqual(res._getJSONData().success, true)
       assert.deepStrictEqual(res._getJSONData().data.author, 'Nabe')
       assert.deepStrictEqual(res._getJSONData().data.description, 'Too nerdy for me')
@@ -654,7 +654,7 @@ describe('reviews controller unit tests', () => {
     it('should return 406 when model layer call throws an error saving the movie', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
-        method: 'GET',
+        method: 'PUT',
         params: {
           movieid: '507f1f77bcf86cd799439011',
           reviewid: '507f1f77bcf86cd799439012'
@@ -690,7 +690,7 @@ describe('reviews controller unit tests', () => {
       await reviewsCtrl.reviewsUpdateOne(req, res)
       assert.strictEqual(res.statusCode, 406)
       assert.strictEqual(movieStub.calledOnceWith(req.params.movieid), true)
-      assert.strictEqual(saveStub.calledOnceWith(movie), true)
+      assert.strictEqual(saveStub.calledOnce, true)
       assert.strictEqual(res._getJSONData().message, 'error saving movie')
     })
   })

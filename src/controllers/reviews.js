@@ -165,7 +165,7 @@ const reviewsUpdateOne = asyncHandler(async (req, res) => {
     thisReview.rating = req.body.rating
     thisReview.description = req.body.description
     thisReview.reviewGeoLocation = parseLocation
-    movie.save(movie)
+    await movie.save()
     await updateAverageRating(movie._id)
     return res.status(201).json({
       success: true,
