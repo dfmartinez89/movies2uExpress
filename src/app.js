@@ -10,6 +10,9 @@ const { errorHandler } = require('./middleware/errorHandler')
 const swaggerJsDoc = require('swagger-jsdoc')
 const swaggerUI = require('swagger-ui-express')
 
+// Used for graceful shutdown
+process.title = 'movies2uExpress'
+
 /* Swagger */
 const swaggerOptions = {
   swaggerDefinition: {
@@ -71,12 +74,5 @@ app.disable('x-powered-by') // security fix
 console.log(
   `Server running in ${process.env.NODE_ENV} mode on ${process.env.PORT}`
 )
-
-// returns code coverage information if available
-// https://github.com/cypress-io/code-coverage
-/* istanbul ignore next */
-if (global.__coverage__) {
-  require('@cypress/code-coverage/middleware/express')(app)
-}
 
 module.exports = app

@@ -4,8 +4,8 @@ const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const userCtrl = require('../src/controllers/users.js')
-const User = require('../src/models/users.js')
+const userCtrl = require('../../src/controllers/users.js')
+const User = require('../../src/models/users.js')
 
 describe('user controller unit tests', () => {
   describe('register user unit tests', () => {
@@ -20,17 +20,9 @@ describe('user controller unit tests', () => {
           name: 'test'
         }
       })
-
-      await assert.rejects(
-        async () => {
-          await userCtrl.registerUser(req, res)
-        },
-        (err) => {
-          assert.strictEqual(err.message, 'Please add all required fields')
-          assert.strictEqual(res.statusCode, 400)
-          return true
-        }
-      )
+      await userCtrl.registerUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'Please add all required fields')
+      assert.strictEqual(res.statusCode, 400)
     })
 
     it('registerUser should return 400 when password is missing', async () => {
@@ -42,16 +34,9 @@ describe('user controller unit tests', () => {
         }
       })
 
-      await assert.rejects(
-        async () => {
-          await userCtrl.registerUser(req, res)
-        },
-        (err) => {
-          assert.strictEqual(err.message, 'Please add all required fields')
-          assert.strictEqual(res.statusCode, 400)
-          return true
-        }
-      )
+      await userCtrl.registerUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'Please add all required fields')
+      assert.strictEqual(res.statusCode, 400)
     })
 
     it('should return 400 when user already exists', async () => {
@@ -64,20 +49,13 @@ describe('user controller unit tests', () => {
         }
       })
       const userStub = sinon.stub(User, 'findOne').returns(true)
-      await assert.rejects(
-        async () => {
-          await userCtrl.registerUser(req, res)
-        },
-        (err) => {
-          assert.strictEqual(err.message, 'User already exists')
-          assert.strictEqual(res.statusCode, 400)
-          assert.strictEqual(userStub.calledOnce, true)
-          return true
-        }
-      )
+      await userCtrl.registerUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'User already exists')
+      assert.strictEqual(res.statusCode, 400)
+      assert.strictEqual(userStub.calledOnce, true)
     })
 
-    it('should return 406 when user data is invalid', async () => {
+    it('should return 400 when user data is invalid', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
         method: 'POST',
@@ -87,22 +65,13 @@ describe('user controller unit tests', () => {
           email: 'test@test.com'
         }
       })
-
       const userStubFind = sinon.stub(User, 'findOne').returns(false)
-      const userStubCreate = sinon.stub(User, 'create').returns(false)
-
-      await assert.rejects(
-        async () => {
-          await userCtrl.registerUser(req, res)
-        },
-        (err) => {
-          assert.strictEqual(err.message, 'Invalid user data')
-          assert.strictEqual(res.statusCode, 406)
-          assert.strictEqual(userStubFind.calledOnce, true)
-          assert.strictEqual(userStubCreate.calledOnce, true)
-          return true
-        }
-      )
+      const userStubCreate = sinon.stub(User, 'create').throws(new Error('Invalid user data'))
+      await userCtrl.registerUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'Invalid user data')
+      assert.strictEqual(res.statusCode, 406)
+      assert.strictEqual(userStubFind.calledOnce, true)
+      assert.strictEqual(userStubCreate.calledOnce, true)
     })
 
     it('should return 201 when user is created', async () => {

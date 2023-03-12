@@ -9,31 +9,31 @@ const asyncHandler = require('express-async-handler')
  * @route POST /users
  * @acces public */
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body
+  const { email, password } = req.body
   if (!email || !password) {
-    res.status(400)
-    throw new Error('Please add all required fields')
+    return res.status(400).json({
+      message: 'Please add all required fields'
+    })
   }
-  const userExists = await User.findOne({ email })
-  if (userExists) {
-    res.status(400)
-    throw new Error('User already exists')
-  }
-
-  const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(password, salt)
-
-  const user = await User.create({ name, email, password: hashedPassword })
-  if (user) {
+  try {
+    const userExists = await User.findOne({ email })
+    if (userExists) {
+      return res.status(400).json({
+        message: 'User already exists'
+      })
+    }
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+    const user = await User.create({ email, password: hashedPassword })
     res.status(201).json({
       _id: user.id,
-      name: user.name,
       email: user.email,
       token: genToken(user._id)
     })
-  } else {
-    res.status(406)
-    throw new Error('Invalid user data')
+  } catch (e) {
+    return res.status(406).json({
+      message: e.message
+    })
   }
 })
 
@@ -48,7 +48,6 @@ const loginUser = asyncHandler(async (req, res) => {
     res.status(200).json({
       success: true,
       _id: user.id,
-      name: user.name,
       email: user.email,
       token: genToken(user._id)
     })
