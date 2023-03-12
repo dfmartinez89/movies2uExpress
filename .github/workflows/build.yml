@@ -36,6 +36,11 @@ jobs:
     - name: Install dependencies
       run: npm i
 
+  # Lint
+    - name: Run eslint with reviewdog
+      uses: reviewdog/action-eslint@v1.18.0
+
+
   # Test
     - name: Unit tests
       run: npm run coverage

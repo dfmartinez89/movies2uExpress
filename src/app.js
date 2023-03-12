@@ -48,7 +48,10 @@ const moviesRouter = require('./routes/movies')
 const usersRouter = require('./routes/users')
 
 // Enable cors
-app.use(cors())
+const corsOptions = {
+  origin: 'localhost:3000' // Compliant
+}
+app.use(cors(corsOptions))
 
 // Connect database
 connectDB()

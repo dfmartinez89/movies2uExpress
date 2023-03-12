@@ -15,7 +15,7 @@
     "test": "node --test test/integration",
     "testwatch": "node --test --test-reporter=spec --watch test/",
     "ci": "start-server-and-test dev http://localhost:3000 test",
-    "coverage":"npm run cover:unit && npm run cover:integration && npm run cover:report"
+    "coverage": "npm run cover:unit && npm run cover:integration && npm run cover:report"
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -35,7 +35,6 @@
     "node-geocoder": "^4.0.0"
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.18.6",
     "@shelf/jest-mongodb": "^3.0.1",
     "babel-plugin-istanbul": "^6.1.1",
     "cross-env": "^7.0.3",
