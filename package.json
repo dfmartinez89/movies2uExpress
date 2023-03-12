@@ -44,7 +44,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-promise": "^6.1.1",
-    "mongodb-memory-server": "^8.6.0",
+    "mongodb-memory-server": "^8.12.0",
     "node-mocks-http": "^1.12.1",
     "nyc": "^15.1.0",
     "sinon": "^15.0.1",

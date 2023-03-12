@@ -4,6 +4,7 @@ const app = express()
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
+const testDB = require('./middleware/testdb')
 const connectDB = require('./middleware/db')
 const cors = require('cors')
 const { errorHandler } = require('./middleware/errorHandler')
@@ -54,7 +55,11 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 // Connect database
-connectDB()
+if (process.env.NODE_ENV === 'development') {
+  testDB.connect()
+} else if (process.env.NODE_ENV === 'production') {
+  connectDB()
+}
 
 // Enable logging in dev enviroment
 if (process.env.NODE_ENV === 'development') {
