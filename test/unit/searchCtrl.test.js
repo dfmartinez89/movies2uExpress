@@ -20,7 +20,7 @@ describe('search controller unit tests', () => {
         },
         (err) => {
           assert.strictEqual(axiosStub.calledOnce, true)
-          assert.strictEqual(err.message, 'error conecting to imdb')
+          assert.strictEqual(err.message, 'error conecting to imdb', 'Response is not correct')
           return true
         }
       )
@@ -36,9 +36,9 @@ describe('search controller unit tests', () => {
       }
       const axiosStub = sinon.stub(axios, 'get').resolves(mockResponse)
       const result = await searchCtrl.getImdbResponse('test')
-      assert.strictEqual(result.title, 'The Matrix')
-      assert.strictEqual(result.year, '1999')
-      assert.strictEqual(result.rated, 'R')
+      assert.strictEqual(result.title, 'The Matrix', 'Response is not correct')
+      assert.strictEqual(result.year, '1999', 'Response is not correct')
+      assert.strictEqual(result.rated, 'R', 'Response is not correct')
       assert.strictEqual(axiosStub.calledOnce, true)
     })
   })
@@ -58,8 +58,8 @@ describe('search controller unit tests', () => {
         }
       })
       await searchCtrl.findImdbMoviesBy(req, res)
-      assert.strictEqual(res.statusCode, 400)
-      assert.strictEqual(res._getJSONData().message, 'missing search criteria')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'missing search criteria', 'Response is not correct')
       assert.strictEqual(movieStub.notCalled, true)
     })
 
@@ -80,10 +80,10 @@ describe('search controller unit tests', () => {
         }
       })
       await searchCtrl.findImdbMoviesBy(req, res)
-      assert.strictEqual(res.statusCode, 200)
-      assert.strictEqual(res._getJSONData().title, 'The Matrix')
-      assert.strictEqual(res._getJSONData().year, '1999')
-      assert.strictEqual(res._getJSONData().rated, 'R')
+      assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().title, 'The Matrix', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().year, '1999', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().rated, 'R', 'Response is not correct')
       assert.strictEqual(axiosStub.calledOnce, true)
     })
   })
@@ -103,10 +103,10 @@ describe('search controller unit tests', () => {
       })
       const movieStub = sinon.stub(Movies, 'find').returns([])
       await searchCtrl.searchUtils(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().data, 'there are no movies with title TEST')
-      assert.strictEqual(res._getJSONData().success, true)
-      assert.strictEqual(res._getJSONData().count, 0)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().data, 'there are no movies with title TEST', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
+      assert.strictEqual(res._getJSONData().count, 0, 'Response is not correct')
       assert.strictEqual(movieStub.calledOnce, true)
     })
 
@@ -136,8 +136,8 @@ describe('search controller unit tests', () => {
       }
       const movieStub = sinon.stub(Movies, 'find').returns(mockResponse)
       await searchCtrl.searchUtils(req, res)
-      assert.strictEqual(res.statusCode, 200)
-      assert.strictEqual(res._getJSONData().success, true)
+      assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
       assert.strictEqual(movieStub.calledOnce, true)
     })
 
@@ -151,10 +151,10 @@ describe('search controller unit tests', () => {
       })
       const movieStub = sinon.stub(Movies, 'find').returns([])
       await searchCtrl.searchUtils(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().data, 'there are no movies on the year 2007')
-      assert.strictEqual(res._getJSONData().success, true)
-      assert.strictEqual(res._getJSONData().count, 0)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().data, 'there are no movies on the year 2007', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
+      assert.strictEqual(res._getJSONData().count, 0, 'Response is not correct')
       assert.strictEqual(movieStub.calledOnce, true)
     })
 
@@ -167,8 +167,8 @@ describe('search controller unit tests', () => {
         }
       })
       await searchCtrl.searchUtils(req, res)
-      assert.strictEqual(res.statusCode, 422)
-      assert.strictEqual(res._getJSONData().message, 'request validation error')
+      assert.strictEqual(res.statusCode, 422, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'request validation error', 'Response is not correct')
     })
 
     it('searchUtils should return 200 and json data when movie is found by queried year', async () => {
@@ -197,8 +197,8 @@ describe('search controller unit tests', () => {
       }
       const movieStub = sinon.stub(Movies, 'find').returns(mockResponse)
       await searchCtrl.searchUtils(req, res)
-      assert.strictEqual(res.statusCode, 200)
-      assert.strictEqual(res._getJSONData().success, true)
+      assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
       assert.strictEqual(movieStub.calledOnce, true)
     })
 
@@ -212,10 +212,10 @@ describe('search controller unit tests', () => {
       })
       const movieStub = sinon.stub(Movies, 'find').returns([])
       await searchCtrl.searchUtils(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().data, 'there are no movies with genre Terror')
-      assert.strictEqual(res._getJSONData().success, true)
-      assert.strictEqual(res._getJSONData().count, 0)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().data, 'there are no movies with genre Terror', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
+      assert.strictEqual(res._getJSONData().count, 0, 'Response is not correct')
       assert.strictEqual(movieStub.calledOnce, true)
     })
 
@@ -245,8 +245,8 @@ describe('search controller unit tests', () => {
       }
       const movieStub = sinon.stub(Movies, 'find').returns(mockResponse)
       await searchCtrl.searchUtils(req, res)
-      assert.strictEqual(res.statusCode, 200)
-      assert.strictEqual(res._getJSONData().success, true)
+      assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
       assert.strictEqual(movieStub.calledOnce, true)
     })
 
@@ -259,8 +259,8 @@ describe('search controller unit tests', () => {
         }
       })
       await searchCtrl.searchUtils(req, res)
-      assert.strictEqual(res.statusCode, 400)
-      assert.strictEqual(res._getJSONData().message, 'missing search criteria, use title, year or genre')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'missing search criteria, use title, year or genre', 'Response is not correct')
     })
   })
 })

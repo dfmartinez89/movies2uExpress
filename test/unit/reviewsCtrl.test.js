@@ -28,9 +28,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().resolves(null)
       })
       await reviewsCtrl.reviewsReadOne(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'movie not found')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'movie not found', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should return 404 when no reviews are found for the given movie', async () => {
@@ -51,9 +51,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().returnsThis(expectedMovie)
       })
       await reviewsCtrl.reviewsReadOne(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'No reviews found')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'No reviews found', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should return 404 when no review is found for the given reviewid', async () => {
@@ -84,9 +84,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().resolves(movie)
       })
       await reviewsCtrl.reviewsReadOne(req, res)
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'Review not found')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Review not found', 'Response is not correct')
     })
 
     it('should return 400 when model layer call throws an error', async () => {
@@ -103,9 +103,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().throwsException(new Error('error calling model'))
       })
       await reviewsCtrl.reviewsReadOne(req, res)
-      assert.strictEqual(res.statusCode, 400)
-      assert.strictEqual(res._getJSONData().message, 'error calling model')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'error calling model', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should return 200 with movie title and reviews', async () => {
@@ -136,8 +136,8 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().resolves(movie)
       })
       await reviewsCtrl.reviewsReadOne(req, res)
-      assert.strictEqual(res.statusCode, 200)
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
       assert.deepStrictEqual(res._getJSONData(), {
         movie: {
           id: '507f1f77bcf86cd799439011',
@@ -150,7 +150,7 @@ describe('reviews controller unit tests', () => {
           },
           title: 'Transformers'
         }
-      })
+      }, 'Response is not correct')
     })
   })
 
@@ -172,8 +172,8 @@ describe('reviews controller unit tests', () => {
         }
       })
       await reviewsCtrl.reviewsCreate(req, res)
-      assert.strictEqual(res.statusCode, 400)
-      assert.strictEqual(res._getJSONData().message, 'reviewLocation is required')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'reviewLocation is required', 'Response is not correct')
     })
 
     it('should return 400 when model layer call throws an error', async () => {
@@ -195,9 +195,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().throwsException(new Error('error calling model'))
       })
       await reviewsCtrl.reviewsCreate(req, res)
-      assert.strictEqual(res.statusCode, 400)
-      assert.strictEqual(res._getJSONData().message, 'error calling model')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'error calling model', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should return call doAddReview with correct args', async () => {
@@ -219,7 +219,7 @@ describe('reviews controller unit tests', () => {
       })
       const reviewStub = sinon.stub(reviewsCtrl, 'doAddReview')
       await reviewsCtrl.reviewsCreate(req, res)
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
       assert.strictEqual(reviewStub.calledOnceWith(req, res), false)
     })
   })
@@ -244,8 +244,8 @@ describe('reviews controller unit tests', () => {
         }
       })
       await reviewsCtrl.doAddReview(req, res, null)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'movie not found')
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'movie not found', 'Response is not correct')
     })
 
     it('should push to reviews array the data sent in request, call updateAverageRating and return data of last review added', async () => {
@@ -284,13 +284,13 @@ describe('reviews controller unit tests', () => {
       const saveStub = sinon.stub(Movies.prototype, 'save').resolves(true)
       const averageStub = sinon.stub(reviewsCtrl, 'updateAverageRating').resolves(true)
       await reviewsCtrl.doAddReview(req, res, movie)
-      assert.strictEqual(res.statusCode, 201)
+      assert.strictEqual(res.statusCode, 201, 'Status code is not correct')
       assert.strictEqual(movie.reviews.length, 2)
-      assert.strictEqual(movieStub.calledOnceWith(movie._id), true)
-      assert.strictEqual(saveStub.calledOnceWith(movie), true)
-      assert.strictEqual(res._getJSONData().success, true)
-      assert.deepStrictEqual(res._getJSONData().data.author, 'Nabe')
-      assert.deepStrictEqual(res._getJSONData().data.description, 'Too nerdy for me')
+      assert.strictEqual(movieStub.calledOnceWith(movie._id), true, 'Stub was not called with correct arguments')
+      assert.strictEqual(saveStub.calledOnceWith(movie), true, 'Stub was not called with correct arguments')
+      assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
+      assert.deepStrictEqual(res._getJSONData().data.author, 'Nabe', 'Response is not correct')
+      assert.deepStrictEqual(res._getJSONData().data.description, 'Too nerdy for me', 'Response is not correct')
       assert.strictEqual(averageStub.calledOnce, false)
     })
 
@@ -329,10 +329,10 @@ describe('reviews controller unit tests', () => {
       })
       const saveStub = sinon.stub(Movies.prototype, 'save').throwsException(new Error('error calling model'))
       await reviewsCtrl.doAddReview(req, res, movie)
-      assert.strictEqual(res.statusCode, 406)
+      assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
       assert.strictEqual(movie.reviews.length, 2)
       assert.strictEqual(movieStub.calledOnceWith(movie._id), false)
-      assert.strictEqual(saveStub.calledOnceWith(movie), true)
+      assert.strictEqual(saveStub.calledOnceWith(movie), true, 'Stub was not called with correct arguments')
     })
   })
 
@@ -363,7 +363,7 @@ describe('reviews controller unit tests', () => {
       })
       const averageStub = sinon.stub(reviewsCtrl, 'doSetAverageRating').resolves(true)
       await reviewsCtrl.updateAverageRating(movie._id)
-      assert.strictEqual(movieStub.calledOnceWith(movie._id), true)
+      assert.strictEqual(movieStub.calledOnceWith(movie._id), true, 'Stub was not called with correct arguments')
       assert.strictEqual(averageStub.calledOnce, false)
     })
 
@@ -394,8 +394,8 @@ describe('reviews controller unit tests', () => {
         },
         (err) => {
           assert.strictEqual(averageStub.notCalled, true)
-          assert.strictEqual(movieStub.calledOnceWith(movie._id), true)
-          assert.strictEqual(err.message, 'error calling model')
+          assert.strictEqual(movieStub.calledOnceWith(movie._id), true, 'Stub was not called with correct arguments')
+          assert.strictEqual(err.message, 'error calling model', 'Response is not correct')
           return true
         }
       )
@@ -486,7 +486,7 @@ describe('reviews controller unit tests', () => {
         },
         (err) => {
           assert.strictEqual(movie.rating, 4)
-          assert.strictEqual(err.message, 'error saving movie')
+          assert.strictEqual(err.message, 'error saving movie', 'Response is not correct')
           assert.strictEqual(saveStub.calledOnceWith(movie), false)
           return true
         }
@@ -508,8 +508,8 @@ describe('reviews controller unit tests', () => {
         }
       })
       await reviewsCtrl.reviewsUpdateOne(req, res)
-      assert.strictEqual(res.statusCode, 400)
-      assert.strictEqual(res._getJSONData().message, 'reviewLocation is required')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'reviewLocation is required', 'Response is not correct')
     })
 
     it('should return 404 when not movie is found for the given id', async () => {
@@ -526,9 +526,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().withArgs('reviews').resolves(null)
       })
       await reviewsCtrl.reviewsUpdateOne(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'Movie not found')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Movie not found', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should return 404 when the movie has no review', async () => {
@@ -551,9 +551,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().withArgs('reviews').resolves(movie)
       })
       await reviewsCtrl.reviewsUpdateOne(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'No review to update')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'No review to update', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should return 404 when not review is found for the given id', async () => {
@@ -584,9 +584,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().withArgs('reviews').resolves(movie)
       })
       await reviewsCtrl.reviewsUpdateOne(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'Review not found')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Review not found', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should update the review with the data sent in request,return 201, call updateAverageRating and return data of review updated', async () => {
@@ -640,14 +640,14 @@ describe('reviews controller unit tests', () => {
       const saveStub = sinon.stub(Movies.prototype, 'save').resolves(true)
       const averageStub = sinon.stub(reviewsCtrl, 'updateAverageRating').resolves(true)
       await reviewsCtrl.reviewsUpdateOne(req, res)
-      assert.strictEqual(res.statusCode, 201)
+      assert.strictEqual(res.statusCode, 201, 'Status code is not correct')
       assert.strictEqual(movie.reviews.length, 1)
-      assert.strictEqual(movieStub.calledTwice, true)
-      assert.strictEqual(movieStub.calledWithExactly(movie._id), true)
+      assert.strictEqual(movieStub.calledTwice, true, 'Stub was not called the right number of times')
+      assert.strictEqual(movieStub.calledWithExactly(movie._id), true, 'Stub was not called with correct arguments')
       assert.strictEqual(saveStub.calledOnce, true)
       assert.strictEqual(res._getJSONData().success, true)
-      assert.deepStrictEqual(res._getJSONData().data.author, 'Nabe')
-      assert.deepStrictEqual(res._getJSONData().data.description, 'Too nerdy for me')
+      assert.deepStrictEqual(res._getJSONData().data.author, 'Nabe', 'Response is not correct')
+      assert.deepStrictEqual(res._getJSONData().data.description, 'Too nerdy for me', 'Response is not correct')
       assert.strictEqual(averageStub.calledOnce, false)
     })
 
@@ -688,10 +688,10 @@ describe('reviews controller unit tests', () => {
       })
       const saveStub = sinon.stub(Movies.prototype, 'save').throwsException(new Error('error saving movie'))
       await reviewsCtrl.reviewsUpdateOne(req, res)
-      assert.strictEqual(res.statusCode, 406)
-      assert.strictEqual(movieStub.calledOnceWith(req.params.movieid), true)
+      assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
+      assert.strictEqual(movieStub.calledOnceWith(req.params.movieid), true, 'Stub was not called with correct arguments')
       assert.strictEqual(saveStub.calledOnce, true)
-      assert.strictEqual(res._getJSONData().message, 'error saving movie')
+      assert.strictEqual(res._getJSONData().message, 'error saving movie', 'Response is not correct')
     })
   })
 
@@ -708,8 +708,8 @@ describe('reviews controller unit tests', () => {
         }
       })
       await reviewsCtrl.reviewsDeleteOne(req, res)
-      assert.strictEqual(res.statusCode, 400)
-      assert.strictEqual(res._getJSONData().message, 'Not found, movieid and reviewid are both required')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Not found, movieid and reviewid are both required', 'Response is not correct')
     })
 
     it('should return 400 when reviewid is not sent', async () => {
@@ -721,8 +721,8 @@ describe('reviews controller unit tests', () => {
         }
       })
       await reviewsCtrl.reviewsDeleteOne(req, res)
-      assert.strictEqual(res.statusCode, 400)
-      assert.strictEqual(res._getJSONData().message, 'Not found, movieid and reviewid are both required')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Not found, movieid and reviewid are both required', 'Response is not correct')
     })
 
     it('should return 404 when not movie is found for the given id', async () => {
@@ -739,9 +739,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().withArgs('reviews').resolves(null)
       })
       await reviewsCtrl.reviewsDeleteOne(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'Movie not found')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Movie not found', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should return 404 when the movie has no reviews', async () => {
@@ -764,9 +764,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().withArgs('reviews').resolves(movie)
       })
       await reviewsCtrl.reviewsDeleteOne(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'No review to delete')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'No review to delete', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should return 404 when not review is found for the given id', async () => {
@@ -797,9 +797,9 @@ describe('reviews controller unit tests', () => {
         select: sinon.stub().withArgs('reviews').resolves(movie)
       })
       await reviewsCtrl.reviewsDeleteOne(req, res)
-      assert.strictEqual(res.statusCode, 404)
-      assert.strictEqual(res._getJSONData().message, 'Review not found')
-      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true)
+      assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Review not found', 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
     it('should return 204 when the reviews is removed successfully', async () => {
@@ -855,12 +855,12 @@ describe('reviews controller unit tests', () => {
       })
       const saveStub = sinon.stub(Movies.prototype, 'save').resolves(true)
       await reviewsCtrl.reviewsDeleteOne(req, res)
-      assert.strictEqual(res.statusCode, 204)
+      assert.strictEqual(res.statusCode, 204, 'Status code is not correct')
       assert.strictEqual(movie.reviews.length, 1)
-      assert.strictEqual(movieStub.calledTwice, true)
-      assert.strictEqual(movieStub.calledWithExactly(movie._id), true)
+      assert.strictEqual(movieStub.calledTwice, true, 'Stub was not called the right number of times')
+      assert.strictEqual(movieStub.calledWithExactly(movie._id), true, 'Stub was not called with correct arguments')
       assert.strictEqual(saveStub.calledOnce, true)
-      assert.strictEqual(res._getJSONData().success, true)
+      assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
     })
 
     it('should return 406 when model layer call throws an error saving the movie', async () => {
@@ -916,10 +916,10 @@ describe('reviews controller unit tests', () => {
       })
       const saveStub = sinon.stub(Movies.prototype, 'save').throwsException(new Error('error saving movie'))
       await reviewsCtrl.reviewsDeleteOne(req, res)
-      assert.strictEqual(res.statusCode, 406)
-      assert.strictEqual(movieStub.calledOnceWith(req.params.movieid), true)
+      assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
+      assert.strictEqual(movieStub.calledOnceWith(req.params.movieid), true, 'Stub was not called the right number of times')
       assert.strictEqual(saveStub.calledOnce, true)
-      assert.strictEqual(res._getJSONData().message, 'error saving movie')
+      assert.strictEqual(res._getJSONData().message, 'error saving movie', 'Response is not correct')
     })
   })
 })

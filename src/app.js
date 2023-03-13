@@ -80,7 +80,7 @@ app.use(errorHandler)
 
 app.disable('x-powered-by') // security fix
 console.log(
-  `Server running in ${process.env.NODE_ENV} mode on ${process.env.PORT}`
+  `Server running in ${process.env.NODE_ENV} mode on port: ${process.env.PORT}`
 )
 
 module.exports = app

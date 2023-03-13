@@ -21,8 +21,8 @@ describe('user controller unit tests', () => {
         }
       })
       await userCtrl.registerUser(req, res)
-      assert.strictEqual(res._getJSONData().message, 'Please add all required fields')
-      assert.strictEqual(res.statusCode, 400)
+      assert.strictEqual(res._getJSONData().message, 'Please add all required fields', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
     })
 
     it('registerUser should return 400 when password is missing', async () => {
@@ -33,10 +33,9 @@ describe('user controller unit tests', () => {
           password: 'test'
         }
       })
-
       await userCtrl.registerUser(req, res)
-      assert.strictEqual(res._getJSONData().message, 'Please add all required fields')
-      assert.strictEqual(res.statusCode, 400)
+      assert.strictEqual(res._getJSONData().message, 'Please add all required fields', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
     })
 
     it('should return 400 when user already exists', async () => {
@@ -50,8 +49,8 @@ describe('user controller unit tests', () => {
       })
       const userStub = sinon.stub(User, 'findOne').returns(true)
       await userCtrl.registerUser(req, res)
-      assert.strictEqual(res._getJSONData().message, 'User already exists')
-      assert.strictEqual(res.statusCode, 400)
+      assert.strictEqual(res._getJSONData().message, 'User already exists', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
       assert.strictEqual(userStub.calledOnce, true)
     })
 
@@ -68,8 +67,8 @@ describe('user controller unit tests', () => {
       const userStubFind = sinon.stub(User, 'findOne').returns(false)
       const userStubCreate = sinon.stub(User, 'create').throws(new Error('Invalid user data'))
       await userCtrl.registerUser(req, res)
-      assert.strictEqual(res._getJSONData().message, 'Invalid user data')
-      assert.strictEqual(res.statusCode, 406)
+      assert.strictEqual(res._getJSONData().message, 'Invalid user data', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
       assert.strictEqual(userStubFind.calledOnce, true)
       assert.strictEqual(userStubCreate.calledOnce, true)
     })
@@ -89,8 +88,8 @@ describe('user controller unit tests', () => {
       const userStubCreate = sinon.stub(User, 'create').returns(true)
       const jwtStub = sinon.stub(jwt, 'sign').returns('fake-token')
       await userCtrl.registerUser(req, res)
-      assert.strictEqual(res._getJSONData().token, 'fake-token')
-      assert.strictEqual(res.statusCode, 201)
+      assert.strictEqual(res._getJSONData().token, 'fake-token', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 201, 'Status code is not correct')
       assert.strictEqual(userStubFind.calledOnce, true)
       assert.strictEqual(userStubCreate.calledOnce, true)
       assert.strictEqual(jwtStub.calledOnce, true)
@@ -101,6 +100,32 @@ describe('user controller unit tests', () => {
     afterEach(() => {
       sinon.restore()
     })
+    it(' should return 400 when email is missing', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'POST',
+        body: {
+          name: 'test'
+        }
+      })
+      await userCtrl.loginUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'Please provide all required fields', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+    })
+
+    it('should return 400 when password is missing', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'POST',
+        body: {
+          password: 'test'
+        }
+      })
+      await userCtrl.loginUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'Please provide all required fields', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+    })
+
     it('should return 403 when user mail does not exists', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -111,21 +136,13 @@ describe('user controller unit tests', () => {
           email: 'test@test.com'
         }
       })
-      const userStubFind = sinon.stub(User, 'findOne').returns(false)
+      const userStubFind = sinon.stub(User, 'findOne').returns(null)
       const bcryptStub = sinon.stub(bcrypt, 'compare').returns(true)
-
-      await assert.rejects(
-        async () => {
-          await userCtrl.loginUser(req, res)
-        },
-        (err) => {
-          assert.strictEqual(err.message, 'Invalid credentials')
-          assert.strictEqual(res.statusCode, 403)
-          assert.strictEqual(userStubFind.calledOnce, true)
-          assert.strictEqual(bcryptStub.notCalled, true)
-          return true
-        }
-      )
+      await userCtrl.loginUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'Invalid email or password', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 403, 'Status code is not correct')
+      assert.strictEqual(userStubFind.calledOnce, true)
+      assert.strictEqual(bcryptStub.notCalled, true)
     })
 
     it('should return 403 when user password is not correct', async () => {
@@ -140,20 +157,49 @@ describe('user controller unit tests', () => {
       })
       const userStubFind = sinon.stub(User, 'findOne').returns(true)
       const bcryptStub = sinon.stub(bcrypt, 'compare').returns(false)
+      await userCtrl.loginUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'Invalid email or password', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 403, 'Status code is not correct')
+      assert.strictEqual(userStubFind.calledOnce, true)
+      assert.strictEqual(bcryptStub.calledOnce, true)
+    })
 
-      await assert.rejects(
-        async () => {
-          await userCtrl.loginUser(req, res)
-        },
-        (err) => {
-          assert.strictEqual(err.message, 'Invalid credentials')
-          assert.strictEqual(res.statusCode, 403)
-          assert.strictEqual(userStubFind.calledOnce, true)
-          assert.strictEqual(bcryptStub.calledOnce, true)
-
-          return true
+    it('should return 406 when model throws exception', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'POST',
+        body: {
+          name: 'test',
+          password: 'test',
+          email: 'test@test.com'
         }
-      )
+      })
+      const userStubFind = sinon.stub(User, 'findOne').throws(new Error('Error accessing database'))
+      const bcryptStub = sinon.stub(bcrypt, 'compare').returns(false)
+      await userCtrl.loginUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'Error accessing database', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
+      assert.strictEqual(userStubFind.calledOnce, true)
+      assert.strictEqual(bcryptStub.calledOnce, false)
+    })
+
+    it('should return 406 when bcrypt throws exception', async () => {
+      const res = httpMocks.createResponse()
+      const req = httpMocks.createRequest({
+        method: 'POST',
+        body: {
+          name: 'test',
+          password: 'test',
+          email: 'test@test.com'
+        }
+      })
+      const userStubFind = sinon.stub(User, 'findOne').returns(true)
+      const bcryptStub = sinon.stub(bcrypt, 'compare').throws(new Error('Error hashing password'))
+      await userCtrl.loginUser(req, res)
+      assert.strictEqual(res._getJSONData().message, 'Error hashing password', 'Response is not correct')
+      assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
+      assert.strictEqual(userStubFind.calledOnce, true)
+      assert.strictEqual(bcryptStub.calledOnce, true)
     })
 
     it('should return 200 when user logs in succesfully', async () => {
@@ -170,9 +216,9 @@ describe('user controller unit tests', () => {
       const jwtSub = sinon.stub(jwt, 'sign').returns('fake-token')
 
       await userCtrl.loginUser(req, res)
-      assert.strictEqual(res._getJSONData().token, 'fake-token')
-      assert.strictEqual(res._getJSONData().success, true)
-      assert.strictEqual(res.statusCode, 200)
+      assert.strictEqual(res._getJSONData().token, 'fake-token', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
+      assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
       assert.strictEqual(userStubFind.calledOnce, true)
       assert.strictEqual(bcryptStub.calledOnce, true)
       assert.strictEqual(jwtSub.calledOnce, true)
@@ -190,8 +236,8 @@ describe('user controller unit tests', () => {
         email: sinon.stub().resolves('fake-mail')
       })
       await userCtrl.getUser(req, res)
-      assert.strictEqual(userStub.calledOnceWith('test@test.com'), true)
-      assert.strictEqual(res.statusCode, 200)
+      assert.strictEqual(userStub.calledOnceWith('test@test.com'), true, 'Stub is not called with correct params')
+      assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
     })
   })
 
@@ -202,7 +248,7 @@ describe('user controller unit tests', () => {
 
     it('should return jwt with 30 days expiration', async () => {
       const jwtSub = sinon.stub(jwt, 'sign').returns('fake-token')
-      assert.strictEqual(userCtrl.genToken('fake-id'), 'fake-token')
+      assert.strictEqual(userCtrl.genToken('fake-id'), 'fake-token', 'Response is not correct')
       assert.strictEqual(jwtSub.calledOnce, true)
     })
   })

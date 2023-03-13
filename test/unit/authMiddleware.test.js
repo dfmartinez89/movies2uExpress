@@ -14,8 +14,8 @@ describe('auth middleware unit tests', () => {
     const res = httpMocks.createResponse()
     const req = httpMocks.createRequest()
     await auth.protect(req, res)
-    assert.strictEqual(res.statusCode, 401)
-    assert.strictEqual(res._getJSONData().message, 'Not authorized, token is required')
+    assert.strictEqual(res.statusCode, 401, 'Status code is not correct')
+    assert.strictEqual(res._getJSONData().message, 'Not authorized, token is required', 'Response is not correct')
   })
 
   it('protect should return 401 when authorization header is not Bearer', async () => {
@@ -27,8 +27,8 @@ describe('auth middleware unit tests', () => {
     })
     const next = sinon.stub()
     await auth.protect(req, res, next)
-    assert.strictEqual(res.statusCode, 401)
-    assert.strictEqual(res._getJSONData().message, 'Not authorized, token is required')
+    assert.strictEqual(res.statusCode, 401, 'Status code is not correct')
+    assert.strictEqual(res._getJSONData().message, 'Not authorized, token is required', 'Response is not correct')
   })
 
   it('protect should return 401 when token is not valid', async () => {
@@ -48,8 +48,8 @@ describe('auth middleware unit tests', () => {
     })
     const jwtStub = sinon.stub(jwt, 'verify').resolves(null)
     await auth.protect(req, res)
-    assert.strictEqual(res.statusCode, 401)
-    assert.strictEqual(res._getJSONData().message, 'Not authorized')
+    assert.strictEqual(res.statusCode, 401, 'Status code is not correct')
+    assert.strictEqual(res._getJSONData().message, 'Not authorized', 'Response is not correct')
     assert.strictEqual(jwtStub.calledOnce, true)
     assert.strictEqual(userStubFind.calledOnce, true)
   })
@@ -65,8 +65,8 @@ describe('auth middleware unit tests', () => {
     const jwtStub = sinon.stub(jwt, 'verify').resolves({ id: '123' })
     const next = sinon.stub()
     await auth.protect(req, res, next)
-    assert.strictEqual(res.statusCode, 401)
-    assert.strictEqual(res._getJSONData().message, 'Not authorized')
+    assert.strictEqual(res.statusCode, 401, 'Status code is not correct')
+    assert.strictEqual(res._getJSONData().message, 'Not authorized', 'Response is not correct')
     assert.strictEqual(userStubFind.calledOnce, true)
     assert.strictEqual(jwtStub.calledOnce, true)
     return true

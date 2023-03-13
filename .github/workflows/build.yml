@@ -42,7 +42,7 @@ jobs:
 
 
   # Test
-    - name: Unit tests
+    - name: Unit & Integration tests
       run: npm run coverage
 
   # Coveralls
