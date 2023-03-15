@@ -21,7 +21,7 @@ describe('user controller unit tests', () => {
         }
       })
       await userCtrl.registerUser(req, res)
-      assert.strictEqual(res._getJSONData().message, 'Please add all required fields', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Please provide all required fields', 'Response is not correct')
       assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
     })
 
@@ -34,7 +34,7 @@ describe('user controller unit tests', () => {
         }
       })
       await userCtrl.registerUser(req, res)
-      assert.strictEqual(res._getJSONData().message, 'Please add all required fields', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Please provide all required fields', 'Response is not correct')
       assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
     })
 
