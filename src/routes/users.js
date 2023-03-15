@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const { registerUser, loginUser, getUser } = require("../controllers/users");
-const { protect } = require("../middleware/auth");
+const express = require('express')
+const router = express.Router()
+const { registerUser, loginUser, getUser } = require('../controllers/users')
+const { protect } = require('../middleware/auth')
 
 /**
  * @swagger
@@ -53,7 +53,7 @@ const { protect } = require("../middleware/auth");
  *       406:
  *         description: Invalid user data
  */
-router.post("/", registerUser);
+router.post('/', registerUser)
 
 /**
  * @swagger
@@ -77,7 +77,7 @@ router.post("/", registerUser);
  *       403:
  *         description: Invalid credentials
  */
-router.post("/login", loginUser);
+router.post('/login', loginUser)
 
 /**
  * @swagger
@@ -97,6 +97,6 @@ router.post("/login", loginUser);
  *       403:
  *         description: Not authorized, token is required
  */
-router.get("/me", protect, getUser);
+router.get('/me', protect, getUser)
 
-module.exports = router;
+module.exports = router

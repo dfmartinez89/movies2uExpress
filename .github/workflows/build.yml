@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [19.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -36,17 +36,29 @@ jobs:
     - name: Install dependencies
       run: npm i
 
-  # Test
-    - name: Cypress tests
-      run: npm run ci
+  # Lint
+    - name: Run eslint with reviewdog
+      uses: reviewdog/action-eslint@v1.18.0
 
-  # Coverage
+
+  # Test
+    - name: Unit & Integration tests
+      run: npm run coverage
+
+  # Coveralls
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+    
+  # SonarCloud  
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-    # Build node
+  # Build node
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:

@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const geocoder = require("../utils/geocoder");
+const mongoose = require('mongoose')
+const geocoder = require('../utils/geocoder')
 
 const reviewSchema = new mongoose.Schema({
   author: { type: String, required: true, min: 3, max: 60 },
@@ -10,20 +10,20 @@ const reviewSchema = new mongoose.Schema({
   reviewGeoLocation: {
     type: {
       type: String, // Don't do `{ location: { type: String } }`
-      enum: ["Point"], // 'location.type' must be 'Point'
+      enum: ['Point'] // 'location.type' must be 'Point'
     },
     coordinates: {
       type: [Number],
-      index: "2dsphere",
+      index: '2dsphere'
     },
-    formattedLocation: String,
+    formattedLocation: String
   },
-  createdAt: { type: Date, default: Date.now },
-});
+  createdAt: { type: Date, default: Date.now }
+})
 
 const movieSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  year: { type: Number, min: 1900, max: 2022 },
+  year: { type: Number, min: 1900, max: 2023 },
   genre: { type: String, required: false, min: 1, max: 10 },
   poster: { type: String, required: false, min: 12, max: 80 },
   rating: { type: Number, default: 0, min: 0, max: 5 },
@@ -32,17 +32,17 @@ const movieSchema = new mongoose.Schema({
   geoLocation: {
     type: {
       type: String, // Don't do `{ location: { type: String } }`
-      enum: ["Point"], // 'location.type' must be 'Point'
+      enum: ['Point'] // 'location.type' must be 'Point'
     },
     coordinates: {
       type: [Number],
-      index: "2dsphere",
+      index: '2dsphere'
     },
-    formattedLocation: String,
+    formattedLocation: String
   },
   createdAt: { type: Date, default: Date.now },
-  reviews: [reviewSchema],
-});
+  reviews: [reviewSchema]
+})
 
 /* Middleware to obtain geolocation (fails when posting a review because it triggers this pre save without passing a location)
 //At creating movie
@@ -100,6 +100,6 @@ reviewSchema.pre("findOneAndUpdate", async function (next) {
   //Do not save location from request
   this.reviewLocation = undefined;
   next();
-});*/
+}); */
 
-module.exports = mongoose.model("Movie", movieSchema);
+module.exports = mongoose.model('Movie', movieSchema)

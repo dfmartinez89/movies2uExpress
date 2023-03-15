@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const { searchUtils, findImdbMoviesBy } = require("../controllers/search");
-const { protect } = require("../middleware/auth");
+const express = require('express')
+const router = express.Router()
+const { searchUtils, findImdbMoviesBy } = require('../controllers/search')
+const { protect } = require('../middleware/auth')
 
 /**
  * @swagger
@@ -61,9 +61,9 @@ const { protect } = require("../middleware/auth");
  */
 
 /* GET home page */
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
-});
+router.get('/', function (req, res, next) {
+  res.render('index', { title: 'Express' })
+})
 
 /* Search movies */
 
@@ -106,7 +106,7 @@ router.get("/", function (req, res, next) {
  *       400:
  *         description: missing search criteria, use title, year or genre
  */
-router.get("/search", searchUtils);
+router.get('/search', searchUtils)
 
 /**
  * @swagger
@@ -134,6 +134,6 @@ router.get("/search", searchUtils);
  *       400:
  *         description: missing search criteria
  */
-router.get("/imdb", protect, findImdbMoviesBy);
+router.get('/imdb', protect, findImdbMoviesBy)
 
-module.exports = router;
+module.exports = router
