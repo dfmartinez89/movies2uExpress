@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const { MongoMemoryServer } = require('mongodb-memory-server')
+const Movies = require('../../src/models/movies.js')
 
 mongoose.set('strictQuery', false)
 
@@ -18,6 +19,47 @@ module.exports.connect = async () => {
   }
 
   await mongoose.connect(uri, mongooseOpts)
+  console.log('MongoMemoryServer connected at ', uri)
+}
+
+/**
+ * Seed initial data
+ */
+module.exports.initialData = async () => {
+  const mockMovie1 = {
+    title: 'The Matrix',
+    year: 1999,
+    genre: 'Sci-Fi',
+    poster: 'images/matrix.jpg',
+    rating: 5,
+    location: 'Tabernas, Spain'
+  }
+  const mockMovie2 = {
+    title: 'The Matrix Reloaded',
+    year: 2003,
+    genre: 'Sci-Fi',
+    poster: 'images/matrix.jpg',
+    rating: 5,
+    location: 'Carboneras, Spain'
+  }
+  const mockMovie3 = {
+    title: 'The Matrix Revolutions',
+    year: 2003,
+    genre: 'Sci-Fi',
+    poster: 'images/matrix.jpg',
+    rating: 5,
+    location: 'Roquetas, Spain'
+  }
+  const mockMovie4 = {
+    title: 'The Matrix Resurrections',
+    year: 2021,
+    genre: 'Sci-Fi',
+    poster: 'images/matrix.jpg',
+    rating: 5,
+    location: 'Albox, Spain'
+  }
+  await Movies.create(mockMovie1, mockMovie2, mockMovie3, mockMovie4)
+  console.log('Initial data seeded')
 }
 
 /**
@@ -28,6 +70,7 @@ module.exports.closeDatabase = async () => {
     await mongoose.connection.dropDatabase()
     await mongoose.connection.close()
     await mongod.stop()
+    console.log('Database closed')
   }
 }
 
@@ -41,6 +84,7 @@ module.exports.clearDatabase = async () => {
     for (const key in collections) {
       const collection = collections[key]
       await collection.deleteMany()
+      console.log('Database deleted')
     }
   }
 }

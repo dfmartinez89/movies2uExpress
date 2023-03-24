@@ -1,36 +1,175 @@
-const { describe, it, before, afterEach, after } = require('node:test')
+const { describe, it, before, afterEach, after, beforeEach } = require('node:test')
 const assert = require('node:assert/strict')
-const testDB = require('../../src/middleware/testdb')
+const testdb = require('../../src/middleware/testdb')
+let token
 
 describe('search integration tests', () => {
-  describe('Search IMDb movies tests', () => {
-    /**
-     * Connect to a new in-memory database before running any tests.
-     */
-    before(async () => await testDB.connect())
-    /**
-     * Clear all test data after every test.
-     */
-    afterEach(async () => await testDB.clearDatabase())
-
-    /**
-     * Remove and close the db and server.
-     */
-    after(async () => await testDB.closeDatabase())
+  before(async () => {
+    await testdb.connect()
   })
-  it('should return 400 when criteria query param is not provided', async () => {
-    const res = await fetch('http://localhost:3000/imdb', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      query: {
-        fail: 'test'
-      }
+  beforeEach(async () => {
+    await testdb.initialData()
+  })
+  afterEach(async () => {
+    await testdb.clearDatabase()
+  })
+  after(async () => {
+    await testdb.closeDatabase()
+  })
+
+  describe('Search IMDb movies tests', () => {
+    it('should return 401 when user is not logged in', async () => {
+      const res = await fetch(`http://localhost:3000/imdb?${new URLSearchParams({ criteria: 'No country for old men' })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 401, 'Status code is not correct')
+      assert.strictEqual(result.message, 'Not authorized, token is required', 'Response is not correct')
     })
-    const result = await res.json()
-    assert.strictEqual(res.status, 401, 'Status code is not correct')
-    assert.strictEqual(result.message, 'Not authorized, token is required', 'Response is not correct')
+    it('should return 200 and data when user is authenticated', async () => {
+      // create user
+      const register = await fetch('http://localhost:3000/users', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          password: 'imdbtest',
+          email: 'imdbtest@test.com'
+        })
+      })
+      // get token from login response to send as authorization header
+      const loginResult = await register.json()
+      token = loginResult.token
+      const res = await fetch(`http://localhost:3000/imdb?${new URLSearchParams({ criteria: 'No country for old men' })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 200, 'Status code is not correct')
+      assert.strictEqual(result.searchType, 'Movie', 'Response is not correct')
+      assert.strictEqual(result.expression, 'No country for old men', 'Response is not correct')
+      assert.strictEqual(result.results[0].description, '2007 Tommy Lee Jones, Javier Bardem', 'Response is not correct')
+    })
+    it('should return 400 when criteria query param is not provided', async () => {
+      const res = await fetch(`http://localhost:3000/imdb?${new URLSearchParams({ search: 'No country for old men' })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 400, 'Status code is not correct')
+      assert.strictEqual(result.message, 'missing search criteria')
+    })
+  })
+
+  describe('Search Utils tests', () => {
+    it('should return 400 when criteria query param is not provided', async () => {
+      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ search: 'No country for old men' })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 400, 'Status code is not correct')
+      assert.strictEqual(result.message, 'missing search criteria, use title, year or genre')
+    })
+    it('should return 404 when no movie is found for the provided title', async () => {
+      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ title: 'No country for old men' })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 404, 'Status code is not correct')
+      assert.strictEqual(result.success, true, 'Response is not correct')
+      assert.strictEqual(result.count, 0, 'Response is not correct')
+      assert.strictEqual(result.data, 'there are no movies with title No country for old men', 'Response is not correct')
+    })
+    it('should return 200 when movie is found for the provided title', async () => {
+      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ title: 'The Matrix' })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 200, 'Status code is not correct')
+      assert.strictEqual(result.success, true, 'Response is not correct')
+      assert.strictEqual(result.count, 4, 'Response is not correct')
+    })
+    it('should return 404 when no movie is found for the provided year', async () => {
+      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ year: 2000 })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 404, 'Status code is not correct')
+      assert.strictEqual(result.success, true, 'Response is not correct')
+      assert.strictEqual(result.count, 0, 'Response is not correct')
+      assert.strictEqual(result.data, 'there are no movies on the year 2000', 'Response is not correct')
+    })
+    it('should return 200 when movie is found for the provided year', async () => {
+      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ year: 2021 })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 200, 'Status code is not correct')
+      assert.strictEqual(result.success, true, 'Response is not correct')
+      assert.strictEqual(result.count, 1, 'Response is not correct')
+      assert.strictEqual(result.data[0].title, 'The Matrix Resurrections', 'Response is not correct')
+      assert.strictEqual(result.data[0].location, 'Albox, Spain', 'Response is not correct')
+    })
+    it('should return 404 when no movie is found for the provided genre', async () => {
+      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ genre: 'Action,Sci-Fi' })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 404, 'Status code is not correct')
+      assert.strictEqual(result.success, true, 'Response is not correct')
+      assert.strictEqual(result.count, 0, 'Response is not correct')
+      assert.strictEqual(result.data, 'there are no movies with genre Action,Sci-Fi', 'Response is not correct')
+    })
+    it('should return 200 when movie is found for the provided year', async () => {
+      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ genre: 'Sci-Fi' })}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 200, 'Status code is not correct')
+      assert.strictEqual(result.success, true, 'Response is not correct')
+      assert.strictEqual(result.count, 4, 'Response is not correct')
+    })
   })
 })

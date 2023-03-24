@@ -1,11 +1,20 @@
-const { describe, it, before, afterEach, after } = require('node:test')
+const { describe, it, before, afterEach, after, beforeEach } = require('node:test')
 const assert = require('node:assert/strict')
 const testdb = require('../../src/middleware/testdb')
 
 describe('users integration tests', () => {
-  before(async () => await testdb.connect())
-  afterEach(async () => await testdb.clearDatabase())
-  after(async () => await testdb.closeDatabase())
+  before(async () => {
+    await testdb.connect()
+  })
+  beforeEach(async () => {
+    await testdb.initialData()
+  })
+  afterEach(async () => {
+    await testdb.clearDatabase()
+  })
+  after(async () => {
+    await testdb.closeDatabase()
+  })
 
   describe('register user tests', () => {
     it('should return 400 when email is not provided', async () => {
@@ -179,7 +188,7 @@ describe('users integration tests', () => {
   })
 
   describe('get user tests', () => {
-    /* it('should return 403 when user is not authenticated', async () => {
+    it('should return 403 when user is not authenticated', async () => {
       const res = await fetch('http://localhost:3000/users/me', {
         method: 'GET',
         headers: {
@@ -190,7 +199,7 @@ describe('users integration tests', () => {
       const result = await res.json()
       assert.strictEqual(res.status, 401, 'Status code is not correct')
       assert.strictEqual(result.message, 'Not authorized, token is required', 'Response is not correct')
-    }) */
+    })
 
     it('should return 403 when jwt token is not sent in the request', async () => {
       const res = await fetch('http://localhost:3000/users/me', {
@@ -233,7 +242,7 @@ describe('users integration tests', () => {
       const result = await res.json()
       assert.strictEqual(res.status, 200, 'Status code is not correct')
       assert.strictEqual(result.email, 'test@test.com', 'Response is not correct')
-      // assert.match(result._id, /^[a-f\d]{24}$/, 'document _id is not correct')
+      assert.match(result.id, /^[a-f\d]{24}$/, 'document _id is not correct')
     })
   })
 })

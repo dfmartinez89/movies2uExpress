@@ -57,6 +57,7 @@ app.use(cors(corsOptions))
 // Connect database
 if (process.env.NODE_ENV === 'development') {
   testDB.connect()
+  testDB.initialData()
 } else if (process.env.NODE_ENV === 'production') {
   connectDB()
 }
