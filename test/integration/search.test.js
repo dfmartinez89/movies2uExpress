@@ -158,7 +158,7 @@ describe('search integration tests', () => {
       assert.strictEqual(result.count, 0, 'Response is not correct')
       assert.strictEqual(result.data, 'there are no movies with genre Action,Sci-Fi', 'Response is not correct')
     })
-    it('should return 200 when movie is found for the provided year', async () => {
+    it('should return 200 when movie is found for the provided genre', async () => {
       const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ genre: 'Sci-Fi' })}`, {
         method: 'GET',
         headers: {
