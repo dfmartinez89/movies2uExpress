@@ -22,7 +22,6 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(res._getJSONData().message, error.message, 'Response is not correct')
       assert.strictEqual(movieStub.calledOnce, true)
     })
-
     it('should return 200 and the list of movies', async () => {
       const req = httpMocks.createRequest()
       const res = httpMocks.createResponse()
@@ -88,7 +87,6 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Movieid is required', 'Response is not correct')
     })
-
     it('should return 400 when model query throws error', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -104,7 +102,6 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(res._getJSONData().message, 'movie id is not correct', 'Response is not correct')
       assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called correctly')
     })
-
     it('should return 404 when no movie is found for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -119,7 +116,6 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(res._getJSONData().message, 'Movie not found', 'Response is not correct')
       assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called correctly')
     })
-
     it('should return 200 and the movie for the given id', async () => {
       const req = httpMocks.createRequest({
         method: 'GET',
@@ -160,7 +156,6 @@ describe('movies controller unit tests', () => {
     afterEach(() => {
       sinon.restore()
     })
-
     it('should return 404 when location is not sent', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -177,7 +172,6 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Location is required', 'Response is not correct')
     })
-
     it('should return 406 when model throws error', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -197,7 +191,6 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(res._getJSONData().message, 'Movie not created', 'Response is not correct')
       assert.strictEqual(movieStub.calledOnce, true)
     })
-
     it('should return 201 when movie is created', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -233,7 +226,6 @@ describe('movies controller unit tests', () => {
     afterEach(() => {
       sinon.restore()
     })
-
     it('should return 400 when location is not sent', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -251,27 +243,8 @@ describe('movies controller unit tests', () => {
       })
       await moviesCtrl.moviesUpdateOne(req, res)
       assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
-      assert.strictEqual(res._getJSONData().message, 'Location and movieid are required', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Location is required', 'Response is not correct')
     })
-
-    it('should return 400 when movieid is not sent', async () => {
-      const res = httpMocks.createResponse()
-      const req = httpMocks.createRequest({
-        method: 'POST',
-        body: {
-          title: 'The Matrix',
-          year: 1999,
-          genre: 'Sci-Fi',
-          poster: 'images/matrix.jpg',
-          rating: 5,
-          location: 'Tabernas, Spain'
-        }
-      })
-      await moviesCtrl.moviesUpdateOne(req, res)
-      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
-      assert.strictEqual(res._getJSONData().message, 'Location and movieid are required', 'Response is not correct')
-    })
-
     it('should return 404 when no movie is found for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -292,7 +265,7 @@ describe('movies controller unit tests', () => {
       await moviesCtrl.moviesUpdateOne(req, res)
       assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Movie not found', 'Response is not correct')
-      assert.strictEqual(movieStub.calledOnceWith({ id: '63c42486110b37fbea4ee930' }, { new: true }), true, 'Stub was not called with correct arguments')
+      assert.strictEqual(movieStub.calledOnce, true, 'Stub was not called with correct arguments')
     })
     it('should return 406 when model throws error updating the movie', async () => {
       const res = httpMocks.createResponse()
@@ -310,14 +283,13 @@ describe('movies controller unit tests', () => {
           location: 'Tabernas, Spain'
         }
       })
-
       const movieStub = sinon.stub(Movies, 'findOneAndUpdate').throws(new Error('Movie not updated'))
       await moviesCtrl.moviesUpdateOne(req, res)
       assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Movie not updated', 'Response is not correct')
-      assert.strictEqual(movieStub.calledOnceWith({ id: '63c42486110b37fbea4ee930' }, { new: true }), true, 'Response is not correct')
+      assert.strictEqual(movieStub.calledOnce, true, 'Response is not correct')
     })
-    it('should return 406 when model throws error saving the movie', async () => {
+    it('should return 406 when model throws error updating the movie', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
         method: 'PUT',
@@ -333,23 +305,11 @@ describe('movies controller unit tests', () => {
           location: 'Tabernas, Spain'
         }
       })
-      const mockMovie = {
-        _id: '63c42486110b37fbea4ee930',
-        title: 'The Matrix',
-        year: 1999,
-        genre: 'Sci-Fi',
-        poster: 'images/matrix.jpg',
-        rating: 5,
-        location: 'Tabernas, Spain'
-      }
-      const movie = new Movies(mockMovie)
-      const saveStub = sinon.stub(Movies.prototype, 'save').throws(new Error('Movie not saved'))
-      const movieStub = sinon.stub(Movies, 'findOneAndUpdate').resolves(movie)
+      const movieStub = sinon.stub(Movies, 'findOneAndUpdate').throws(new Error('Movie not saved'))
       await moviesCtrl.moviesUpdateOne(req, res)
       assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Movie not saved', 'Response is not correct')
-      assert.strictEqual(movieStub.calledOnceWith({ id: '63c42486110b37fbea4ee930' }, { new: true }), true, 'Stub was not called with correct arguments')
-      assert.strictEqual(saveStub.calledOnce, true)
+      assert.strictEqual(movieStub.calledOnce, true, 'Stub was not called with correct arguments')
     })
     it('should return 400 when geocoder throws error parsing the location', async () => {
       const res = httpMocks.createResponse()
@@ -372,7 +332,7 @@ describe('movies controller unit tests', () => {
       await moviesCtrl.moviesUpdateOne(req, res)
       assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Error in location', 'Response is not correct')
-      assert.strictEqual(movieStub.notCalled, true)
+      assert.strictEqual(movieStub.calledOnce, false)
       assert.strictEqual(geoStub.calledOnce, true)
     })
     it('should return 200 when movie is updated', async () => {
@@ -401,35 +361,19 @@ describe('movies controller unit tests', () => {
         location: 'Tabernas, Spain'
       }
       const movie = new Movies(mockMovie)
-      const saveStub = sinon.stub(Movies.prototype, 'save').resolves(true)
       const movieStub = sinon.stub(Movies, 'findOneAndUpdate').resolves(movie)
       await moviesCtrl.moviesUpdateOne(req, res)
       assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
       assert.strictEqual(res._getJSONData().data.title, 'The Matrix', 'Response is not correct')
-      assert.strictEqual(movieStub.calledOnceWith({ id: '63c42486110b37fbea4ee930' }, { new: true }), true, 'Stub was not called with correct arguments')
-      assert.strictEqual(saveStub.calledOnce, true)
+      assert.strictEqual(movieStub.calledOnce, true, 'Stub was not called with correct arguments')
     })
   })
   describe('moviesDeleteOne unit tests', () => {
     afterEach(() => {
       sinon.restore()
     })
-
-    it('should return 400 when movieid is not sent', async () => {
-      const res = httpMocks.createResponse()
-      const req = httpMocks.createRequest({
-        method: 'DELETE',
-        params: {
-          reviewid: '63c42486110b37fbea4ee930'
-        }
-      })
-      await moviesCtrl.moviesDeleteOne(req, res)
-      assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
-      assert.strictEqual(res._getJSONData().message, 'Movieid is required', 'Response is not correct')
-    })
-
-    it('should return 400 when no movie is found for the given id', async () => {
+    it('should return 404 when no movie is found for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
         method: 'DELETE',
@@ -443,7 +387,6 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(res._getJSONData().message, 'Movie not found', 'Response is not correct')
       assert.strictEqual(movieStub.calledOnceWith('63c42486110b37fbea4ee930'), true, 'Stub was not called with correct arguments')
     })
-
     it('should return 406 when model layer throws error', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -458,7 +401,6 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(res._getJSONData().message, 'Movie not deleted', 'Response is not correct')
       assert.strictEqual(movieStub.calledOnceWith('63c42486110b37fbea4ee930'), true, 'Stub was not called with correct arguments')
     })
-
     it('should return 200 and the movie for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({

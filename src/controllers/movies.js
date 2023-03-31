@@ -89,9 +89,9 @@ const moviesCreate = asyncHandler(async (req, res) => {
  * @route PUT /movies/:moviesid
  * @acces private */
 const moviesUpdateOne = asyncHandler(async (req, res) => {
-  if (!req.body.location || !req.params.movieid) {
+  if (!req.body.location) {
     return res.status(400).json({
-      message: 'Location and movieid are required'
+      message: 'Location is required'
     })
   }
   try {
@@ -101,20 +101,24 @@ const moviesUpdateOne = asyncHandler(async (req, res) => {
       coordinates: [loc[0].longitude, loc[0].latitude],
       formattedLocation: loc[0].formattedAddress
     }
-    const movie = await Movies.findOneAndUpdate({ id: req.params.movieid }, { new: true })
+    const movie = await Movies.findOneAndUpdate({
+      _id: req.params.movieid
+    },
+    {
+      title: req.body.title,
+      year: req.body.year,
+      genre: req.body.genre,
+      rating: req.body.rating,
+      geoLocation: parseLocation
+    },
+    { new: true })
     if (!movie) {
       return res.status(404).json({
         message: 'Movie not found'
       })
     }
-    movie.title = req.body.title
-    movie.year = req.body.year
-    movie.genre = req.body.genre
-    movie.poster = req.body.poster
-    movie.rating = req.body.rating
-    movie.geoLocation = parseLocation
     // not updating reviews via this endpoint1
-    await movie.save(movie)
+    // await movie.save(movie)
     return res.status(200).json({
       success: true,
       data: movie
@@ -129,11 +133,11 @@ const moviesUpdateOne = asyncHandler(async (req, res) => {
  * @route DELETE movies/:movieid
  * @acces private */
 const moviesDeleteOne = asyncHandler(async (req, res) => {
-  if (!req.params.movieid) {
+  /* if (!req.params.movieid) {
     return res.status(400).json({
       message: 'Movieid is required'
     })
-  }
+  } */
   try {
     const movie = await Movies.findByIdAndRemove(req.params.movieid)
     if (!movie) {
