@@ -239,4 +239,43 @@ describe('movies integration tests', () => {
       assert.strictEqual(result.data.rating, 4, 'Response is not correct')
     })
   })
+
+  describe('movies moviesDeleteOne tests', () => {
+    it('should return 400 when user is not logged in', async () => {
+      const res = await fetch(`http://localhost:3000/movies/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 401, 'Status code is not correct')
+      assert.strictEqual(result.message, 'Not authorized, token is required', 'Response is not correct')
+    })
+    it('should return 404 when no movie is found for the given movied', async () => {
+      const res = await fetch('http://localhost:3000/movies/6427536ddafbe3b100ac4713', {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 404, 'Status code is not correct')
+      assert.strictEqual(result.message, 'Movie not found', 'Response is not correct')
+    })
+    it('should return 204 when the movie is deleted', async () => {
+      const res = await fetch(`http://localhost:3000/movies/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      })
+      assert.strictEqual(res.status, 204, 'Status code is not correct')
+    })
+  })
 })

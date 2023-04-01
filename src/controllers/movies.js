@@ -117,7 +117,7 @@ const moviesUpdateOne = asyncHandler(async (req, res) => {
         message: 'Movie not found'
       })
     }
-    // not updating reviews via this endpoint1
+    // not updating reviews via this endpoint
     // await movie.save(movie)
     return res.status(200).json({
       success: true,
@@ -133,11 +133,6 @@ const moviesUpdateOne = asyncHandler(async (req, res) => {
  * @route DELETE movies/:movieid
  * @acces private */
 const moviesDeleteOne = asyncHandler(async (req, res) => {
-  /* if (!req.params.movieid) {
-    return res.status(400).json({
-      message: 'Movieid is required'
-    })
-  } */
   try {
     const movie = await Movies.findByIdAndRemove(req.params.movieid)
     if (!movie) {

@@ -401,7 +401,7 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(res._getJSONData().message, 'Movie not deleted', 'Response is not correct')
       assert.strictEqual(movieStub.calledOnceWith('63c42486110b37fbea4ee930'), true, 'Stub was not called with correct arguments')
     })
-    it('should return 200 and the movie for the given id', async () => {
+    it('should return 204 and the movie for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
         method: 'DELETE',
