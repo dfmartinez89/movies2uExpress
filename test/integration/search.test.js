@@ -113,10 +113,10 @@ describe('search integration tests', () => {
       const result = await res.json()
       assert.strictEqual(res.status, 200, 'Status code is not correct')
       assert.strictEqual(result.success, true, 'Response is not correct')
-      assert.strictEqual(result.count, 4, 'Response is not correct')
+      assert.strictEqual(result.count, 3, 'Response is not correct')
     })
     it('should return 404 when no movie is found for the provided year', async () => {
-      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ year: 2000 })}`, {
+      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ year: 2022 })}`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -127,10 +127,10 @@ describe('search integration tests', () => {
       assert.strictEqual(res.status, 404, 'Status code is not correct')
       assert.strictEqual(result.success, true, 'Response is not correct')
       assert.strictEqual(result.count, 0, 'Response is not correct')
-      assert.strictEqual(result.data, 'there are no movies on the year 2000', 'Response is not correct')
+      assert.strictEqual(result.data, 'there are no movies on the year 2022', 'Response is not correct')
     })
     it('should return 200 when movie is found for the provided year', async () => {
-      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ year: 2021 })}`, {
+      const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ year: 1999 })}`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -141,8 +141,8 @@ describe('search integration tests', () => {
       assert.strictEqual(res.status, 200, 'Status code is not correct')
       assert.strictEqual(result.success, true, 'Response is not correct')
       assert.strictEqual(result.count, 1, 'Response is not correct')
-      assert.strictEqual(result.data[0].title, 'The Matrix Resurrections', 'Response is not correct')
-      assert.strictEqual(result.data[0].location, 'Albox, Spain', 'Response is not correct')
+      assert.strictEqual(result.data[0].title, 'The Matrix', 'Response is not correct')
+      assert.strictEqual(result.data[0].location, 'Tabernas, Spain', 'Response is not correct')
     })
     it('should return 404 when no movie is found for the provided genre', async () => {
       const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ genre: 'Action,Sci-Fi' })}`, {
@@ -169,7 +169,7 @@ describe('search integration tests', () => {
       const result = await res.json()
       assert.strictEqual(res.status, 200, 'Status code is not correct')
       assert.strictEqual(result.success, true, 'Response is not correct')
-      assert.strictEqual(result.count, 4, 'Response is not correct')
+      assert.strictEqual(result.count, 3, 'Response is not correct')
     })
   })
 })

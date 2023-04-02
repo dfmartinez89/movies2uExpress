@@ -15,7 +15,7 @@ const reviewsReadOne = asyncHandler(async (req, res) => {
 
     if (!movie) {
       return res.status(404).json({
-        message: 'movie not found'
+        message: 'Movie not found'
       })
     }
 
@@ -74,7 +74,7 @@ const doAddReview = async (req, res, movie) => {
   }
   if (!movie) {
     return res.status(404).json({
-      message: 'movie not found'
+      message: 'Movie not found'
     })
   }
   try {

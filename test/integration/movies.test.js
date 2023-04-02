@@ -1,8 +1,8 @@
 const { describe, it, before, afterEach, after, beforeEach } = require('node:test')
 const assert = require('node:assert/strict')
 const testdb = require('../../src/middleware/testdb')
+
 let token
-let id
 
 describe('movies integration tests', () => {
   before(async () => {
@@ -32,8 +32,49 @@ describe('movies integration tests', () => {
     })
   })
 
+  describe('movies moviesReadOne tests', () => {
+    it('should return the 400 when the provided movieid has a wrong format', async () => {
+      const res = await fetch('http://localhost:3000/movies/1', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 400, 'Status code is not correct')
+      assert.strictEqual(result.message, 'Cast to ObjectId failed for value "1" (type string) at path "_id" for model "Movie"', 'Response is not correct')
+    })
+    it('should return the 404 when no movies is found for the provided movieid', async () => {
+      const res = await fetch('http://localhost:3000/movies/6428a0765d38b76f6dbfa746', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 404, 'Status code is not correct')
+      assert.strictEqual(result.message, 'Movie not found', 'Response is not correct')
+    })
+    it('should return the movie found for the provided movieid', async () => {
+      const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fdf', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      const result = await res.json()
+      assert.strictEqual(res.status, 200, 'Status code is not correct')
+      assert.strictEqual(result.success, true, 'Response is not correct')
+      assert.strictEqual(result.data.title, 'The Matrix Resurrections', 'Response is not correct')
+      assert.strictEqual(result.data.year, 2021, 'Response is not correct')
+    })
+  })
+
   describe('movies moviesCreate tests', () => {
-    it('should return 400 when user is not logged in', async () => {
+    it('should return 400 when user is not authenticated', async () => {
       const res = await fetch('http://localhost:3000/movies', {
         method: 'POST',
         headers: {
@@ -106,57 +147,15 @@ describe('movies integration tests', () => {
         })
       })
       const result = await res.json()
-      id = result.data._id
       assert.strictEqual(res.status, 201, 'Status code is not correct')
       assert.strictEqual(result.success, true, 'Response is not correct')
       assert.strictEqual(result.data.title, 'Transformers')
     })
   })
 
-  describe('movies moviesReadOne tests', () => {
-    it('should return the 400 when the provided movieid has a wrong format', async () => {
-      const res = await fetch('http://localhost:3000/movies/1', {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      })
-      const result = await res.json()
-      assert.strictEqual(res.status, 400, 'Status code is not correct')
-      assert.strictEqual(result.message, 'Cast to ObjectId failed for value "1" (type string) at path "_id" for model "Movie"', 'Response is not correct')
-    })
-    it('should return the 404 when no movies is found for the provided movieid', async () => {
-      const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fda', {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      })
-      const result = await res.json()
-      assert.strictEqual(res.status, 404, 'Status code is not correct')
-      assert.strictEqual(result.message, 'Movie not found', 'Response is not correct')
-    })
-    it('should return the movie found for the provided movieid', async () => {
-      const res = await fetch(`http://localhost:3000/movies/${id}`, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      })
-      const result = await res.json()
-      assert.strictEqual(res.status, 200, 'Status code is not correct')
-      assert.strictEqual(result.success, true, 'Response is not correct')
-      assert.strictEqual(result.data.title, 'Transformers', 'Response is not correct')
-      assert.strictEqual(result.data.year, 2007, 'Response is not correct')
-    })
-  })
-
   describe('movies moviesUpdateOne tests', () => {
-    it('should return 400 when user is not logged in', async () => {
-      const res = await fetch(`http://localhost:3000/movies/${id}`, {
+    it('should return 400 when user is not authenticated', async () => {
+      const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fdf', {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
@@ -176,7 +175,7 @@ describe('movies integration tests', () => {
       assert.strictEqual(result.message, 'Not authorized, token is required', 'Response is not correct')
     })
     it('should return 400 when location is not provided', async () => {
-      const res = await fetch(`http://localhost:3000/movies/${id}`, {
+      const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fdf', {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
@@ -196,7 +195,7 @@ describe('movies integration tests', () => {
       assert.strictEqual(result.message, 'Location is required', 'Response is not correct')
     })
     it('should return 404 when no movie is found for the given movied', async () => {
-      const res = await fetch('http://localhost:3000/movies/6427536ddafbe3b100ac4713', {
+      const res = await fetch('http://localhost:3000/movies/6428a0765d38b76f6dbfa746', {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
@@ -217,7 +216,7 @@ describe('movies integration tests', () => {
       assert.strictEqual(result.message, 'Movie not found', 'Response is not correct')
     })
     it('should return 200 when the movie is updated', async () => {
-      const res = await fetch(`http://localhost:3000/movies/${id}`, {
+      const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fdf', {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
@@ -241,8 +240,8 @@ describe('movies integration tests', () => {
   })
 
   describe('movies moviesDeleteOne tests', () => {
-    it('should return 400 when user is not logged in', async () => {
-      const res = await fetch(`http://localhost:3000/movies/${id}`, {
+    it('should return 400 when user is not authenticated', async () => {
+      const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fdf', {
         method: 'DELETE',
         headers: {
           Accept: 'application/json',
@@ -267,7 +266,7 @@ describe('movies integration tests', () => {
       assert.strictEqual(result.message, 'Movie not found', 'Response is not correct')
     })
     it('should return 204 when the movie is deleted', async () => {
-      const res = await fetch(`http://localhost:3000/movies/${id}`, {
+      const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fdf', {
         method: 'DELETE',
         headers: {
           Accept: 'application/json',
