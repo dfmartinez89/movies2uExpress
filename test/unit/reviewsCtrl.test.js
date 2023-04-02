@@ -29,7 +29,7 @@ describe('reviews controller unit tests', () => {
       })
       await reviewsCtrl.reviewsReadOne(req, res)
       assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
-      assert.strictEqual(res._getJSONData().message, 'movie not found', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Movie not found', 'Response is not correct')
       assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
     })
 
@@ -245,7 +245,7 @@ describe('reviews controller unit tests', () => {
       })
       await reviewsCtrl.doAddReview(req, res, null)
       assert.strictEqual(res.statusCode, 404, 'Status code is not correct')
-      assert.strictEqual(res._getJSONData().message, 'movie not found', 'Response is not correct')
+      assert.strictEqual(res._getJSONData().message, 'Movie not found', 'Response is not correct')
     })
 
     it('should push to reviews array the data sent in request, call updateAverageRating and return data of last review added', async () => {
