@@ -4,7 +4,7 @@ const testdb = require('../../src/middleware/testdb')
 
 let token
 
-describe('movies integration tests', () => {
+describe('Movies integration tests', async () => {
   before(async () => {
     await testdb.connect()
   })
@@ -17,7 +17,7 @@ describe('movies integration tests', () => {
   after(async () => {
     await testdb.closeDatabase()
   })
-  describe('movies moviesFindAll tests', () => {
+  describe('Get the list of movies tests', async () => {
     it('should return the list of movies', async () => {
       const res = await fetch('http://localhost:3000/movies', {
         method: 'GET',
@@ -32,7 +32,7 @@ describe('movies integration tests', () => {
     })
   })
 
-  describe('movies moviesReadOne tests', () => {
+  describe('Get a movie by id tests', async () => {
     it('should return the 400 when the provided movieid has a wrong format', async () => {
       const res = await fetch('http://localhost:3000/movies/1', {
         method: 'GET',
@@ -73,7 +73,7 @@ describe('movies integration tests', () => {
     })
   })
 
-  describe('movies moviesCreate tests', () => {
+  describe('Create a new movie tests', async () => {
     it('should return 400 when user is not authenticated', async () => {
       const res = await fetch('http://localhost:3000/movies', {
         method: 'POST',
@@ -153,7 +153,7 @@ describe('movies integration tests', () => {
     })
   })
 
-  describe('movies moviesUpdateOne tests', () => {
+  describe('Update a movie tests', async () => {
     it('should return 400 when user is not authenticated', async () => {
       const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fdf', {
         method: 'PUT',
@@ -239,7 +239,7 @@ describe('movies integration tests', () => {
     })
   })
 
-  describe('movies moviesDeleteOne tests', () => {
+  describe('Delete a movie tests', async () => {
     it('should return 400 when user is not authenticated', async () => {
       const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fdf', {
         method: 'DELETE',

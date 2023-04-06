@@ -3,20 +3,15 @@ const mongoose = require('mongoose')
 const Movies = mongoose.model('Movie')
 const asyncHandler = require('express-async-handler')
 require('dotenv/config')
-const axios = require('axios')
 const imdb = require('../utils/imdb')
 
-const axiosOptions = {
-  apikey: process.env.IMDB_KEY
-}
-
 const getImdbResponse = asyncHandler(async (criteria) => {
-  const res = await axios
-    .get(imdb.imdbUrl(axiosOptions.apikey, criteria))
-    .catch((error) => {
-      console.log(error.message)
-    })
-  return res.data
+  const res = await fetch(imdb.imdbUrl(process.env.IMDB_KEY, criteria))
+  if (!res.ok) {
+    throw new Error('IMDB response was not successful')
+  }
+  const jsonData = await res.json()
+  return jsonData
 })
 
 /* Search IMDb movies */

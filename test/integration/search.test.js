@@ -1,9 +1,10 @@
 const { describe, it, before, afterEach, after, beforeEach } = require('node:test')
 const assert = require('node:assert/strict')
 const testdb = require('../../src/middleware/testdb')
+const nock = require('nock')
 let token
 
-describe('search integration tests', () => {
+describe('search integration tests', async () => {
   before(async () => {
     await testdb.connect()
   })
@@ -17,7 +18,7 @@ describe('search integration tests', () => {
     await testdb.closeDatabase()
   })
 
-  describe('Search IMDb movies tests', () => {
+  describe('Search IMDb movies tests', async () => {
     it('should return 401 when user is not logged in', async () => {
       const res = await fetch(`http://localhost:3000/imdb?${new URLSearchParams({ criteria: 'No country for old men' })}`, {
         method: 'GET',
@@ -54,6 +55,30 @@ describe('search integration tests', () => {
           Authorization: 'Bearer ' + token
         }
       })
+      const imdbMock = {
+        searchType: 'Movie',
+        expression: 'No country for old men',
+        results: [
+          {
+            id: 'tt0477348',
+            resultType: 'Movie',
+            image: 'https://m.media-amazon.com/images/M/MV5BMjA5Njk3MjM4OV5BMl5BanBnXkFtZTcwMTc5MTE1MQ@@._V1_Ratio0.6757_AL_.jpg',
+            title: 'No Country for Old Men',
+            description: '2007 Tommy Lee Jones, Javier Bardem'
+          },
+          {
+            id: 'tt1059210',
+            resultType: 'Movie',
+            image: 'https://m.media-amazon.com/images/M/MV5BMzFkYjkwYjQtN2EzNC00N2Y4LTgwOTctMjEyNzdmZTY1NmNjXkEyXkFqcGdeQXVyMjkyMzMwNA@@._V1_Ratio0.6757_AL_.jpg',
+            title: 'No Country for Old Men',
+            description: '1981 TV Movie Trevor Howard, Cyril Cusack'
+          }
+        ],
+        errorMessage: ''
+      }
+      nock('https://imdb-api.com/en/API/SearchMovie/')
+        .get('/$/', 'username=pgte&password=123456')
+        .reply(200, imdbMock)
       const result = await res.json()
       assert.strictEqual(res.status, 200, 'Status code is not correct')
       assert.strictEqual(result.searchType, 'Movie', 'Response is not correct')
@@ -75,7 +100,7 @@ describe('search integration tests', () => {
     })
   })
 
-  describe('Search Utils tests', () => {
+  describe('Search Utils tests', async () => {
     it('should return 400 when criteria query param is not provided', async () => {
       const res = await fetch(`http://localhost:3000/search?${new URLSearchParams({ search: 'No country for old men' })}`, {
         method: 'GET',
