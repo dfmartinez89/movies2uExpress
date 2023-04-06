@@ -2,7 +2,7 @@ const { describe, it, before, afterEach, after, beforeEach } = require('node:tes
 const assert = require('node:assert/strict')
 const testdb = require('../../src/middleware/testdb')
 
-describe('users integration tests', () => {
+describe('users integration tests', async () => {
   before(async () => {
     await testdb.connect()
   })
@@ -16,7 +16,7 @@ describe('users integration tests', () => {
     await testdb.closeDatabase()
   })
 
-  describe('register user tests', () => {
+  describe('Register user tests', async () => {
     it('should return 400 when email is not provided', async () => {
       const res = await fetch('http://localhost:3000/users', {
         method: 'POST',
@@ -101,7 +101,7 @@ describe('users integration tests', () => {
     })
   })
 
-  describe('login user tests', () => {
+  describe('Login user tests', async () => {
     it('should return 400 when email is not provided', async () => {
       const res = await fetch('http://localhost:3000/users/login', {
         method: 'POST',
@@ -187,7 +187,7 @@ describe('users integration tests', () => {
     })
   })
 
-  describe('get user tests', () => {
+  describe('Get user tests', () => {
     it('should return 403 when user is not authenticated', async () => {
       const res = await fetch('http://localhost:3000/users/me', {
         method: 'GET',
@@ -215,7 +215,7 @@ describe('users integration tests', () => {
     })
 
     it('should return 200 and data when user is authenticated', async () => {
-      // login user
+    // login user
       const login = await fetch('http://localhost:3000/users/login', {
         method: 'POST',
         headers: {

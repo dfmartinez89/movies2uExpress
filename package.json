@@ -18,7 +18,6 @@
     "coverage": "npm run cover:unit && npm run cover:integration && npm run cover:report"
   },
   "dependencies": {
-    "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "~1.4.4",
@@ -45,6 +44,7 @@
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-promise": "^6.1.1",
     "mongodb-memory-server": "^8.12.0",
+    "nock": "^13.3.0",
     "node-mocks-http": "^1.12.1",
     "nyc": "^15.1.0",
     "sinon": "^15.0.1",

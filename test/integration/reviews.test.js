@@ -4,7 +4,7 @@ const testdb = require('../../src/middleware/testdb')
 
 let token
 
-describe('reviews integration tests', () => {
+describe('Reviews integration tests', async () => {
   before(async () => {
     await testdb.connect()
   })
@@ -17,7 +17,7 @@ describe('reviews integration tests', () => {
   after(async () => {
     await testdb.closeDatabase()
   })
-  describe('read reviews tests', () => {
+  describe('Get the reviews of a movie tests', async () => {
     it('should return the 404 when no movies is found for the provided movieid', async () => {
       const res = await fetch('http://localhost:3000/movies/6428a0765d38b76f6dbfa746/reviews/641e0f79f95fbd4a30067fdm', {
         method: 'GET',
@@ -70,7 +70,7 @@ describe('reviews integration tests', () => {
       assert.strictEqual(result.movie.review.description, 'Great movie', 'Response is not correct')
     })
   })
-  describe('create review tests', () => {
+  describe('Create a new review tests', async () => {
     it('should return the 404 when movie is not found for the provided id', async () => {
       const res = await fetch('http://localhost:3000/movies/6428a9b7cff67d6c149f6a57/reviews', {
         method: 'POST',
@@ -126,7 +126,7 @@ describe('reviews integration tests', () => {
       assert.strictEqual(result.data.author, 'Gandalf', 'Response is not correct')
     })
   })
-  describe('update review tests', () => {
+  describe('Update a review tests', async () => {
     it('should return the 401 when user is not authenticated', async () => {
       const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fde/reviews/6428a9b7cff67d6c149f6a57', {
         method: 'PUT',
@@ -256,7 +256,7 @@ describe('reviews integration tests', () => {
       assert.strictEqual(result.data.description, 'Great movie, GOAT', 'Response is not correct')
     })
   })
-  describe('delete review tests', () => {
+  describe('Delete a review tests', async () => {
     it('should return the 401 when user is not authenticated', async () => {
       const res = await fetch('http://localhost:3000/movies/641e0f79f95fbd4a30067fde/reviews/6428a9b7cff67d6c149f6a57', {
         method: 'DELETE',
