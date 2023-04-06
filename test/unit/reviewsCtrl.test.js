@@ -8,8 +8,8 @@ const reviewsCtrl = require('../../src/controllers/reviews.js')
 const callTracker = new assert.CallTracker()
 process.on('exit', () => callTracker.verify())
 
-describe('reviews controller unit tests', () => {
-  describe('reviewsReadOne unit tests', () => {
+describe('reviews controller unit tests', async () => {
+  describe('reviewsReadOne unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -154,7 +154,7 @@ describe('reviews controller unit tests', () => {
     })
   })
 
-  describe('reviewsCreate unit tests', () => {
+  describe('reviewsCreate unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -224,7 +224,7 @@ describe('reviews controller unit tests', () => {
     })
   })
 
-  describe('doAddReview unit tests', () => {
+  describe('doAddReview unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -336,7 +336,7 @@ describe('reviews controller unit tests', () => {
     })
   })
 
-  describe('updateAverageRating unit tests', () => {
+  describe('updateAverageRating unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -402,7 +402,7 @@ describe('reviews controller unit tests', () => {
     })
   })
 
-  describe('doSetAverageRating unit tests', () => {
+  describe('doSetAverageRating unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -494,7 +494,7 @@ describe('reviews controller unit tests', () => {
     })
   })
 
-  describe('reviewsUpdateOne unit tests', () => {
+  describe('reviewsUpdateOne unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -695,7 +695,7 @@ describe('reviews controller unit tests', () => {
     })
   })
 
-  describe('reviewsDeleteOne unit tests', () => {
+  describe('reviewsDeleteOne unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })

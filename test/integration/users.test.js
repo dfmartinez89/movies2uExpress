@@ -187,7 +187,7 @@ describe('users integration tests', async () => {
     })
   })
 
-  describe('Get user tests', () => {
+  describe('Get user tests', async () => {
     it('should return 403 when user is not authenticated', async () => {
       const res = await fetch('http://localhost:3000/users/me', {
         method: 'GET',

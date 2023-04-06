@@ -4,11 +4,10 @@ const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
 const Movies = require('../../src/models/movies.js')
 const geocoder = require('../../src/utils/geocoder.js')
-
 const moviesCtrl = require('../../src/controllers/movies.js')
 
-describe('movies controller unit tests', () => {
-  describe('moviesFindAll unit tests', () => {
+describe('movies controller unit tests', async () => {
+  describe('moviesFindAll unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -61,7 +60,7 @@ describe('movies controller unit tests', () => {
           createdAt: '2023-02-13T21:14:05.407Z'
         }
       ]
-      const movieStub = sinon.stub(Movies, 'find').resolves(movies)
+      const movieStub = sinon.stub(Movies, 'find').returns(movies)
       await moviesCtrl.moviesFindAll(req, res)
       assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().success, true)
@@ -71,7 +70,7 @@ describe('movies controller unit tests', () => {
     })
   })
 
-  describe('moviesReadOne unit tests', () => {
+  describe('moviesReadOne unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -152,7 +151,7 @@ describe('movies controller unit tests', () => {
     })
   })
 
-  describe('moviesCreate unit tests', () => {
+  describe('moviesCreate unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -222,7 +221,7 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(movieStub.called, true)
     })
   })
-  describe('moviesUpdateOne unit tests', () => {
+  describe('moviesUpdateOne unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -369,7 +368,7 @@ describe('movies controller unit tests', () => {
       assert.strictEqual(movieStub.calledOnce, true, 'Stub was not called with correct arguments')
     })
   })
-  describe('moviesDeleteOne unit tests', () => {
+  describe('moviesDeleteOne unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
