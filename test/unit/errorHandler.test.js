@@ -17,8 +17,7 @@ describe('error handler middleware unit tests', async () => {
     handler.errorHandler(error, req, res, next)
     assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
     assert.strictEqual(res._getJSONData().message, 'Error in request', 'Response code is not correct')
-    console.log(res._getJSONData().stack)
-    assert(res._getJSONData().stack.includes('node:internal/test_runner/test:547:25'), 'Response stack code is not correct')
+    assert(res._getJSONData().stack.includes('at node:internal/test_runner/test'), 'Response stack code is not correct')
   })
   it('should call next function with stacktrace and set status code 500 when is not provided', async () => {
     const res = httpMocks.createResponse()
@@ -29,6 +28,6 @@ describe('error handler middleware unit tests', async () => {
     handler.errorHandler(error, req, res, next)
     assert.strictEqual(res.statusCode, 500, 'Status code is not correct')
     assert.strictEqual(res._getJSONData().message, 'Error in request', 'Response code is not correct')
-    assert(res._getJSONData().stack.includes('at Test.run (node:internal/test_runner/test:547:25)'), 'Response stack is not correct')
+    assert(res._getJSONData().stack.includes('at node:internal/test_runner/test'), 'Response stack is not correct')
   })
 })
