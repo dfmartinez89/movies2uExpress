@@ -52,7 +52,6 @@ describe('search controller unit tests', async () => {
         json: sinon.stub().resolves(mockResponse)
       })
       const result = await searchCtrl.getImdbResponse('test')
-      console.log(result)
       assert.strictEqual(result.ok, true, 'Response is not correct')
       assert.strictEqual(result.body.results[0].description, '2007 Tommy Lee Jones, Javier Bardem', 'Response is not correct')
       assert.strictEqual(fetchStub.calledOnce, true)

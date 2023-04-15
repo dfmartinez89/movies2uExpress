@@ -6,7 +6,7 @@ const sinon = require('sinon')
 const User = require('../../src/models/users.js')
 const auth = require('../../src/middleware/auth.js')
 
-describe('auth middleware unit tests', () => {
+describe('auth middleware unit tests', async () => {
   afterEach(() => {
     sinon.restore()
   })

@@ -7,8 +7,8 @@ const bcrypt = require('bcryptjs')
 const userCtrl = require('../../src/controllers/users.js')
 const User = require('../../src/models/users.js')
 
-describe('user controller unit tests', () => {
-  describe('register user unit tests', () => {
+describe('user controller unit tests', async () => {
+  describe('register user unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -96,7 +96,7 @@ describe('user controller unit tests', () => {
     })
   })
 
-  describe('login user unit tests', () => {
+  describe('login user unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })
@@ -225,7 +225,7 @@ describe('user controller unit tests', () => {
     })
   })
 
-  describe('get user data unit tests', () => {
+  describe('get user data unit tests', async () => {
     it.skip('should return 200, user id and mail from session', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -241,7 +241,7 @@ describe('user controller unit tests', () => {
     })
   })
 
-  describe('jwt unit tests', () => {
+  describe('jwt unit tests', async () => {
     afterEach(() => {
       sinon.restore()
     })

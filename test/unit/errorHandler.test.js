@@ -1,0 +1,33 @@
+const assert = require('node:assert/strict')
+const { describe, it, afterEach } = require('node:test')
+const httpMocks = require('node-mocks-http')
+const sinon = require('sinon')
+const handler = require('../../src/middleware/errorHandler.js')
+
+describe('error handler middleware unit tests', async () => {
+  afterEach(() => {
+    sinon.restore()
+  })
+  it('should call next function with stacktrace when status code is provided', async () => {
+    const res = httpMocks.createResponse()
+    const req = httpMocks.createRequest()
+    const next = sinon.stub()
+    const error = new Error('Error in request')
+    res.status(400)
+    handler.errorHandler(error, req, res, next)
+    assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
+    assert.strictEqual(res._getJSONData().message, 'Error in request', 'Response code is not correct')
+    assert(res._getJSONData().stack.includes('node:internal/test_runner/test'), 'Response stack code is not correct')
+  })
+  it('should call next function with stacktrace and set status code 500 when is not provided', async () => {
+    const res = httpMocks.createResponse()
+    const req = httpMocks.createRequest()
+    const next = sinon.stub()
+    const error = new Error('Error in request')
+    res.status(undefined)
+    handler.errorHandler(error, req, res, next)
+    assert.strictEqual(res.statusCode, 500, 'Status code is not correct')
+    assert.strictEqual(res._getJSONData().message, 'Error in request', 'Response code is not correct')
+    assert(res._getJSONData().stack.includes('node:internal/test_runner/test'), 'Response stack is not correct')
+  })
+})
