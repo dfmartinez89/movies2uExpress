@@ -22,7 +22,7 @@ const swaggerOptions = {
       title: 'Movies API',
       version: '0.1.0',
       description:
-        'API with basic CRUD functionality',
+        'API for Node testing playground',
       contact: {
         name: 'Damian Ferro',
         url: 'https://github.com/thywillbedone/movies2uExpress',
