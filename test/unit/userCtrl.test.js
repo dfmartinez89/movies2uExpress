@@ -1,7 +1,6 @@
-const { describe, it, afterEach } = require('node:test')
+const { describe, it, afterEach, mock } = require('node:test')
 const assert = require('node:assert/strict')
 const httpMocks = require('node-mocks-http')
-const sinon = require('sinon')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const userCtrl = require('../../src/controllers/users.js')
@@ -10,7 +9,7 @@ const User = require('../../src/models/users.js')
 describe('user controller unit tests', async () => {
   describe('register user unit tests', async () => {
     afterEach(() => {
-      sinon.restore()
+      mock.restoreAll()
     })
     it('registerUser should return 400 when email is missing', async () => {
       const res = httpMocks.createResponse()
@@ -47,11 +46,14 @@ describe('user controller unit tests', async () => {
           email: 'test@test.com'
         }
       })
-      const userStub = sinon.stub(User, 'findOne').returns(true)
+      mock.method(User, 'findOne', () => true)
+      assert.strictEqual(User.findOne.mock.calls.length, 0)
       await userCtrl.registerUser(req, res)
       assert.strictEqual(res._getJSONData().message, 'User already exists', 'Response is not correct')
       assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
-      assert.strictEqual(userStub.calledOnce, true)
+      assert.strictEqual(User.findOne.mock.calls.length, 1)
+      const call = User.findOne.mock.calls[0]
+      assert.deepStrictEqual(call.arguments, [{ email: 'test@test.com' }])
     })
 
     it('should return 400 when user data is invalid', async () => {
@@ -64,13 +66,22 @@ describe('user controller unit tests', async () => {
           email: 'test@test.com'
         }
       })
-      const userStubFind = sinon.stub(User, 'findOne').returns(false)
-      const userStubCreate = sinon.stub(User, 'create').throws(new Error('Invalid user data'))
+      mock.method(User, 'findOne', () => false)
+      assert.strictEqual(User.findOne.mock.calls.length, 0)
+      const mockError = () => {
+        throw new Error('Invalid user data')
+      }
+      mock.method(User, 'create', mockError)
+      assert.strictEqual(User.create.mock.calls.length, 0)
       await userCtrl.registerUser(req, res)
       assert.strictEqual(res._getJSONData().message, 'Invalid user data', 'Response is not correct')
       assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
-      assert.strictEqual(userStubFind.calledOnce, true)
-      assert.strictEqual(userStubCreate.calledOnce, true)
+      assert.strictEqual(User.findOne.mock.calls.length, 1)
+      const callFind = User.findOne.mock.calls[0]
+      assert.deepStrictEqual(callFind.arguments, [{ email: 'test@test.com' }])
+      assert.strictEqual(User.create.mock.calls.length, 1)
+      const callCreate = User.create.mock.calls[0]
+      assert.notDeepStrictEqual(callCreate.arguments, [{ email: 'test@test.com', password: '$2a$10$R14vkpu2VMBFSFP.agw/S.24CNJ/W4xY0BtNi/Z4MLUEFfAerFvcq' }])
     })
 
     it('should return 201 when user is created', async () => {
@@ -83,23 +94,30 @@ describe('user controller unit tests', async () => {
           email: 'test@test.com'
         }
       })
-
-      const userStubFind = sinon.stub(User, 'findOne').returns(false)
-      const userStubCreate = sinon.stub(User, 'create').returns(true)
-      const jwtStub = sinon.stub(jwt, 'sign').returns('fake-token')
+      mock.method(User, 'findOne', () => false)
+      assert.strictEqual(User.findOne.mock.calls.length, 0)
+      mock.method(User, 'create', () => true)
+      assert.strictEqual(User.create.mock.calls.length, 0)
+      mock.method(jwt, 'sign', () => 'fake-token')
+      assert.strictEqual(jwt.sign.mock.calls.length, 0)
       await userCtrl.registerUser(req, res)
       assert.strictEqual(res._getJSONData().token, 'fake-token', 'Response is not correct')
       assert.strictEqual(res.statusCode, 201, 'Status code is not correct')
-      assert.strictEqual(userStubFind.calledOnce, true)
-      assert.strictEqual(userStubCreate.calledOnce, true)
-      assert.strictEqual(jwtStub.calledOnce, true)
+      assert.strictEqual(User.findOne.mock.calls.length, 1)
+      const callFind = User.findOne.mock.calls[0]
+      assert.deepStrictEqual(callFind.arguments, [{ email: 'test@test.com' }])
+      assert.strictEqual(User.create.mock.calls.length, 1)
+      const callCreate = User.create.mock.calls[0]
+      assert.notDeepStrictEqual(callCreate.arguments, [{ email: 'test@test.com', password: '$2a$10$R14vkpu2VMBFSFP.agw/S.24CNJ/W4xY0BtNi/Z4MLUEFfAerFvcq' }])
+      assert.strictEqual(jwt.sign.mock.calls.length, 1)
     })
   })
 
   describe('login user unit tests', async () => {
     afterEach(() => {
-      sinon.restore()
+      mock.restoreAll()
     })
+
     it(' should return 400 when email is missing', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -136,13 +154,17 @@ describe('user controller unit tests', async () => {
           email: 'test@test.com'
         }
       })
-      const userStubFind = sinon.stub(User, 'findOne').returns(null)
-      const bcryptStub = sinon.stub(bcrypt, 'compare').returns(true)
+      mock.method(User, 'findOne', () => null)
+      assert.strictEqual(User.findOne.mock.calls.length, 0)
+      mock.method(bcrypt, 'compare', () => true)
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 0)
       await userCtrl.loginUser(req, res)
       assert.strictEqual(res._getJSONData().message, 'Invalid email or password', 'Response is not correct')
       assert.strictEqual(res.statusCode, 403, 'Status code is not correct')
-      assert.strictEqual(userStubFind.calledOnce, true)
-      assert.strictEqual(bcryptStub.notCalled, true)
+      assert.strictEqual(User.findOne.mock.calls.length, 1)
+      const callFind = User.findOne.mock.calls[0]
+      assert.deepStrictEqual(callFind.arguments, [{ email: 'test@test.com' }])
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 0)
     })
 
     it('should return 403 when user password is not correct', async () => {
@@ -155,13 +177,17 @@ describe('user controller unit tests', async () => {
           email: 'test@test.com'
         }
       })
-      const userStubFind = sinon.stub(User, 'findOne').returns(true)
-      const bcryptStub = sinon.stub(bcrypt, 'compare').returns(false)
+      mock.method(User, 'findOne', () => true)
+      assert.strictEqual(User.findOne.mock.calls.length, 0)
+      mock.method(bcrypt, 'compare', () => false)
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 0)
       await userCtrl.loginUser(req, res)
       assert.strictEqual(res._getJSONData().message, 'Invalid email or password', 'Response is not correct')
       assert.strictEqual(res.statusCode, 403, 'Status code is not correct')
-      assert.strictEqual(userStubFind.calledOnce, true)
-      assert.strictEqual(bcryptStub.calledOnce, true)
+      assert.strictEqual(User.findOne.mock.calls.length, 1)
+      const callFind = User.findOne.mock.calls[0]
+      assert.deepStrictEqual(callFind.arguments, [{ email: 'test@test.com' }])
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 1)
     })
 
     it('should return 406 when model throws exception', async () => {
@@ -174,13 +200,20 @@ describe('user controller unit tests', async () => {
           email: 'test@test.com'
         }
       })
-      const userStubFind = sinon.stub(User, 'findOne').throws(new Error('Error accessing database'))
-      const bcryptStub = sinon.stub(bcrypt, 'compare').returns(false)
+      const mockError = () => {
+        throw new Error('Error accessing database')
+      }
+      mock.method(User, 'findOne', mockError)
+      assert.strictEqual(User.findOne.mock.calls.length, 0)
+      mock.method(bcrypt, 'compare', () => false)
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 0)
       await userCtrl.loginUser(req, res)
       assert.strictEqual(res._getJSONData().message, 'Error accessing database', 'Response is not correct')
       assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
-      assert.strictEqual(userStubFind.calledOnce, true)
-      assert.strictEqual(bcryptStub.calledOnce, false)
+      assert.strictEqual(User.findOne.mock.calls.length, 1)
+      const callFind = User.findOne.mock.calls[0]
+      assert.deepStrictEqual(callFind.arguments, [{ email: 'test@test.com' }])
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 0)
     })
 
     it('should return 406 when bcrypt throws exception', async () => {
@@ -193,13 +226,20 @@ describe('user controller unit tests', async () => {
           email: 'test@test.com'
         }
       })
-      const userStubFind = sinon.stub(User, 'findOne').returns(true)
-      const bcryptStub = sinon.stub(bcrypt, 'compare').throws(new Error('Error hashing password'))
+      const mockError = () => {
+        throw new Error('Error hashing password')
+      }
+      mock.method(User, 'findOne', () => true)
+      assert.strictEqual(User.findOne.mock.calls.length, 0)
+      mock.method(bcrypt, 'compare', mockError)
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 0)
       await userCtrl.loginUser(req, res)
       assert.strictEqual(res._getJSONData().message, 'Error hashing password', 'Response is not correct')
       assert.strictEqual(res.statusCode, 406, 'Status code is not correct')
-      assert.strictEqual(userStubFind.calledOnce, true)
-      assert.strictEqual(bcryptStub.calledOnce, true)
+      assert.strictEqual(User.findOne.mock.calls.length, 1)
+      const callFind = User.findOne.mock.calls[0]
+      assert.deepStrictEqual(callFind.arguments, [{ email: 'test@test.com' }])
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 1)
     })
 
     it('should return 200 when user logs in succesfully', async () => {
@@ -211,45 +251,60 @@ describe('user controller unit tests', async () => {
           email: 'test@test.com'
         }
       })
-      const userStubFind = sinon.stub(User, 'findOne').returns(true)
-      const bcryptStub = sinon.stub(bcrypt, 'compare').returns(true)
-      const jwtSub = sinon.stub(jwt, 'sign').returns('fake-token')
-
+      mock.method(User, 'findOne', () => true)
+      assert.strictEqual(User.findOne.mock.calls.length, 0)
+      mock.method(bcrypt, 'compare', () => true)
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 0)
+      mock.method(jwt, 'sign', () => 'fake-token')
+      assert.strictEqual(jwt.sign.mock.calls.length, 0)
       await userCtrl.loginUser(req, res)
       assert.strictEqual(res._getJSONData().token, 'fake-token', 'Response is not correct')
       assert.strictEqual(res._getJSONData().success, true, 'Response is not correct')
       assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
-      assert.strictEqual(userStubFind.calledOnce, true)
-      assert.strictEqual(bcryptStub.calledOnce, true)
-      assert.strictEqual(jwtSub.calledOnce, true)
+      assert.strictEqual(User.findOne.mock.calls.length, 1)
+      const callFind = User.findOne.mock.calls[0]
+      assert.deepStrictEqual(callFind.arguments, [{ email: 'test@test.com' }])
+      assert.strictEqual(bcrypt.compare.mock.calls.length, 1)
+      assert.strictEqual(jwt.sign.mock.calls.length, 1)
     })
   })
 
   describe('get user data unit tests', async () => {
-    it.skip('should return 200, user id and mail from session', async () => {
+    afterEach(() => {
+      mock.restoreAll()
+    })
+    it('should return 200, user id and mail from session', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
-        method: 'GET'
+        method: 'GET',
+        user: { id: '507f1f77bcf86cd799439011' }
       })
-      const userStub = sinon.stub(User, 'findById').returns({
-        id: sinon.stub().resolves('fake-id'),
-        email: sinon.stub().resolves('fake-mail')
-      })
+      const mockUser = {
+        _id: '507f1f77bcf86cd799439011',
+        email: 'test@test.com',
+        password: '$2a$10$R14vkpu2VMBFSFP.agw/S.24CNJ/W4xY0BtNi/Z4MLUEFfAerFvcq'
+      }
+      const user = new User(mockUser)
+      mock.method(User, 'findById', () => user)
+      assert.strictEqual(User.findById.mock.calls.length, 0)
       await userCtrl.getUser(req, res)
-      assert.strictEqual(userStub.calledOnceWith('test@test.com'), true, 'Stub is not called with correct params')
       assert.strictEqual(res.statusCode, 200, 'Status code is not correct')
+      assert.strictEqual(User.findById.mock.calls.length, 1)
+      const callFind = User.findById.mock.calls[0]
+      assert.deepStrictEqual(callFind.arguments, ['507f1f77bcf86cd799439011'])
     })
   })
 
   describe('jwt unit tests', async () => {
     afterEach(() => {
-      sinon.restore()
+      mock.restoreAll()
     })
 
     it('should return jwt with 30 days expiration', async () => {
-      const jwtSub = sinon.stub(jwt, 'sign').returns('fake-token')
+      mock.method(jwt, 'sign', () => 'fake-token')
+      assert.strictEqual(jwt.sign.mock.calls.length, 0)
       assert.strictEqual(userCtrl.genToken('fake-id'), 'fake-token', 'Response is not correct')
-      assert.strictEqual(jwtSub.calledOnce, true)
+      assert.strictEqual(jwt.sign.mock.calls.length, 1)
     })
   })
 })

@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node -r ./src/bin/www",
-    "dev": "nyc --silent cross-env NODE_ENV=development ./src/bin/www",
+    "dev": "nyc --silent cross-env NODE_ENV=development node --watch ./src/bin/www",
     "stop": "pkill --signal SIGINT movies2uExpress",
     "cover:unit": "nyc --silent --all=true --reporter=lcov npm run unit",
     "cover:integration": "nyc --silent --no-clean --all=true --reporter=lcov npm run ci",

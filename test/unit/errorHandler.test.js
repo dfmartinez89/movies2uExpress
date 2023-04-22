@@ -1,17 +1,16 @@
 const assert = require('node:assert/strict')
-const { describe, it, afterEach } = require('node:test')
+const { describe, it, afterEach, mock } = require('node:test')
 const httpMocks = require('node-mocks-http')
-const sinon = require('sinon')
 const handler = require('../../src/middleware/errorHandler.js')
 
 describe('error handler middleware unit tests', async () => {
   afterEach(() => {
-    sinon.restore()
+    mock.restoreAll()
   })
   it('should call next function with stacktrace when status code is provided', async () => {
     const res = httpMocks.createResponse()
     const req = httpMocks.createRequest()
-    const next = sinon.stub()
+    const next = mock.fn()
     const error = new Error('Error in request')
     res.status(400)
     handler.errorHandler(error, req, res, next)
@@ -22,7 +21,7 @@ describe('error handler middleware unit tests', async () => {
   it('should call next function with stacktrace and set status code 500 when is not provided', async () => {
     const res = httpMocks.createResponse()
     const req = httpMocks.createRequest()
-    const next = sinon.stub()
+    const next = mock.fn()
     const error = new Error('Error in request')
     res.status(undefined)
     handler.errorHandler(error, req, res, next)
