@@ -48,8 +48,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     # Report
-      - name: Coverage Report
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: coverage/lcov-report/src
+     # - name: Coverage Report
+      #  uses: JamesIves/github-pages-deploy-action@v4
+       # with:
+        #  branch: gh-pages
+         # folder: coverage/lcov-report/src
