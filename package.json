@@ -34,7 +34,6 @@
     "node-geocoder": "^4.0.0"
   },
   "devDependencies": {
-    "@shelf/jest-mongodb": "^3.0.1",
     "babel-plugin-istanbul": "^6.1.1",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.1",
