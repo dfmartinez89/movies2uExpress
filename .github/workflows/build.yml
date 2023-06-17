@@ -1,4 +1,4 @@
-name: build
+name: Build and Deploy
 
 on:
   push:
@@ -7,6 +7,8 @@ on:
       - develop
   pull_request:
     types: [opened, synchronize, reopened]
+permissions:
+  contents: write
 
 env:
   ATLAS_URI: ${{ secrets.ATLAS_URI }}   
@@ -44,3 +46,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    # Report
+      - name: Coverage Report
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: coverage/lcov-report/src
