@@ -10,7 +10,9 @@ describe('movies controller unit tests', async () => {
     afterEach(() => {
       mock.restoreAll()
     })
+
     it('should return 500 when model query throws error', async () => {
+      // ARRANGE
       const req = httpMocks.createRequest()
       const res = httpMocks.createResponse()
       const mockError = () => {
@@ -18,11 +20,14 @@ describe('movies controller unit tests', async () => {
       }
       mock.method(Movies, 'find', mockError)
       assert.strictEqual(Movies.find.mock.calls.length, 0)
+      // ACT
       await moviesCtrl.moviesFindAll(req, res)
+      // ASSERT
       assert.strictEqual(res.statusCode, 500, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Something went wrong', 'Response is not correct')
       assert.strictEqual(Movies.find.mock.calls.length, 1)
     })
+
     it('should return 200 and the list of movies', async () => {
       const req = httpMocks.createRequest()
       const res = httpMocks.createResponse()
@@ -77,6 +82,7 @@ describe('movies controller unit tests', async () => {
     afterEach(() => {
       mock.restoreAll()
     })
+
     it('should return 400 when movieid is not sent', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -89,6 +95,7 @@ describe('movies controller unit tests', async () => {
       assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Movieid is required', 'Response is not correct')
     })
+
     it('should return 400 when model query throws error', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -109,6 +116,7 @@ describe('movies controller unit tests', async () => {
       const call = Movies.findById.mock.calls[0]
       assert.deepStrictEqual(call.arguments, ['507f1f77bcf86cd799439011'])
     })
+
     it('should return 404 when no movie is found for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -126,6 +134,7 @@ describe('movies controller unit tests', async () => {
       const call = Movies.findById.mock.calls[0]
       assert.deepStrictEqual(call.arguments, ['507f1f77bcf86cd799439011'])
     })
+
     it('should return 200 and the movie for the given id', async () => {
       const req = httpMocks.createRequest({
         method: 'GET',
@@ -168,6 +177,7 @@ describe('movies controller unit tests', async () => {
     afterEach(() => {
       mock.restoreAll()
     })
+
     it('should return 404 when location is not sent', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -184,6 +194,7 @@ describe('movies controller unit tests', async () => {
       assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Location is required', 'Response is not correct')
     })
+
     it('should return 406 when model throws error', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -207,6 +218,7 @@ describe('movies controller unit tests', async () => {
       assert.strictEqual(res._getJSONData().message, 'Movie not created', 'Response is not correct')
       assert.strictEqual(Movies.create.mock.calls.length, 1)
     })
+
     it('should return 201 when movie is created', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -239,10 +251,12 @@ describe('movies controller unit tests', async () => {
       assert.strictEqual(Movies.create.mock.calls.length, 1)
     })
   })
+
   describe('moviesUpdateOne unit tests', async () => {
     afterEach(() => {
       mock.restoreAll()
     })
+
     it('should return 400 when location is not sent', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -262,6 +276,7 @@ describe('movies controller unit tests', async () => {
       assert.strictEqual(res.statusCode, 400, 'Status code is not correct')
       assert.strictEqual(res._getJSONData().message, 'Location is required', 'Response is not correct')
     })
+
     it('should return 404 when no movie is found for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -293,6 +308,7 @@ describe('movies controller unit tests', async () => {
         year: 1999
       }, { new: true }])
     })
+
     it('should return 406 when model throws error updating the movie', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -327,6 +343,7 @@ describe('movies controller unit tests', async () => {
         year: 1999
       }, { new: true }])
     })
+
     it('should return 406 when model throws error updating the movie', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -361,6 +378,7 @@ describe('movies controller unit tests', async () => {
         year: 1999
       }, { new: true }])
     })
+
     it('should return 400 when geocoder throws error parsing the location', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -390,6 +408,7 @@ describe('movies controller unit tests', async () => {
       assert.strictEqual(Movies.findOneAndUpdate.mock.calls.length, 0)
       assert.strictEqual(geocoder.geocode.mock.calls.length, 1)
     })
+
     it('should return 200 when movie is updated', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -433,10 +452,12 @@ describe('movies controller unit tests', async () => {
       }, { new: true }])
     })
   })
+
   describe('moviesDeleteOne unit tests', async () => {
     afterEach(() => {
       mock.restoreAll()
     })
+
     it('should return 404 when no movie is found for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -454,6 +475,7 @@ describe('movies controller unit tests', async () => {
       const call = Movies.findByIdAndRemove.mock.calls[0]
       assert.deepStrictEqual(call.arguments, ['63c42486110b37fbea4ee930'])
     })
+
     it('should return 406 when model layer throws error', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
@@ -474,6 +496,7 @@ describe('movies controller unit tests', async () => {
       const call = Movies.findByIdAndRemove.mock.calls[0]
       assert.deepStrictEqual(call.arguments, ['63c42486110b37fbea4ee930'])
     })
+
     it('should return 204 and the movie for the given id', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({

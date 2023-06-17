@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const geocoder = require('../utils/geocoder')
 
 const reviewSchema = new mongoose.Schema({
   author: { type: String, required: true, min: 3, max: 60 },
@@ -43,63 +42,5 @@ const movieSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   reviews: [reviewSchema]
 })
-
-/* Middleware to obtain geolocation (fails when posting a review because it triggers this pre save without passing a location)
-//At creating movie
-movieSchema.pre("save", async function (next) {
-  if (this.location) {
-    const loc = await geocoder.geocode(this.location);
-    this.geoLocation = {
-      type: "Point",
-      coordinates: [loc[0].longitude, loc[0].latitude],
-      formattedLocation: loc[0].formattedAddress,
-    };
-    //Do not save location from request
-    this.location = undefined;
-  }
-
-  next();
-});
-
-//At updating movie
-movieSchema.pre("findOneAndUpdate", async function (next) {
-  if (this.location) {
-    const loc = await geocoder.geocode(this.location);
-    this.geoLocation = {
-      type: "Point",
-      coordinates: [loc[0].longitude, loc[0].latitude],
-      formattedLocation: loc[0].formattedAddress,
-    };
-    //Do not save location from request
-    this.location = undefined;
-  }
-  next();
-});
-
-//At creating review
-reviewSchema.pre("save", async function (next) {
-  const loc = await geocoder.geocode(this.reviewLocation);
-  this.geoLocation = {
-    type: "Point",
-    coordinates: [loc[0].longitude, loc[0].latitude],
-    formattedLocation: loc[0].formattedAddress,
-  };
-  //Do not save location from request
-  this.reviewLocation = undefined;
-  next();
-});
-
-//At updating review
-reviewSchema.pre("findOneAndUpdate", async function (next) {
-  const loc = await geocoder.geocode(this.reviewLocation);
-  this.geoLocation = {
-    type: "Point",
-    coordinates: [loc[0].longitude, loc[0].latitude],
-    formattedLocation: loc[0].formattedAddress,
-  };
-  //Do not save location from request
-  this.reviewLocation = undefined;
-  next();
-}); */
 
 module.exports = mongoose.model('Movie', movieSchema)
