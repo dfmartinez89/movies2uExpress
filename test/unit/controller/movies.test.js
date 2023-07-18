@@ -1,9 +1,9 @@
 const assert = require('node:assert/strict')
 const { describe, it, afterEach, mock } = require('node:test')
 const httpMocks = require('node-mocks-http')
-const Movies = require('../../src/models/movies.js')
-const geocoder = require('../../src/utils/geocoder.js')
-const moviesCtrl = require('../../src/controllers/movies.js')
+const Movies = require('../../../src/models/movies.js')
+const geocoder = require('../../../src/utils/geocoder.js')
+const moviesCtrl = require('../../../src/controllers/movies.js')
 
 describe('movies controller unit tests', async () => {
   describe('moviesFindAll unit tests', async () => {

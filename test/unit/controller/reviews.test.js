@@ -2,11 +2,8 @@ const assert = require('node:assert/strict')
 const { describe, it, afterEach, mock } = require('node:test')
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
-const Movies = require('../../src/models/movies.js')
-const reviewsCtrl = require('../../src/controllers/reviews.js')
-
-const callTracker = new assert.CallTracker()
-process.on('exit', () => callTracker.verify())
+const Movies = require('../../../src/models/movies.js')
+const reviewsCtrl = require('../../../src/controllers/reviews.js')
 
 describe('reviews controller unit tests', async () => {
   describe('reviewsReadOne unit tests', async () => {

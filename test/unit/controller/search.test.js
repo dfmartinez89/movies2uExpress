@@ -2,8 +2,8 @@ const assert = require('node:assert/strict')
 const { describe, it, afterEach, mock } = require('node:test')
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
-const Movies = require('../../src/models/movies.js')
-const searchCtrl = require('../../src/controllers/search.js')
+const Movies = require('../../../src/models/movies.js')
+const searchCtrl = require('../../../src/controllers/search.js')
 
 describe('search controller unit tests', async () => {
   describe('getImdbResponse unit tests', async () => {
