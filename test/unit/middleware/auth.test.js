@@ -2,11 +2,8 @@ const assert = require('node:assert/strict')
 const { describe, it, afterEach, mock } = require('node:test')
 const httpMocks = require('node-mocks-http')
 const jwt = require('jsonwebtoken')
-const User = require('../../src/models/users.js')
-const auth = require('../../src/middleware/auth.js')
-
-const callTracker = new assert.CallTracker()
-process.on('exit', () => callTracker.verify())
+const User = require('../../../src/models/users.js')
+const auth = require('../../../src/middleware/auth.js')
 
 describe('auth middleware unit tests', async () => {
   afterEach(() => {

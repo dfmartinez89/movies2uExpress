@@ -3,8 +3,8 @@ const assert = require('node:assert/strict')
 const httpMocks = require('node-mocks-http')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const userCtrl = require('../../src/controllers/users.js')
-const User = require('../../src/models/users.js')
+const userCtrl = require('../../../src/controllers/users.js')
+const User = require('../../../src/models/users.js')
 
 describe('user controller unit tests', async () => {
   describe('register user unit tests', async () => {

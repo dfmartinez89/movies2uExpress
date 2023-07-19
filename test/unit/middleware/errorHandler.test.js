@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict')
 const { describe, it, afterEach, mock } = require('node:test')
 const httpMocks = require('node-mocks-http')
-const handler = require('../../src/middleware/errorHandler.js')
+const handler = require('../../../src/middleware/errorHandler.js')
 
 describe('error handler middleware unit tests', async () => {
   afterEach(() => {

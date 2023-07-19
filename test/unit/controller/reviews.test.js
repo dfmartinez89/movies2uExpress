@@ -1,12 +1,9 @@
 const assert = require('node:assert/strict')
-const { describe, it, afterEach } = require('node:test')
+const { describe, it, afterEach, mock } = require('node:test')
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
-const Movies = require('../../src/models/movies.js')
-const reviewsCtrl = require('../../src/controllers/reviews.js')
-
-const callTracker = new assert.CallTracker()
-process.on('exit', () => callTracker.verify())
+const Movies = require('../../../src/models/movies.js')
+const reviewsCtrl = require('../../../src/controllers/reviews.js')
 
 describe('reviews controller unit tests', async () => {
   describe('reviewsReadOne unit tests', async () => {
@@ -214,13 +211,30 @@ describe('reviews controller unit tests', async () => {
           reviewLocation: 'Sevilla, Spain'
         }
       })
+      const mockMovie = {
+        _id: '507f1f77bcf86cd799439011',
+        title: 'Transformers',
+        reviews: [
+          {
+            reviewGeoLocation: 'Almeria, Spain',
+            author: 'Damian',
+            rating: 5,
+            description: 'The very first movie of the saga is always the best',
+            _id: '507f1f77bcf86cd799439012',
+            createdAt: '2023-02-25T10:08:31.081Z'
+          }
+        ]
+      }
+      const movie = new Movies(mockMovie) // necesario para tener disponible el metodo push() dentro del prototype
       const movieStub = sinon.stub(Movies, 'findById').withArgs('507f1f77bcf86cd799439011').returns({
-        select: sinon.stub().resolves(null)
+        select: sinon.stub().withArgs('reviews').returnsThis(),
+        exec: sinon.stub().resolves(movie)
       })
-      const reviewStub = sinon.stub(reviewsCtrl, 'doAddReview')
+      mock.method(reviewsCtrl, 'doAddReview')
+      assert.strictEqual(reviewsCtrl.doAddReview.mock.calls.length, 0)
       await reviewsCtrl.reviewsCreate(req, res)
       assert.strictEqual(movieStub.calledOnceWith('507f1f77bcf86cd799439011'), true, 'Stub was not called with correct arguments')
-      assert.strictEqual(reviewStub.calledOnceWith(req, res), false)
+      assert.strictEqual(reviewsCtrl.doAddReview.mock.calls.length, 0)
     })
   })
 
@@ -248,7 +262,7 @@ describe('reviews controller unit tests', async () => {
       assert.strictEqual(res._getJSONData().message, 'Movie not found', 'Response is not correct')
     })
 
-    it('should push to reviews array the data sent in request, call updateAverageRating and return data of last review added', async () => {
+    it('should push to reviews array the data sent in request', async () => {
       const res = httpMocks.createResponse()
       const req = httpMocks.createRequest({
         method: 'GET',
